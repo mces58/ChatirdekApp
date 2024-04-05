@@ -1,0 +1,27 @@
+# commit format
+COMMIT_TEMPLATE="
+Commit Message Format
+Tip: (feat, fix, change, chore, docs, style, perf, test) - (lowercase)
+Scope: (module, component, file, etc...) - (kebab-case)
+Subject: (short description) - (lowercase)
+Length: (max 100 characters)
+
+Example:
+Good Commit Message
+feat: add new feature
+fix(module): fix bug
+
+Bad Commit Message
+feat:add new feature
+fix(module):fix bug
+fix(module) : fix bug
+fix(module) : fix bug
+fix (module): fix bug
+fix(module): fix bug.
+"
+
+
+npx --no-install commitlint --edit $1 || {
+  echo "$COMMIT_TEMPLATE"
+  exit 1
+}

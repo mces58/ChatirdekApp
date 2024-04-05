@@ -1,0 +1,4 @@
+{
+  "server/**/*.js": ["npm run prettier:server", "npm run lint:server"],
+  "client/**/*.{js,jsx}": ["npm run prettier:client", "npm run lint:client"]
+}
