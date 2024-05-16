@@ -11,6 +11,7 @@ import {
   View,
 } from 'react-native';
 import Animated, {
+  Easing,
   useAnimatedStyle,
   useSharedValue,
   withRepeat,
@@ -22,8 +23,8 @@ import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
 
-import loginAnimation from 'src/assets/animatons/login.json';
-import BaseBottomSheet from 'src/components/BaseBottomSheet';
+import registerAnimation from 'src/assets/animatons/register1.json';
+import RegisterModal from 'src/components/RegisterModal';
 import { BASE_URL } from 'src/services/api-service';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
@@ -31,17 +32,18 @@ type LoginProps = {
   navigation: any;
 };
 
-const Login: React.FC<LoginProps> = ({ navigation }) => {
+const Register: React.FC<LoginProps> = ({ navigation }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
   const scale = useSharedValue(1);
   const translateY = useSharedValue(0);
+  const rotate = useSharedValue(0);
 
   useEffect(() => {
     scale.value = withRepeat(
       withSequence(
-        withTiming(0.8, { duration: 2000 }),
-        withTiming(1.1, { duration: 2000 })
+        withTiming(0.7, { duration: 4000 }),
+        withTiming(1.1, { duration: 4000 })
       ),
       -1,
       true
@@ -49,37 +51,49 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
 
     translateY.value = withRepeat(
       withSequence(
-        withTiming(0, { duration: 1000 }),
-        withTiming(-10, { duration: 1000 })
+        withTiming(-50, { duration: 2000 }),
+        withTiming(-80, { duration: 2000 })
       ),
       -1,
       true
     );
-  }, [scale, translateY]);
+
+    rotate.value = withRepeat(
+      withTiming(rotate.value + 360, { duration: 4500, easing: Easing.ease }),
+      -1,
+      false
+    );
+  }, [scale, translateY, rotate]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
-      transform: [{ scale: scale.value }, { translateY: translateY.value }],
+      transform: [
+        { scale: scale.value },
+        { translateY: translateY.value },
+        { rotate: `${rotate.value}deg` },
+      ],
     };
   });
 
-  const [loginData, setLoginData] = useState({
+  const [signupData, setSignupData] = useState({
+    fullName: '',
     userName: '',
     password: '',
+    confirmPassword: '',
+    gender: 'male',
   });
 
-  const [forgotPasswordBottomSheetVisible, setForgotPasswordBottomSheetVisible] =
-    useState(false);
+  const [registerModalVisible, setRegisterModalVisible] = useState(false);
 
-  const handleLogin = () => {
+  const handleRegister = () => {
     axios
-      .post(`${BASE_URL}/auth/login`, loginData)
+      .post(`${BASE_URL}/auth/signup`, signupData)
       .then((response) => {
-        console.log(response.data);
-        navigation.navigate('Main');
+        console.log('registration success', response.data);
+        setRegisterModalVisible(true);
       })
       .catch((error) => {
-        console.error(error);
+        console.log('registration failed', error);
       });
   };
 
@@ -98,7 +112,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
       >
         <View
           style={{
-            height: '40%',
+            height: '35%',
           }}
         >
           <LinearGradient
@@ -110,7 +124,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
               alignItems: 'center',
               width: SCREEN_WIDTH * 1.5,
               height: SCREEN_WIDTH * 1.5,
-              top: -SCREEN_WIDTH * 0.6,
+              top: -SCREEN_WIDTH * 0.7,
               left: -SCREEN_WIDTH * 0.25,
               shadowColor: '#000',
               shadowOffset: {
@@ -131,17 +145,16 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
               ]}
             >
               <LottieView
-                source={loginAnimation}
+                source={registerAnimation}
                 style={{
                   width: SCREEN_WIDTH * 0.85,
                   height: SCREEN_WIDTH * 0.85,
                   position: 'absolute',
                   bottom: -SCREEN_WIDTH * 0.1,
-                  transform: [{ rotate: '35deg' }],
                 }}
                 autoPlay
                 loop
-                speed={2}
+                speed={1}
                 resizeMode="cover"
               />
             </Animated.View>
@@ -149,7 +162,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
         </View>
         <View
           style={{
-            height: '60%',
+            height: '65%',
           }}
         >
           <View
@@ -168,10 +181,10 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
                   marginHorizontal: 20,
                 }}
               >
-                Login
+                Register
               </Text>
               <Text style={{ fontSize: 20, marginHorizontal: 20 }}>
-                Please enter your credentials to login
+                Register to continue
               </Text>
             </View>
 
@@ -184,8 +197,20 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
                 width: SCREEN_WIDTH * 0.8,
                 borderRadius: 10,
               }}
-              placeholder="Username"
-              onChangeText={(text) => setLoginData({ ...loginData, userName: text })}
+              placeholder="FullName"
+              onChangeText={(text) => setSignupData({ ...signupData, fullName: text })}
+            />
+            <TextInput
+              style={{
+                height: 50,
+                margin: 12,
+                borderWidth: 1,
+                padding: 10,
+                width: SCREEN_WIDTH * 0.8,
+                borderRadius: 10,
+              }}
+              placeholder="UserName"
+              onChangeText={(text) => setSignupData({ ...signupData, userName: text })}
             />
             <TextInput
               style={{
@@ -198,19 +223,23 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
               }}
               placeholder="Password"
               secureTextEntry
-              onChangeText={(text) => setLoginData({ ...loginData, password: text })}
+              onChangeText={(text) => setSignupData({ ...signupData, password: text })}
             />
-
-            <TouchableOpacity
+            <TextInput
               style={{
-                flexDirection: 'row',
-                gap: 10,
-                marginTop: 10,
+                height: 50,
+                margin: 12,
+                borderWidth: 1,
+                padding: 10,
+                width: SCREEN_WIDTH * 0.8,
+                borderRadius: 10,
               }}
-              onPress={() => setForgotPasswordBottomSheetVisible(true)}
-            >
-              <Text style={{ color: 'blue' }}>Forgot password?</Text>
-            </TouchableOpacity>
+              placeholder="Confirm Password"
+              secureTextEntry
+              onChangeText={(text) =>
+                setSignupData({ ...signupData, confirmPassword: text })
+              }
+            />
 
             <TouchableOpacity
               style={{
@@ -220,43 +249,22 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
                 width: SCREEN_WIDTH * 0.8,
                 alignItems: 'center',
               }}
-              onPress={handleLogin}
+              onPress={handleRegister}
             >
-              <Text style={{ color: 'white', fontSize: 20 }}>Login</Text>
+              <Text style={{ color: 'white', fontSize: 20 }}>Register</Text>
             </TouchableOpacity>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                gap: 10,
-                marginTop: 20,
-              }}
-            >
-              <Text>Don&apos;t have an account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={{ color: 'blue' }}>Register</Text>
-              </TouchableOpacity>
-            </View>
           </View>
 
-          {forgotPasswordBottomSheetVisible && (
-            <BaseBottomSheet
-              isVisible={forgotPasswordBottomSheetVisible}
-              isTransparent={true}
-              onSwipeDown={() => setForgotPasswordBottomSheetVisible(false)}
-              animationType="slide"
-              modalStyle={{
-                height: SCREEN_HEIGHT * 0.5,
-                backgroundColor: 'white',
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: 20,
+          {registerModalVisible && (
+            <RegisterModal
+              isVisible={registerModalVisible}
+              onClose={() => {
+                setRegisterModalVisible(false);
               }}
-              content={<Text>Forget Password</Text>}
+              onGoToLogin={() => {
+                setRegisterModalVisible(false);
+                navigation.navigate('Login');
+              }}
             />
           )}
         </View>
@@ -265,7 +273,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
   );
 };
 
-export default Login;
+export default Register;
 
 const styles = StyleSheet.create({
   itemContainer: {

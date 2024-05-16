@@ -1,6 +1,7 @@
 export type RootStackParamList = {
   Onboarding: { screenName: string };
   Login: undefined;
+  Register: undefined;
   HomeStack: undefined;
   Home: undefined;
   Chat: {
