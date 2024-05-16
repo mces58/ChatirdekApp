@@ -3,7 +3,7 @@ export type RootStackParamList = {
   Login: undefined;
   Register: undefined;
   HomeStack: undefined;
-  Home: undefined;
+  Home: { userId: string };
   Chat: {
     user: {
       userImg: string;
@@ -17,5 +17,5 @@ export type RootStackParamList = {
   Updates: undefined;
   Groups: undefined;
   Settings: undefined;
-  Main: undefined;
+  Main: { userId: string };
 };

@@ -11,6 +11,8 @@ const generateTokenAndSetCookie = (res, user) => {
     sameSite: 'strict',
     secure: process.env.NODE_ENV !== 'development',
   });
+
+  return token;
 };
 
 export default generateTokenAndSetCookie;

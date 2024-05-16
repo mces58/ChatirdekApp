@@ -37,8 +37,8 @@ export const signup = async (req, res) => {
     });
 
     if (user) {
-      generateTokenAndSetCookie(res, user);
       await user.save();
+      generateTokenAndSetCookie(res, user);
       return res.status(201).json({
         _id: user._id,
         fullName: user.fullName,
@@ -49,7 +49,7 @@ export const signup = async (req, res) => {
     return res.status(500).json({ message: 'Failed to create user' });
   } catch (error) {
     console.error('signup error:', error);
-    res.status(500).json({ message: 'Something went wrong' });
+    res.status(500).json({ message: 'Something went wrong', error });
   }
 };
 
@@ -70,12 +70,13 @@ export const login = async (req, res) => {
     const match = await bcrypt.compare(password, user.password);
 
     if (match) {
-      generateTokenAndSetCookie(res, user);
+      const token = generateTokenAndSetCookie(res, user);
       return res.status(200).json({
         _id: user._id,
         fullName: user.fullName,
         userName: user.userName,
         profilePicture: user.profilePicture,
+        token,
       });
     }
     return res.status(401).json({ message: 'Invalid credentials' });

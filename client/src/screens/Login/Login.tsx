@@ -18,6 +18,7 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
@@ -71,12 +72,32 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
   const [forgotPasswordBottomSheetVisible, setForgotPasswordBottomSheetVisible] =
     useState(false);
 
-  const handleLogin = () => {
+  // useEffect(() => {
+  //   const checkLoginStatus = async () => {
+  //     try {
+  //       const token = await AsyncStorage.getItem('authToken');
+  //       console.log('token', token);
+  //       if (token) {
+  //         navigation.replace('Main');
+  //       } else {
+  //         navigation.replace('Login');
+  //       }
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   };
+
+  //   checkLoginStatus();
+  // }, []);
+
+  const handleLogin = async () => {
     axios
       .post(`${BASE_URL}/auth/login`, loginData)
-      .then((response) => {
-        console.log(response.data);
-        navigation.navigate('Main');
+      .then(async (response) => {
+        const token = response.data.token;
+        AsyncStorage.setItem('authToken', token);
+
+        navigation.replace('Main');
       })
       .catch((error) => {
         console.error(error);
