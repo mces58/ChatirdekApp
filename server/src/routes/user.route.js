@@ -1,12 +1,18 @@
 import { Router } from 'express';
 
-import { getLastMessagesWithOtherUsers, getUsers } from 'src/controllers/user.controller';
+import {
+  getLastMessagesWithOtherUsers,
+  getUserById,
+  getUsers,
+} from 'src/controllers/user.controller';
 import protectRoute from 'src/middlewares/protectRoute.middleware';
 
 const router = Router();
 
 router.get('/', protectRoute, getUsers);
 
-router.get('/last-messages', protectRoute, getLastMessagesWithOtherUsers);
+router.post('/last-messages/', getLastMessagesWithOtherUsers);
+
+router.get('/:userId', protectRoute, getUserById);
 
 export default router;

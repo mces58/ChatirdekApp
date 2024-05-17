@@ -25,7 +25,8 @@ import LottieView from 'lottie-react-native';
 
 import loginAnimation from 'src/assets/animatons/login.json';
 import BaseBottomSheet from 'src/components/BaseBottomSheet';
-import { BASE_URL } from 'src/services/api-service';
+import { useAuthContext } from 'src/context/AuthContext';
+import { BASE_URL } from 'src/services/baseUrl';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
 type LoginProps = {
@@ -90,13 +91,13 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
   //   checkLoginStatus();
   // }, []);
 
+  const { setAuthUser } = useAuthContext();
   const handleLogin = async () => {
     axios
       .post(`${BASE_URL}/auth/login`, loginData)
       .then(async (response) => {
-        const token = response.data.token;
-        AsyncStorage.setItem('authToken', token);
-
+        await AsyncStorage.setItem('authToken', response.data.token);
+        setAuthUser(response.data);
         navigation.replace('Main');
       })
       .catch((error) => {

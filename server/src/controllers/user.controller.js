@@ -15,7 +15,7 @@ const getUsers = async (req, res) => {
 
 const getLastMessagesWithOtherUsers = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const { userId } = req.body;
 
     // Kullanıcının son mesajlarını içeren konuşmaları bul
     const conversations = await Conversation.find({ participants: userId })
@@ -45,4 +45,16 @@ const getLastMessagesWithOtherUsers = async (req, res) => {
   }
 };
 
-export { getUsers, getLastMessagesWithOtherUsers };
+const getUserById = async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const user = await User.findById(userId).select('-password');
+
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export { getUsers, getLastMessagesWithOtherUsers, getUserById };

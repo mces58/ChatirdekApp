@@ -1,20 +1,27 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import React, { useEffect, useRef, useState } from 'react';
+import {
+  Button,
+  Image,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
+import axios from 'axios';
 
 import ArrowIcon from 'src/assets/icons/arrow';
+import { BASE_URL } from 'src/services/baseUrl';
 
 type ChatRouteProps = {
-  user: {
-    userImg: string;
-    isOnline: boolean;
-    fullName: string;
-    lastMessage: string;
-    lastMessageTime: string;
-    messageInQueue: number;
-  };
+  userId: string;
+  receiverId: string;
 };
 
 type ChatProps = {
@@ -25,209 +32,237 @@ type ChatProps = {
 const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const [messages, setMessages] = useState([]);
   const [inputMessage, setInputMessage] = useState('');
+  const scrollViewRef = useRef<ScrollView>(null);
+  const [receiver, setReceiver] = useState({} as any);
 
   const handleInputText = (text: string) => {
     setInputMessage(text);
   };
 
-  const renderMessage = (props: any) => {
-    const { currentMessage } = props;
+  const sendMessage = async () => {
+    if (inputMessage.trim()) {
+      try {
+        const messageInfo = {
+          senderId: route.params.userId,
+          message: inputMessage,
+          receiverId: route.params.receiverId,
+        };
 
-    if (currentMessage.user._id === 1) {
-      return (
-        <View
-          style={{
-            flex: 1,
-            flexDirection: 'row',
-            justifyContent: 'flex-end',
-          }}
-        >
-          <Bubble
-            {...props}
-            wrapperStyle={{
-              right: {
-                backgroundColor: '#007aff',
-                marginRight: 10,
-                marginVertical: 5,
-              },
-            }}
-            textStyle={{
-              right: {
-                color: '#fff',
-              },
-            }}
-          />
-        </View>
-      );
+        const response = await axios.post(
+          `${BASE_URL}/messages/send/${messageInfo.receiverId}`,
+          messageInfo
+        );
+
+        const newMessage = {
+          _id: response.data._id,
+          text: response.data.message,
+          createdAt: response.data.createdAt,
+          user: {
+            _id: response.data.senderId,
+          },
+        };
+
+        setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+        setInputMessage('');
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await axios.get(`${BASE_URL}/messages/${route.params.receiverId}`);
+      const messages = response.data.map((message: any) => {
+        return {
+          _id: message._id,
+          text: message.message,
+          createdAt: message.createdAt,
+          user: {
+            _id: message.senderId,
+          },
+        };
+      });
 
-  const submitHandler = () => {
-    const message = {
-      _id: Math.random().toString(36).substring(7),
-      text: inputMessage,
-      createdAt: new Date().getTime(),
-      user: {
-        _id: 1,
-      },
+      setMessages(messages);
     };
+    getUser();
+  }, [messages, setMessages]);
 
-    setMessages(
-      message.text.length > 0
-        ? (previousMessages) => GiftedChat.append(previousMessages, [message])
-        : (previousMessages) => previousMessages
-    );
+  useEffect(() => {
+    const getUserProfile = async () => {
+      const response = await axios.get(`${BASE_URL}/users/${route.params.receiverId}`);
+      setReceiver(response.data);
+    };
+    getUserProfile();
+  }, [receiver, setReceiver]);
 
-    setInputMessage('');
-  };
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#fff',
-      }}
-    >
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+      console.log('keyboard is shown');
+
+      scrollViewRef.current?.scrollToEnd({ animated: true });
+    });
+
+    return () => {
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+  const renderItem = ({ item }) => {
+    return (
       <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          paddingHorizontal: 16,
-          paddingVertical: 16,
-          backgroundColor: '#fff',
-          borderBottomWidth: 2,
-          borderBottomColor: '#f2f2f2',
-        }}
+        key={item._id}
+        style={
+          item.user._id === route.params.receiverId
+            ? styles.theirMessage
+            : styles.myMessage
+        }
       >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
+        <Text>{item.text}</Text>
+        <Text
+          style={[
+            styles.timestamp,
+            item.user._id === route.params.userId
+              ? styles.myTimestamp
+              : styles.theirTimestamp,
+          ]}
         >
+          {new Date(item.createdAt).toLocaleTimeString([], {
+            hour: '2-digit',
+            minute: '2-digit',
+          })}
+        </Text>
+      </View>
+    );
+  };
+
+  return (
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={0}
+    >
+      <View style={styles.container}>
+        <View style={styles.header}>
           <TouchableOpacity onPress={() => navigation.goBack()}>
             <ArrowIcon width={30} height={30} color="black" direction="left" />
           </TouchableOpacity>
-
-          <View>
-            {route.params.user.isOnline && (
-              <View
-                style={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 4,
-                  width: 10,
-                  height: 10,
-                  borderRadius: 5,
-                  backgroundColor: 'green',
-                  zIndex: 10,
-                  borderWidth: 1,
-                  borderColor: '#fff',
-                }}
-              />
-            )}
+          <View style={styles.userInfo}>
             <Image
-              source={{ uri: route.params.user.userImg }}
-              style={{
-                width: 50,
-                height: 50,
-                borderRadius: 25,
-                marginLeft: 10,
-              }}
+              source={{ uri: receiver.profilePicture }}
+              style={{ width: 50, height: 50, borderRadius: 25 }}
             />
-          </View>
-          <View style={{ marginLeft: 10 }}>
-            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
-              {route.params.user.fullName}
-            </Text>
-            <Text style={{ color: 'gray' }}>
-              {route.params.user.isOnline ? 'Online' : 'Offline'}
-            </Text>
+            <Text>{receiver.fullName}</Text>
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            flex: 1,
-            justifyContent: 'space-around',
-          }}
+
+        <ScrollView
+          ref={scrollViewRef}
+          onContentSizeChange={() =>
+            scrollViewRef.current?.scrollToEnd({ animated: true })
+          }
+          style={styles.messageList}
+          showsVerticalScrollIndicator={false}
         >
-          <Text style={{ color: 'blue' }}>Search</Text>
-          <Text style={{ color: 'blue' }}>Profile</Text>
-          <Text style={{ color: 'blue' }}>...</Text>
-          {/* walpaper, clear chat, media, süreli mesaj */}
-        </View>
-      </View>
-
-      <GiftedChat
-        messages={messages}
-        renderInputToolbar={() => {
-          return null;
-        }}
-        user={{ _id: 1 }}
-        minInputToolbarHeight={0}
-        renderMessage={renderMessage}
-      />
-
-      <View style={styles.inputContainer}>
-        <View style={styles.inputMessageContainer}>
+          {messages.map((item) => renderItem({ item }))}
+        </ScrollView>
+        <View style={styles.inputContainer}>
           <TextInput
-            style={styles.inputMessage}
-            placeholder="Type a message"
-            placeholderTextColor={'#bfbfbf'}
+            style={styles.input}
             value={inputMessage}
             onChangeText={handleInputText}
+            placeholder="Type your message"
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-            }}
-          >
-            <TouchableOpacity>
-              <Text style={{ color: 'blue' }}>camera</Text>
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Text style={{ color: 'blue' }}>file</Text>
-            </TouchableOpacity>
-          </View>
-          <TouchableOpacity onPress={submitHandler}>
-            <Text style={{ color: 'blue' }}>send</Text>
-          </TouchableOpacity>
+          <Button title="Send" onPress={sendMessage} />
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 export default Chat;
 
 const styles = StyleSheet.create({
-  inputContainer: {
-    height: 72,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+  container: {
+    flex: 1,
+    backgroundColor: '#f0f0f0',
+    marginTop: 50,
+  },
+  messageContainer: {
     backgroundColor: '#fff',
-    borderTopWidth: 2,
-    borderTopColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    alignSelf: 'flex-start',
   },
-  inputMessageContainer: {
-    height: 54,
+  messageText: {
+    fontSize: 16,
+  },
+  messageTime: {
+    fontSize: 12,
+    color: '#888',
+    textAlign: 'right',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    padding: 10,
+    borderTopWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#fff',
+  },
+  input: {
+    flex: 1,
+    padding: 10,
+    borderColor: '#ccc',
+    borderWidth: 1,
+    borderRadius: 5,
+    marginRight: 10,
+  },
+  myMessage: {
+    backgroundColor: 'lightblue',
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    alignSelf: 'flex-end',
+  },
+  theirMessage: {
+    backgroundColor: '#fff',
+    padding: 10,
+    marginVertical: 5,
+    marginHorizontal: 10,
+    borderRadius: 10,
+    alignSelf: 'flex-start',
+  },
+  timestamp: {
+    fontSize: 12,
+    color: '#888',
+    marginTop: 5,
+  },
+  theirTimestamp: {
+    textAlign: 'left',
+  },
+  myTimestamp: {
+    textAlign: 'right',
+  },
+  messageList: {
+    paddingHorizontal: 10,
+    backgroundColor: 'red',
+  },
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: '#f2f2f2',
-    borderRadius: 15,
-    flex: 1,
-    paddingHorizontal: 16,
-    gap: 10,
+    padding: 10,
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
   },
-  inputMessage: {
-    flex: 1,
-    color: '#000',
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: 10,
+    gap: 10,
   },
 });

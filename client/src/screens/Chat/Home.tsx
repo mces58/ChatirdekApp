@@ -16,7 +16,8 @@ import { jwtDecode } from 'jwt-decode';
 
 import CrossIcon from 'src/assets/icons/cross';
 import SearchIcon from 'src/assets/icons/search';
-import { BASE_URL } from 'src/services/api-service';
+import { useAuthContext } from 'src/context/AuthContext';
+import { BASE_URL } from 'src/services/baseUrl';
 
 type HomeProps = {
   navigation: any;
@@ -25,7 +26,6 @@ type HomeProps = {
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [search, setSearch] = useState<string>('');
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [userId, setUserId] = useState<string>('');
   const [users, setUsers] = useState<
     {
       _id: string;
@@ -51,86 +51,83 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     const getUser = async () => {
       const token = await AsyncStorage.getItem('authToken');
       const user: { _id: string } = jwtDecode(token as string);
-      setUserId(user._id);
-      console.log(userId);
 
       axios
-        .get(`${BASE_URL}/users/last-messages`)
+        .post(`${BASE_URL}/users/last-messages`, { userId: user._id })
         .then((response) => {
-          const users = response.data.map((user: any) => {
-            return {
-              _id: user._id,
-              profilePicture: user.profilePicture,
-              isOnline: user.isOnline,
-              fullName: user.fullName,
-              lastMessage: user.lastMessage,
-              lastMessageTime: user.lastMessage.updatedAt,
-              messageInQueue: user.messageInQueue,
-            };
-          });
-
-          setUsers(users);
-
-          setFilteredUsers(users);
-
-          console.log(filteredUsers);
+          setUsers(response.data);
+          setFilteredUsers(response.data);
         })
         .catch((error) => {
           console.log('error retrieving users', error);
         });
     };
     getUser();
-  }, []);
+  }, [users, setUsers]);
+
+  const { authUser } = useAuthContext();
 
   const renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('Chat', { user: item });
+          console.log(item.userId, authUser._id);
+
+          navigation.navigate('Chat', {
+            receiverId: item.userId,
+          });
         }}
         style={[
           styles.userContainer,
           index % 2 !== 0 ? { backgroundColor: '#f2f2f2' } : {},
         ]}
       >
-        <View style={styles.userImageContainer}>
-          {item?.isOnline && item?.isOnline === true && (
-            <View style={styles.onlineIndicator} />
-          )}
-          <Image source={{ uri: item?.profilePicture }} style={styles.userImage} />
-        </View>
-        <View style={{ flexDirection: 'row', width: '90%', paddingVertical: 20 }}>
-          <View style={styles.userInfoContainer}>
-            <Text style={styles.userName}>{item?.fullName}</Text>
-            <Text style={styles.lastSeen}>{item?.lastMessage?.message}</Text>
-          </View>
-
-          <View
-            style={{ position: 'absolute', right: 30, top: 20, alignItems: 'center' }}
-          >
-            <Text style={styles.lastMessageTime}>
-              {new Date(item?.lastMessageTime).toLocaleTimeString('tr-TR', {
-                hour: '2-digit',
-                minute: '2-digit',
-              })}
-            </Text>
-            <View>
-              <TouchableOpacity
-                style={{
-                  width: 20,
-                  height: 20,
-                  borderRadius: 10,
-                  backgroundColor: item.messageInQueue > 0 ? 'gray' : 'transparent',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  marginTop: 10,
-                }}
-              >
-                <Text style={styles.messageInQueue}>{item?.messageInQueue}</Text>
-              </TouchableOpacity>
+        {item?.lastMessage && (
+          <>
+            <View style={styles.userImageContainer}>
+              {item?.isOnline && item?.isOnline === true && (
+                <View style={styles.onlineIndicator} />
+              )}
+              <Image source={{ uri: item?.profilePicture }} style={styles.userImage} />
             </View>
-          </View>
-        </View>
+            <View style={{ flexDirection: 'row', width: '90%', paddingVertical: 20 }}>
+              <View style={styles.userInfoContainer}>
+                <Text style={styles.userName}>{item?.fullName}</Text>
+                <Text style={styles.lastSeen}>
+                  {item?.lastMessage.receiverId === authUser?._id
+                    ? item?.lastMessage.message || 'No message'
+                    : 'You: ' + item?.lastMessage.message}
+                </Text>
+              </View>
+
+              <View
+                style={{ position: 'absolute', right: 30, top: 20, alignItems: 'center' }}
+              >
+                <Text style={styles.lastMessageTime}>
+                  {new Date(item?.lastMessage?.updatedAt).toLocaleTimeString('tr-TR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </Text>
+                <View>
+                  <TouchableOpacity
+                    style={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: 10,
+                      backgroundColor: item.messageInQueue > 0 ? 'gray' : 'transparent',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                      marginTop: 10,
+                    }}
+                  >
+                    <Text style={styles.messageInQueue}>{item?.messageInQueue}</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
+          </>
+        )}
       </TouchableOpacity>
     );
   };
@@ -149,6 +146,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       </View>
     );
   };
+
   return (
     <View style={styles.screen}>
       <StatusBar style="auto" backgroundColor="#fce" animated />

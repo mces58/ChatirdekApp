@@ -77,6 +77,7 @@ export const login = async (req, res) => {
         userName: user.userName,
         profilePicture: user.profilePicture,
         token,
+        createdAt: user.createdAt,
       });
     }
     return res.status(401).json({ message: 'Invalid credentials' });

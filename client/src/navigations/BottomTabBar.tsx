@@ -20,6 +20,7 @@ import {
   UpdateIcon,
 } from 'src/assets/icons/bottom-tabs';
 import Home from 'src/screens/Chat/Home';
+import Discover from 'src/screens/Discover/Discover';
 import Profile from 'src/screens/Group/Profile';
 import Setting from 'src/screens/Setting/Setting';
 import Search from 'src/screens/Update/Search';
@@ -125,8 +126,8 @@ const BottomTabNavigator: React.FC = () => {
         }}
       />
       <Tab.Screen
-        name="Post"
-        component={Search}
+        name="Discover"
+        component={Discover}
         options={{
           tabBarIcon: ({ focused }) => {
             return (

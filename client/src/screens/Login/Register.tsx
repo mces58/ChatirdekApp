@@ -25,7 +25,7 @@ import LottieView from 'lottie-react-native';
 
 import registerAnimation from 'src/assets/animatons/register1.json';
 import RegisterModal from 'src/components/RegisterModal';
-import { BASE_URL } from 'src/services/api-service';
+import { BASE_URL } from 'src/services/baseUrl';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
 type LoginProps = {
