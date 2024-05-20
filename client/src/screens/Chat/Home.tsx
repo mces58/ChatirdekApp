@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import {
+  BackHandler,
   FlatList,
   Image,
   StyleSheet,
   Text,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -17,6 +19,7 @@ import { jwtDecode } from 'jwt-decode';
 import CrossIcon from 'src/assets/icons/cross';
 import SearchIcon from 'src/assets/icons/search';
 import { useAuthContext } from 'src/context/AuthContext';
+import { useSocketContext } from 'src/context/SocketContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 type HomeProps = {
@@ -67,12 +70,32 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
 
   const { authUser } = useAuthContext();
 
+  const { onlineUsers } = useSocketContext();
+  const [isOnline, setIsOnline] = useState<boolean>(false);
+
+  useEffect(() => {
+    users.every((user) => onlineUsers.includes(user.userId))
+      ? setIsOnline(true)
+      : setIsOnline(false);
+  }, [onlineUsers, users]);
+
+  useEffect(() => {
+    const backAction = () => {
+      ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
+      // Uygulamanın kapanmasını sağlamak için bu işlemi tekrar et
+      BackHandler.exitApp();
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener('hardwareBackPress', backAction);
+
+    return () => backHandler.remove();
+  }, []);
+
   const renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          console.log(item.userId, authUser._id);
-
           navigation.navigate('Chat', {
             receiverId: item.userId,
           });
@@ -85,9 +108,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         {item?.lastMessage && (
           <>
             <View style={styles.userImageContainer}>
-              {item?.isOnline && item?.isOnline === true && (
-                <View style={styles.onlineIndicator} />
-              )}
+              {isOnline && <View style={styles.onlineIndicator} />}
               <Image source={{ uri: item?.profilePicture }} style={styles.userImage} />
             </View>
             <View style={{ flexDirection: 'row', width: '90%', paddingVertical: 20 }}>

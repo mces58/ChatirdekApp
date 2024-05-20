@@ -17,6 +17,31 @@ interface AppNavigatorProps {}
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const AppNavigator: React.FC<AppNavigatorProps> = () => {
+  // const [isFirstLaunch, setIsFirstLaunch] = useState<boolean>(false);
+
+  // useEffect(() => {
+  //   const checkIfFirstLaunch = async () => {
+  //     try {
+  //       const value = await AsyncStorage.getItem('alreadyLaunched');
+
+  //       if (value === null) {
+  //         await AsyncStorage.setItem('hasOnboarded', 'true');
+  //         setIsFirstLaunch(true);
+  //       } else {
+  //         setIsFirstLaunch(false);
+  //       }
+  //     } catch (error) {
+  //       console.log('error', error);
+  //     }
+  //   };
+
+  //   checkIfFirstLaunch();
+  // }, []);
+
+  // if (isFirstLaunch === false) {
+  //   return <Onboarding navigation={undefined} />;
+  // }
+
   return (
     <NavigationContainer>
       <Stack.Navigator

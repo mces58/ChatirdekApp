@@ -1,8 +1,9 @@
 import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { AppState, AppStateStatus } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { jwtDecode } from 'jwt-decode';
 import io from 'socket.io-client';
+
+import { useAuthContext } from './AuthContext';
 
 interface SocketContextType {
   socket: any;
@@ -27,31 +28,64 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({
 }) => {
   const [socket, setSocket] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
-  const [userId, setUserId] = useState<string>('');
+  const { authUser } = useAuthContext();
 
   useEffect(() => {
-    const newSocket = io('http://172.16.24.239:5000', {
-      query: {
-        token: AsyncStorage.getItem('authToken'),
-      },
-    });
+    if (authUser) {
+      const newSocket = io('http://172.16.24.239:5000', {
+        query: {
+          userId: authUser._id,
+        },
+      });
 
-    newSocket.on('onlineUsers', (users: any[]) => {
-      setOnlineUsers(users);
-    });
+      setSocket(newSocket);
 
-    setSocket(newSocket);
-    console.log(socket?._opts.query.token._j);
+      // console.log(socket);
 
-    setUserId(jwtDecode(socket?._opts.query.token._j)._id);
-    console.log(userId);
+      newSocket.on('getOnlineUsers', (users: any[]) => {
+        setOnlineUsers(users);
+        console.log(users);
+      });
 
+      return () => newSocket.close();
+    } else {
+      if (socket) {
+        socket.close();
+        setSocket(null);
+      }
+    }
     console.log(onlineUsers);
+  }, [authUser]);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active' && authUser) {
+        // Reconnect socket when app comes to foreground
+        const newSocket = io('http://172.16.24.239:5000', {
+          query: {
+            userId: authUser._id,
+          },
+        });
+
+        setSocket(newSocket);
+
+        newSocket.on('getOnlineUsers', (users: any[]) => {
+          setOnlineUsers(users);
+          console.log(users);
+        });
+      } else if (nextAppState.match(/inactive|background/) && socket) {
+        // Close socket when app goes to background
+        socket.close();
+        setSocket(null);
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
 
     return () => {
-      newSocket.disconnect();
+      subscription.remove();
     };
-  }, []);
+  }, [authUser, socket]);
 
   return (
     <SocketContext.Provider value={{ socket, onlineUsers }}>

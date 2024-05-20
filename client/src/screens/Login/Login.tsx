@@ -26,6 +26,7 @@ import LottieView from 'lottie-react-native';
 import loginAnimation from 'src/assets/animatons/login.json';
 import BaseBottomSheet from 'src/components/BaseBottomSheet';
 import { useAuthContext } from 'src/context/AuthContext';
+import { useSocketContext } from 'src/context/SocketContext';
 import { BASE_URL } from 'src/services/baseUrl';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
@@ -103,7 +104,27 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
       .catch((error) => {
         console.error(error);
       });
+
+    // navigation.dispatch(
+    //   CommonActions.reset({
+    //     index: 0,
+    //     routes: [{ name: 'Main' }],
+    //   })
+    // );
   };
+
+  const { socket } = useSocketContext();
+
+  useEffect(() => {
+    // Cleanup function to close socket connection when the component unmounts
+    return () => {
+      console.log(socket);
+
+      if (socket) {
+        socket.close();
+      }
+    };
+  }, [socket]);
 
   return (
     <KeyboardAvoidingView

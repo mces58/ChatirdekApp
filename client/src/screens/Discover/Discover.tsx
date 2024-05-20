@@ -19,7 +19,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
       });
     };
     getUsers();
-  }, []);
+  }, [users, setUsers]);
 
   const renderUsers = () => {
     return users.map((user: any, index: number) => {
