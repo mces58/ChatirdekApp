@@ -1,7 +1,9 @@
 import bcrypt from 'bcryptjs';
 
 import User from 'src/models/user.model';
+import { encode } from 'src/utils/bcryptjs.util';
 import generateTokenAndSetCookie from 'src/utils/generateToken.util';
+import sendMail from 'src/utils/sendMail.util';
 
 export const signup = async (req, res) => {
   try {
@@ -94,5 +96,57 @@ export const logout = (req, res) => {
   } catch (error) {
     console.error('logout error:', error);
     res.status(500).json({ message: 'Something went wrong' });
+  }
+};
+
+export const forgotPassword = async (req, res, next) => {
+  try {
+    const { email, userName } = req.body;
+    if (!userName) return next(new Error('Please enter email'));
+
+    const user = await User.findOne({ userName });
+    if (!user) return next(new Error('User not found'));
+
+    try {
+      const code = await sendMail(email);
+
+      res.status(200).json({
+        success: true,
+        message: 'Email sent successfully',
+        code,
+      });
+    } catch (error) {
+      return next(new Error('Email could not be sent'));
+    }
+
+    return Promise.resolve();
+  } catch (error) {
+    next(error);
+
+    return Promise.reject(error);
+  }
+};
+
+export const resetPassword = async (req, res, next) => {
+  try {
+    const { userName, password } = req.body;
+    const user = await User.findOne({ userName });
+
+    const hashedPassword = await encode(password);
+
+    user.password = hashedPassword;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successful',
+    });
+
+    return Promise.resolve();
+  } catch (error) {
+    next(error);
+
+    return Promise.reject(error);
   }
 };

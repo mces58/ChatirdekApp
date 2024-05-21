@@ -24,11 +24,12 @@ import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
 
 import loginAnimation from 'src/assets/animatons/login.json';
-import BaseBottomSheet from 'src/components/BaseBottomSheet';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useSocketContext } from 'src/context/SocketContext';
 import { BASE_URL } from 'src/services/baseUrl';
 import { GetGradientStartEnd } from 'src/utils/rotate';
+
+import ForgotPassword from './ForgotPassword';
 
 type LoginProps = {
   navigation: any;
@@ -283,23 +284,9 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
           </View>
 
           {forgotPasswordBottomSheetVisible && (
-            <BaseBottomSheet
+            <ForgotPassword
               isVisible={forgotPasswordBottomSheetVisible}
-              isTransparent={true}
-              onSwipeDown={() => setForgotPasswordBottomSheetVisible(false)}
-              animationType="slide"
-              modalStyle={{
-                height: SCREEN_HEIGHT * 0.5,
-                backgroundColor: 'white',
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-                position: 'absolute',
-                bottom: 0,
-                left: 0,
-                right: 0,
-                padding: 20,
-              }}
-              content={<Text>Forget Password</Text>}
+              onSwipeDown={setForgotPasswordBottomSheetVisible}
             />
           )}
         </View>
