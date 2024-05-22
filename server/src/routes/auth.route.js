@@ -4,6 +4,7 @@ import {
   forgotPassword,
   login,
   logout,
+  me,
   resetPassword,
   signup,
 } from 'src/controllers/auth.controller';
@@ -19,5 +20,7 @@ router.get('/logout', logout);
 router.route('/password/forgot').post(forgotPassword);
 
 router.route('/password/reset').put(resetPassword);
+
+router.get('/me/:id', me);
 
 export default router;
