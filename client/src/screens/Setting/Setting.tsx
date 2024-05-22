@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import AboutUsBottomSheet from 'src/components/AboutUsBottomSheet';
+import HelpBottomSheet from 'src/components/HelpBottomSheet';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
 import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
 import { BASE_URL } from 'src/services/baseUrl';
@@ -27,6 +28,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const [languageBoxVisible, setLanguageBoxVisible] = useState(false);
   const [themeBoxVisible, setThemeBoxVisible] = useState(false);
   const [aboutUsBoxVisible, setAboutUsBoxVisible] = useState(false);
+  const [helpBoxVisible, setHelpBoxVisible] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -55,6 +57,10 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   const handleAboutUs = () => {
     setAboutUsBoxVisible(true);
+  };
+
+  const handleHelp = () => {
+    setHelpBoxVisible(true);
   };
 
   const handleLogout = async () => {
@@ -274,6 +280,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
+          onPress={handleHelp}
         >
           <View
             style={{
@@ -373,6 +380,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
         <AboutUsBottomSheet
           isVisible={aboutUsBoxVisible}
           onSwipeDown={() => setAboutUsBoxVisible(false)}
+        />
+      )}
+
+      {helpBoxVisible && (
+        <HelpBottomSheet
+          isVisible={helpBoxVisible}
+          onSwipeDown={() => setHelpBoxVisible(false)}
         />
       )}
     </View>
