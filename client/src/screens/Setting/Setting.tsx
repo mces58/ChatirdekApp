@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
+import AboutUsBottomSheet from 'src/components/AboutUsBottomSheet';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
 import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
 import { BASE_URL } from 'src/services/baseUrl';
@@ -25,6 +26,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   } | null>(null);
   const [languageBoxVisible, setLanguageBoxVisible] = useState(false);
   const [themeBoxVisible, setThemeBoxVisible] = useState(false);
+  const [aboutUsBoxVisible, setAboutUsBoxVisible] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -49,6 +51,10 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   const handleTheme = () => {
     setThemeBoxVisible(true);
+  };
+
+  const handleAboutUs = () => {
+    setAboutUsBoxVisible(true);
   };
 
   const handleLogout = async () => {
@@ -162,7 +168,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
           paddingHorizontal: 16,
           borderBottomWidth: 1,
           borderBottomColor: '#CCC',
-          gap: 40,
+          gap: 30,
         }}
       >
         <TouchableOpacity
@@ -238,6 +244,25 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             }}
           >
             <Text>Icon</Text>
+            <Text>Block Contacts</Text>
+          </View>
+          <ArrowIcon width={25} height={25} color="#000" direction="right" />
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <View
+            style={{
+              flexDirection: 'row',
+              gap: 10,
+            }}
+          >
+            <Text>Icon</Text>
             <Text>Privacy</Text>
           </View>
           <ArrowIcon width={25} height={25} color="#000" direction="right" />
@@ -268,6 +293,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
+          onPress={handleAboutUs}
         >
           <View
             style={{
@@ -340,6 +366,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
         <ThemeBottomSheet
           isVisible={themeBoxVisible}
           onSwipeDown={() => setThemeBoxVisible(false)}
+        />
+      )}
+
+      {aboutUsBoxVisible && (
+        <AboutUsBottomSheet
+          isVisible={aboutUsBoxVisible}
+          onSwipeDown={() => setAboutUsBoxVisible(false)}
         />
       )}
     </View>
