@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
+import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
 import { BASE_URL } from 'src/services/baseUrl';
 
 interface SettingProps {
@@ -23,6 +24,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
     createdAt: string;
   } | null>(null);
   const [languageBoxVisible, setLanguageBoxVisible] = useState(false);
+  const [themeBoxVisible, setThemeBoxVisible] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -43,6 +45,10 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   const handleLanguage = () => {
     setLanguageBoxVisible(true);
+  };
+
+  const handleTheme = () => {
+    setThemeBoxVisible(true);
   };
 
   const handleLogout = async () => {
@@ -204,6 +210,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
+          onPress={handleTheme}
         >
           <View
             style={{
@@ -326,6 +333,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
         <LanguageBottomSheet
           isVisible={languageBoxVisible}
           onSwipeDown={() => setLanguageBoxVisible(false)}
+        />
+      )}
+
+      {themeBoxVisible && (
+        <ThemeBottomSheet
+          isVisible={themeBoxVisible}
+          onSwipeDown={() => setThemeBoxVisible(false)}
         />
       )}
     </View>
