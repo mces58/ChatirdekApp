@@ -9,9 +9,10 @@ import { jwtDecode } from 'jwt-decode';
 import ArrowIcon from 'src/assets/icons/arrow';
 import AboutUsBottomSheet from 'src/components/AboutUsBottomSheet';
 import BlockContactsBottomSheet from 'src/components/BlockContactsBottomSheet';
+import ChatsBottomSheet from 'src/components/ChatsBottomSheet';
 import HelpBottomSheet from 'src/components/HelpBottomSheet';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
-import PrivacyBottomSheet from 'src/components/PrivacyBottomSheet';
+import PrivacyBottomSheet from 'src/components/PrivarcyBottomSheet';
 import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
 import { BASE_URL } from 'src/services/baseUrl';
 
@@ -33,6 +34,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const [helpBoxVisible, setHelpBoxVisible] = useState(false);
   const [privacyBoxVisible, setPrivacyBoxVisible] = useState(false);
   const [blockContactsBoxVisible, setBlockContactsBoxVisible] = useState(false);
+  const [chatBoxVisible, setChatBoxVisible] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -73,6 +75,10 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   const handleBlockContacts = () => {
     setBlockContactsBoxVisible(true);
+  };
+
+  const handleChat = () => {
+    setChatBoxVisible(true);
   };
 
   const handleLogout = async () => {
@@ -215,6 +221,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
+          onPress={handleChat}
         >
           <View
             style={{
@@ -415,6 +422,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
         <BlockContactsBottomSheet
           isVisible={blockContactsBoxVisible}
           onSwipeDown={() => setBlockContactsBoxVisible(false)}
+        />
+      )}
+
+      {chatBoxVisible && (
+        <ChatsBottomSheet
+          isVisible={chatBoxVisible}
+          onSwipeDown={() => setChatBoxVisible(false)}
         />
       )}
     </View>
