@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import AboutUsBottomSheet from 'src/components/AboutUsBottomSheet';
+import BlockContactsBottomSheet from 'src/components/BlockContactsBottomSheet';
 import HelpBottomSheet from 'src/components/HelpBottomSheet';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
 import PrivacyBottomSheet from 'src/components/PrivacyBottomSheet';
@@ -31,6 +32,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const [aboutUsBoxVisible, setAboutUsBoxVisible] = useState(false);
   const [helpBoxVisible, setHelpBoxVisible] = useState(false);
   const [privacyBoxVisible, setPrivacyBoxVisible] = useState(false);
+  const [blockContactsBoxVisible, setBlockContactsBoxVisible] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -67,6 +69,10 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   const handlePrivacy = () => {
     setPrivacyBoxVisible(true);
+  };
+
+  const handleBlockContacts = () => {
+    setBlockContactsBoxVisible(true);
   };
 
   const handleLogout = async () => {
@@ -248,6 +254,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
+          onPress={handleBlockContacts}
         >
           <View
             style={{
@@ -401,6 +408,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
         <PrivacyBottomSheet
           isVisible={privacyBoxVisible}
           onSwipeDown={() => setPrivacyBoxVisible(false)}
+        />
+      )}
+
+      {blockContactsBoxVisible && (
+        <BlockContactsBottomSheet
+          isVisible={blockContactsBoxVisible}
+          onSwipeDown={() => setBlockContactsBoxVisible(false)}
         />
       )}
     </View>
