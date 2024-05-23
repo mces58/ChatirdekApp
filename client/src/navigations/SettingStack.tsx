@@ -2,22 +2,22 @@ import React from 'react';
 
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-import Chat from 'src/screens/Chat/Chat';
+import Profile from 'src/screens/Setting/Profile';
 
 import { RootStackParamList } from './RootStackParamList';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const HomeStack: React.FC = () => {
+const SettingStack: React.FC = () => {
   return (
     <Stack.Navigator
       screenOptions={{
         headerShown: false,
       }}
     >
-      <Stack.Screen name="Chat" component={Chat} />
+      <Stack.Screen name="Profile" component={Profile} />
     </Stack.Navigator>
   );
 };
 
-export default HomeStack;
+export default SettingStack;

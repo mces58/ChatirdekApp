@@ -125,6 +125,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
           borderBottomWidth: 1,
           borderBottomColor: '#CCC',
         }}
+        onPress={() => navigation.navigate('Profile', { user })}
       >
         <View
           style={{

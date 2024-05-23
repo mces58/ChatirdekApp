@@ -20,7 +20,7 @@ import {
 } from 'src/assets/icons/bottom-tabs';
 import Home from 'src/screens/Chat/Home';
 import Discover from 'src/screens/Discover/Discover';
-import Profile from 'src/screens/Group/Profile';
+import Group from 'src/screens/Group/Group';
 import Setting from 'src/screens/Setting/Setting';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
@@ -111,7 +111,7 @@ const BottomTabNavigator: React.FC = () => {
 
       <Tab.Screen
         name="Group"
-        component={Profile}
+        component={Group}
         options={{
           tabBarIcon: ({ focused }) => {
             return (
@@ -166,7 +166,7 @@ const BottomTabNavigator: React.FC = () => {
       />
 
       <Tab.Screen
-        name="Setting"
+        name="SettingStack"
         component={Setting}
         options={{
           tabBarIcon: ({ focused }) => {

@@ -15,6 +15,8 @@ export type RootStackParamList = {
     };
   };
   Groups: undefined;
-  Settings: undefined;
+  SettingStack: undefined;
+  Setting: undefined;
+  Profile: undefined;
   Main: { userId: string };
 };
