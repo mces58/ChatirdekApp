@@ -10,6 +10,7 @@ import ArrowIcon from 'src/assets/icons/arrow';
 import AboutUsBottomSheet from 'src/components/AboutUsBottomSheet';
 import HelpBottomSheet from 'src/components/HelpBottomSheet';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
+import PrivacyBottomSheet from 'src/components/PrivacyBottomSheet';
 import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
 import { BASE_URL } from 'src/services/baseUrl';
 
@@ -29,6 +30,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const [themeBoxVisible, setThemeBoxVisible] = useState(false);
   const [aboutUsBoxVisible, setAboutUsBoxVisible] = useState(false);
   const [helpBoxVisible, setHelpBoxVisible] = useState(false);
+  const [privacyBoxVisible, setPrivacyBoxVisible] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -61,6 +63,10 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   const handleHelp = () => {
     setHelpBoxVisible(true);
+  };
+
+  const handlePrivacy = () => {
+    setPrivacyBoxVisible(true);
   };
 
   const handleLogout = async () => {
@@ -261,6 +267,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
             justifyContent: 'space-between',
             alignItems: 'center',
           }}
+          onPress={handlePrivacy}
         >
           <View
             style={{
@@ -387,6 +394,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
         <HelpBottomSheet
           isVisible={helpBoxVisible}
           onSwipeDown={() => setHelpBoxVisible(false)}
+        />
+      )}
+
+      {privacyBoxVisible && (
+        <PrivacyBottomSheet
+          isVisible={privacyBoxVisible}
+          onSwipeDown={() => setPrivacyBoxVisible(false)}
         />
       )}
     </View>
