@@ -14,16 +14,14 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 import {
   ChatIcon,
+  DiscoverIcon,
   GroupIcon,
-  NewIcon,
   SettingIcon,
-  UpdateIcon,
 } from 'src/assets/icons/bottom-tabs';
 import Home from 'src/screens/Chat/Home';
 import Discover from 'src/screens/Discover/Discover';
 import Profile from 'src/screens/Group/Profile';
 import Setting from 'src/screens/Setting/Setting';
-import Search from 'src/screens/Update/Search';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
 const Tab = createBottomTabNavigator();
@@ -37,7 +35,7 @@ const BottomTabNavigator: React.FC = () => {
     scale.value = withRepeat(
       withSequence(
         withTiming(0.9, { duration: 1000 }),
-        withTiming(1.1, { duration: 1000 })
+        withTiming(1.05, { duration: 1000 })
       ),
       -1,
       true
@@ -91,33 +89,18 @@ const BottomTabNavigator: React.FC = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View style={{ gap: 1 }}>
-                <ChatIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
-                {focused && (
-                  <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
-                    Chat
-                  </Text>
-                )}
-              </View>
-            );
-          },
-        }}
-      />
-      <Tab.Screen
-        name="Update"
-        component={Search}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            return (
               <View
                 style={{
                   gap: 1,
+                  alignItems: 'center',
                 }}
               >
-                <UpdateIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                <Animated.View style={focused && animatedStyle}>
+                  <ChatIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                </Animated.View>
                 {focused && (
                   <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
-                    Update
+                    Chats
                   </Text>
                 )}
               </View>
@@ -125,34 +108,7 @@ const BottomTabNavigator: React.FC = () => {
           },
         }}
       />
-      <Tab.Screen
-        name="Discover"
-        component={Discover}
-        options={{
-          tabBarIcon: ({ focused }) => {
-            return (
-              <Animated.View
-                style={[
-                  focused ? animatedStyle : {},
-                  {
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: '#2E3A59',
-                    height: Platform.OS === 'ios' ? 70 : 70,
-                    width: Platform.OS === 'ios' ? 70 : 70,
-                    top: Platform.OS === 'ios' ? -35 : -30,
-                    borderRadius: 50,
-                    borderWidth: 3,
-                    borderColor: 'transparent',
-                  },
-                ]}
-              >
-                <NewIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
-              </Animated.View>
-            );
-          },
-        }}
-      />
+
       <Tab.Screen
         name="Group"
         component={Profile}
@@ -162,12 +118,45 @@ const BottomTabNavigator: React.FC = () => {
               <View
                 style={{
                   gap: 1,
+                  alignItems: 'center',
                 }}
               >
-                <GroupIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                <Animated.View style={focused && animatedStyle}>
+                  <GroupIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                </Animated.View>
                 {focused && (
                   <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
-                    Group
+                    Groups
+                  </Text>
+                )}
+              </View>
+            );
+          },
+        }}
+      />
+
+      <Tab.Screen
+        name="Discover"
+        component={Discover}
+        options={{
+          tabBarIcon: ({ focused }) => {
+            return (
+              <View
+                style={{
+                  gap: 1,
+                  alignItems: 'center',
+                }}
+              >
+                <Animated.View style={focused && animatedStyle}>
+                  <DiscoverIcon
+                    width={30}
+                    height={30}
+                    color={focused ? 'white' : 'gray'}
+                  />
+                </Animated.View>
+                {focused && (
+                  <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
+                    Discover
                   </Text>
                 )}
               </View>
@@ -185,12 +174,19 @@ const BottomTabNavigator: React.FC = () => {
               <View
                 style={{
                   gap: 1,
+                  alignItems: 'center',
                 }}
               >
-                <SettingIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                <Animated.View style={focused && animatedStyle}>
+                  <SettingIcon
+                    width={30}
+                    height={30}
+                    color={focused ? 'white' : 'gray'}
+                  />
+                </Animated.View>
                 {focused && (
                   <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
-                    Setting
+                    Settings
                   </Text>
                 )}
               </View>

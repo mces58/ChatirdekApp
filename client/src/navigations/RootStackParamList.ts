@@ -14,7 +14,6 @@ export type RootStackParamList = {
       messageInQueue: number;
     };
   };
-  Updates: undefined;
   Groups: undefined;
   Settings: undefined;
   Main: { userId: string };
