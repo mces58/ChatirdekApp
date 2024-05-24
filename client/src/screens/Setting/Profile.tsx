@@ -4,8 +4,14 @@ import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-na
 import { RouteProp } from '@react-navigation/native';
 
 import ArrowIcon from 'src/assets/icons/arrow';
+import CalendarIcon from 'src/assets/icons/calendar';
 import CameraIcon from 'src/assets/icons/camera';
+import GhostIcon from 'src/assets/icons/ghost';
+import IdIcon from 'src/assets/icons/id';
+import InfoIcon from 'src/assets/icons/info';
+import PenIcon from 'src/assets/icons/pen';
 import ProfilePhotoBottomSheet from 'src/components/ProfilePhotoBottomSheet';
+import SetProfileValueBottomSheet from 'src/components/SetProfileValueBottomSheet';
 
 interface ProfileRouteProps {
   user: {
@@ -26,6 +32,12 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [profilePhotoBoxVisible, setProfilePhotoBoxVisible] = useState(false);
   const [image, setImage] = useState('');
+  const [fullNameBoxVisible, setFullNameBoxVisible] = useState(false);
+  const [userNameBoxVisible, setUserNameBoxVisible] = useState(false);
+  const [aboutBoxVisible, setAboutBoxVisible] = useState(false);
+  const [fullName, setFullName] = useState(route?.params?.user?.fullName);
+  const [userName, setUserName] = useState(route?.params?.user?.userName);
+  const [about, setAbout] = useState(route?.params?.user?.about);
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -63,6 +75,207 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         </TouchableOpacity>
       </TouchableOpacity>
 
+      <TouchableOpacity
+        style={{
+          width: '95%',
+          marginTop: 50,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: 'lightgray',
+          paddingBottom: 15,
+        }}
+        onPress={() => setFullNameBoxVisible(true)}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 25,
+          }}
+        >
+          <IdIcon width={30} height={30} color="black" />
+          <View
+            style={{
+              gap: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: 'gray',
+              }}
+            >
+              Full Name:
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text>{fullName}</Text>
+            </View>
+          </View>
+        </View>
+
+        <PenIcon width={25} height={25} color="black" />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          width: '95%',
+          marginTop: 50,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: 'lightgray',
+          paddingBottom: 15,
+        }}
+        onPress={() => setUserNameBoxVisible(true)}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 25,
+          }}
+        >
+          <GhostIcon width={30} height={30} color="black" />
+          <View
+            style={{
+              gap: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: 'gray',
+              }}
+            >
+              User Name:
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text>{userName}</Text>
+            </View>
+          </View>
+        </View>
+
+        <PenIcon width={25} height={25} color="black" />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={{
+          width: '95%',
+          marginTop: 50,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: 'lightgray',
+          paddingBottom: 15,
+        }}
+        onPress={() => setAboutBoxVisible(true)}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 25,
+          }}
+        >
+          <InfoIcon width={30} height={30} color="black" strokeWidth={1} />
+          <View
+            style={{
+              gap: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: 'gray',
+              }}
+            >
+              About:
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text>{about}</Text>
+            </View>
+          </View>
+        </View>
+
+        <PenIcon width={25} height={25} color="black" />
+      </TouchableOpacity>
+
+      <View
+        style={{
+          width: '95%',
+          marginTop: 50,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingHorizontal: 10,
+          borderBottomWidth: 1,
+          borderBottomColor: 'lightgray',
+          paddingBottom: 15,
+        }}
+      >
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 25,
+          }}
+        >
+          <CalendarIcon width={30} height={30} color="black" strokeWidth={1} />
+          <View
+            style={{
+              gap: 5,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: 'bold',
+                color: 'gray',
+              }}
+            >
+              Created At:
+            </Text>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}
+            >
+              <Text>{route?.params?.user?.createdAt.split('T')[0]}</Text>
+            </View>
+          </View>
+        </View>
+      </View>
+
       <Modal
         visible={isModalVisible}
         transparent={true}
@@ -74,7 +287,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
             <Text style={styles.modalCloseText}>X</Text>
           </TouchableOpacity>
           <Image
-            source={{ uri: route?.params?.user?.profilePicture }}
+            source={{ uri: image ? image : route?.params?.user?.profilePicture }}
             style={styles.fullScreenImage}
           />
         </View>
@@ -87,6 +300,45 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
           setAvatar={(image: string) => {
             setImage(image);
           }}
+        />
+      )}
+
+      {fullNameBoxVisible && (
+        <SetProfileValueBottomSheet
+          title="Enter Full Name"
+          placeholder="Enter your full name"
+          isVisible={fullNameBoxVisible}
+          onSwipeDown={() => setFullNameBoxVisible(false)}
+          setValue={(value: string) => {
+            setFullName(value);
+          }}
+          value={fullName}
+        />
+      )}
+
+      {userNameBoxVisible && (
+        <SetProfileValueBottomSheet
+          title="Enter User Name"
+          placeholder="Enter your user name"
+          isVisible={userNameBoxVisible}
+          onSwipeDown={() => setUserNameBoxVisible(false)}
+          setValue={(value: string) => {
+            setUserName(value);
+          }}
+          value={userName}
+        />
+      )}
+
+      {aboutBoxVisible && (
+        <SetProfileValueBottomSheet
+          title="About"
+          placeholder="Tell us about yourself"
+          isVisible={aboutBoxVisible}
+          onSwipeDown={() => setAboutBoxVisible(false)}
+          setValue={(value: string) => {
+            setAbout(value);
+          }}
+          value={about}
         />
       )}
     </View>
