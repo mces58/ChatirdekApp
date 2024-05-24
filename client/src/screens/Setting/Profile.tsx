@@ -25,6 +25,7 @@ interface ProfileProps {
 const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
   const [isModalVisible, setModalVisible] = useState(false);
   const [profilePhotoBoxVisible, setProfilePhotoBoxVisible] = useState(false);
+  const [image, setImage] = useState('');
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -44,7 +45,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
 
       <TouchableOpacity style={styles.profilePictureContainer} onPress={toggleModal}>
         <Image
-          source={{ uri: route?.params?.user?.profilePicture }}
+          source={{ uri: image ? image : route?.params?.user?.profilePicture }}
           style={styles.profilePicture}
         />
         <TouchableOpacity
@@ -83,6 +84,9 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         <ProfilePhotoBottomSheet
           isVisible={profilePhotoBoxVisible}
           onSwipeDown={() => setProfilePhotoBoxVisible(false)}
+          setAvatar={(image: string) => {
+            setImage(image);
+          }}
         />
       )}
     </View>
@@ -109,7 +113,7 @@ const styles = StyleSheet.create({
   profilePicture: {
     width: 150,
     height: 150,
-    borderRadius: 50, // Make it circular
+    borderRadius: 100, // Make it circular
   },
   modalContainer: {
     flex: 1,

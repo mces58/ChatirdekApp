@@ -1,7 +1,9 @@
 import React from 'react';
 import { Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
+import * as ImagePicker from 'expo-image-picker';
+
+import BinIcon from 'src/assets/icons/bin';
 import CameraIcon from 'src/assets/icons/camera';
 import GalleryIcon from 'src/assets/icons/gallery';
 import { useTheme } from 'src/context/ThemeContext';
@@ -11,48 +13,64 @@ import BaseBottomSheet from './BaseBottomSheet';
 interface ProfilePhotoBottomSheetProps {
   isVisible: boolean;
   onSwipeDown: () => void;
+  setAvatar: (image: string) => void;
 }
 
 const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
   isVisible,
   onSwipeDown,
+  setAvatar,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
-  //const [responseCamera, setResponseCamera] = React.useState(null);
-  //const [responseGallery, setResponseGallery] = React.useState(null);
 
-  const openCamera = () => {
-    const options = {
-      mediaType: 'photo',
-      cameraType: 'back',
-    };
+  const openCamera = async () => {
+    try {
+      let result = {};
 
-    launchCamera(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorCode);
-      } else {
-        console.log('Image: ', response.assets);
+      await ImagePicker.requestCameraPermissionsAsync();
+
+      result = await ImagePicker.launchCameraAsync({
+        cameraType: ImagePicker.CameraType.front,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        setAvatar(result.assets[0].uri);
+
+        onSwipeDown();
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const openGallery = () => {
-    const options = {
-      mediaType: 'photo',
-    };
+  const openGallery = async () => {
+    try {
+      let result = {};
 
-    launchImageLibrary(options, (response) => {
-      if (response.didCancel) {
-        console.log('User cancelled image picker');
-      } else if (response.errorCode) {
-        console.log('ImagePicker Error: ', response.errorCode);
-      } else {
-        console.log('Image: ', response.assets);
+      result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 1,
+      });
+
+      if (!result.cancelled) {
+        setAvatar(result.assets[0].uri);
+
+        onSwipeDown();
       }
-    });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const removePhoto = () => {
+    setAvatar('');
+    onSwipeDown();
   };
 
   const content = (
@@ -76,10 +94,10 @@ const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
 
       <View
         style={{
+          width: '100%',
           flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 20,
-          gap: 100,
+          justifyContent: 'space-around',
+          marginTop: 10,
         }}
       >
         <TouchableOpacity
@@ -120,6 +138,26 @@ const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
             <GalleryIcon width={30} height={30} color={'black'} strokeWidth={3} />
           </View>
           <Text>Gallery</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={{
+            alignItems: 'center',
+            gap: 10,
+          }}
+          onPress={removePhoto}
+        >
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: 'black',
+              borderRadius: 50,
+              padding: 10,
+            }}
+          >
+            <BinIcon width={30} height={30} color={'black'} strokeWidth={3} />
+          </View>
+          <Text>Remove</Text>
         </TouchableOpacity>
       </View>
     </View>
