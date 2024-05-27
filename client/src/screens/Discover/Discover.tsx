@@ -12,27 +12,42 @@ import axios from 'axios';
 import LottieView from 'lottie-react-native';
 
 import animation from 'src/assets/animatons/discover1.json';
+import Pagination from 'src/components/Pagination';
 import { BASE_URL } from 'src/services/baseUrl';
+
+interface User {
+  _id: string;
+  fullName: string;
+  profilePicture: string;
+  isOnline: boolean;
+  lastMessage: string;
+  lastMessageTime: string;
+  messageInQueue: number;
+}
 
 interface DiscoverProps {
   navigation: any;
 }
 
 const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
-  const [users, setUsers] = useState([]);
-  const [userId] = useState<string>('');
+  const [users, setUsers] = useState<User[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
   const { width: SCREEN_WIDTH } = useWindowDimensions();
   const translateX = useSharedValue(0);
   const rotateY = useSharedValue(0);
+  const itemsPerPage = 4;
 
   useEffect(() => {
     const getUsers = async () => {
-      axios.get(`${BASE_URL}/users`).then((res) => {
+      try {
+        const res = await axios.get(`${BASE_URL}/users`);
         setUsers(res.data);
-      });
+      } catch (error) {
+        console.error(error);
+      }
     };
     getUsers();
-  }, [users, setUsers]);
+  }, []);
 
   useEffect(() => {
     const animate = () => {
@@ -59,66 +74,69 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
     };
   });
 
-  const renderUsers = () => {
-    return users.map((user: any, index: number) => {
-      return (
-        <TouchableOpacity
-          key={index}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            backgroundColor: '#ccc',
-            width: '100%',
-            paddingVertical: 10,
-            paddingHorizontal: 20,
-            borderRadius: 10,
-          }}
-          onPress={() => {
-            console.log(user._id);
-
-            navigation.navigate('Chat', {
-              user: {
-                userImg: user.profilePicture,
-                isOnline: user.isOnline,
-                fullName: user.fullName,
-                lastMessage: user.lastMessage,
-                lastMessageTime: user.lastMessageTime,
-                messageInQueue: user.messageInQueue,
-              },
-              userId: userId,
-              receiverId: user._id,
-            });
-          }}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 10,
-            }}
-          >
-            <Image
-              source={{ uri: user.profilePicture }}
-              style={{ width: 50, height: 50 }}
-            />
-            <Text>{user.fullName}</Text>
-          </View>
-
-          <TouchableOpacity
-            style={{
-              backgroundColor: '#499dff',
-              padding: 10,
-              borderRadius: 10,
-            }}
-            onPress={() => {}}
-          >
-            <Text style={{ color: 'white' }}>Connect</Text>
-          </TouchableOpacity>
-        </TouchableOpacity>
-      );
-    });
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
   };
+
+  const paginatedData = users.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const renderItem = ({ item }: { item: User }) => (
+    <TouchableOpacity
+      key={item._id}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        backgroundColor: '#ccc',
+        width: '100%',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+      }}
+      onPress={() => {
+        navigation.navigate('Chat', {
+          user: {
+            userImg: item.profilePicture,
+            isOnline: item.isOnline,
+            fullName: item.fullName,
+            lastMessage: item.lastMessage,
+            lastMessageTime: item.lastMessageTime,
+            messageInQueue: item.messageInQueue,
+          },
+          userId: '', // Set userId as needed
+          receiverId: item._id,
+        });
+      }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
+          gap: 10,
+        }}
+      >
+        <Image
+          source={{ uri: item.profilePicture }}
+          style={{ width: 50, height: 50, borderRadius: 25 }}
+        />
+        <Text>{item.fullName}</Text>
+      </View>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#499dff',
+          padding: 10,
+          borderRadius: 10,
+        }}
+        onPress={() => {}}
+      >
+        <Text style={{ color: 'white' }}>Connect</Text>
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
 
   return (
     <View
@@ -197,7 +215,28 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
           gap: 20,
         }}
       >
-        {renderUsers()}
+        {paginatedData.map((user) => renderItem({ item: user }))}
+
+        {users.length > itemsPerPage && (
+          <View
+            style={{
+              width: '100%',
+              padding: 10,
+              alignSelf: 'center',
+              position: 'absolute',
+              bottom: 80,
+              borderTopWidth: 1,
+              borderTopColor: '#ccc',
+            }}
+          >
+            <Pagination
+              totalItems={users.length}
+              itemsPerPage={itemsPerPage}
+              currentPage={currentPage}
+              onPageChange={handlePageChange}
+            />
+          </View>
+        )}
       </View>
     </View>
   );
