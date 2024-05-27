@@ -1,8 +1,18 @@
 import React, { useState } from 'react';
-import { Image, Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Image,
+  Modal,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
+import LottieView from 'lottie-react-native';
 
+import animation from 'src/assets/animatons/setting.json';
 import ArrowIcon from 'src/assets/icons/arrow';
 import CalendarIcon from 'src/assets/icons/calendar';
 import CameraIcon from 'src/assets/icons/camera';
@@ -38,6 +48,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
   const [fullName, setFullName] = useState(route?.params?.user?.fullName);
   const [userName, setUserName] = useState(route?.params?.user?.userName);
   const [about, setAbout] = useState(route?.params?.user?.about);
+  const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
@@ -54,6 +65,22 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         <ArrowIcon width={20} height={20} color="black" direction="left" />
         <Text>Back</Text>
       </TouchableOpacity>
+
+      <LottieView
+        style={{
+          position: 'absolute',
+          bottom: SCREEN_HEIGHT * -0.1,
+          left: 0,
+          width: SCREEN_WIDTH * 1,
+          height: SCREEN_WIDTH * 1,
+          zIndex: 10,
+        }}
+        source={animation}
+        autoPlay
+        loop
+        speed={1}
+        resizeMode="cover"
+      />
 
       <TouchableOpacity style={styles.profilePictureContainer} onPress={toggleModal}>
         <Image
