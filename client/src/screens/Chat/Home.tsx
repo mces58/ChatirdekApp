@@ -16,8 +16,10 @@ import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import { jwtDecode } from 'jwt-decode';
 
+import AddUserIcon from 'src/assets/icons/add-user';
 import CrossIcon from 'src/assets/icons/cross';
 import SearchIcon from 'src/assets/icons/search';
+import FriendsBoxBottomSheet from 'src/components/FriendsBoxBottomSheet';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useSocketContext } from 'src/context/SocketContext';
 import { BASE_URL } from 'src/services/baseUrl';
@@ -40,6 +42,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       messageInQueue: number;
     }[]
   >([]);
+  const [friendsBoxBottomSheetVisible, setFriendsBoxBottomSheetVisible] =
+    useState<boolean>(false);
 
   const handleSearch = (text: string) => {
     setSearch(text);
@@ -82,7 +86,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   useEffect(() => {
     const backAction = () => {
       ToastAndroid.show('Press back again to exit', ToastAndroid.SHORT);
-      // Uygulamanın kapanmasını sağlamak için bu işlemi tekrar et
       BackHandler.exitApp();
       return true;
     };
@@ -176,9 +179,11 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           backgroundColor: '#499dff',
           borderBottomWidth: 1,
           borderBottomColor: '#f2f2f2',
-          justifyContent: 'center',
+          justifyContent: 'space-between',
           paddingVertical: 32,
-          paddingLeft: 16,
+          paddingHorizontal: 16,
+          flexDirection: 'row',
+          alignItems: 'center',
         }}
       >
         <Text
@@ -191,6 +196,10 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         >
           Messages
         </Text>
+
+        <TouchableOpacity onPress={() => setFriendsBoxBottomSheetVisible(true)}>
+          <AddUserIcon width={30} height={30} color="white" strokeWidth={4} />
+        </TouchableOpacity>
       </View>
       <View style={styles.searchBar}>
         <TextInput
@@ -226,6 +235,14 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       {<View style={styles.container}>{renderContent()}</View>}
+
+      {friendsBoxBottomSheetVisible && (
+        <FriendsBoxBottomSheet
+          isVisible={friendsBoxBottomSheetVisible}
+          onSwipeDown={() => setFriendsBoxBottomSheetVisible(false)}
+          navigation={navigation}
+        />
+      )}
     </View>
   );
 };
