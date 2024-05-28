@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import Chat from 'src/screens/Chat/Chat';
+import UserProfile from 'src/screens/Discover/UserProfile';
 import Login from 'src/screens/Login/Login';
 import Register from 'src/screens/Login/Register';
 import Onboarding from 'src/screens/Onboarding/Onboarding';
@@ -56,6 +57,7 @@ const AppNavigator: React.FC<AppNavigatorProps> = () => {
         <Stack.Screen name="Main" component={BottomTabNavigator} />
         <Stack.Screen name="Chat" component={Chat} />
         <Stack.Screen name="Profile" component={Profile} />
+        <Stack.Screen name="UserProfile" component={UserProfile} />
       </Stack.Navigator>
     </NavigationContainer>
   );

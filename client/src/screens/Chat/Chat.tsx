@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   Button,
   Image,
   Keyboard,
@@ -34,6 +35,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const [inputMessage, setInputMessage] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
   const [receiver, setReceiver] = useState({} as any);
+  //const { authUser } = useAuthContext();
 
   const handleInputText = (text: string) => {
     setInputMessage(text);
@@ -66,7 +68,12 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
 
         setInputMessage('');
       } catch (error) {
-        console.error(error);
+        if (error.response && error.response.status === 403) {
+          Alert.alert('Error', 'You can only send messages to your friends.');
+          setInputMessage('');
+        } else {
+          console.error(error);
+        }
       }
     }
   };

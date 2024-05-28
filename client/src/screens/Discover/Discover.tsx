@@ -12,7 +12,11 @@ import axios from 'axios';
 import LottieView from 'lottie-react-native';
 
 import animation from 'src/assets/animatons/discover1.json';
+import AddUserIcon from 'src/assets/icons/add-user';
+import HourGlassIcon from 'src/assets/icons/hour-glass';
 import Pagination from 'src/components/Pagination';
+import RequestBoxBottomSheet from 'src/components/RequestBoxBottomSheet';
+import { useAuthContext } from 'src/context/AuthContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 interface User {
@@ -36,18 +40,29 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   const translateX = useSharedValue(0);
   const rotateY = useSharedValue(0);
   const itemsPerPage = 4;
+  const { authUser } = useAuthContext();
+  const [requestBoxBottomSheetVisible, setRequestBoxBottomSheetVisible] = useState(false);
+  const [requestedUsers, setRequestedUsers] = useState<{ [key: string]: boolean }>({});
+  const [requests, setRequests] = useState<User[]>([]);
+
+  const getUsers = async () => {
+    try {
+      const res = await axios.get(`${BASE_URL}/users/non-friends/${authUser?._id}`);
+      setUsers(res.data);
+      setRequestedUsers(
+        res.data.reduce((acc: { [key: string]: boolean }, user: User) => {
+          acc[user._id] = false;
+          return acc;
+        }, {})
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
-    const getUsers = async () => {
-      try {
-        const res = await axios.get(`${BASE_URL}/users`);
-        setUsers(res.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
     getUsers();
-  }, []);
+  }, [authUser, setRequests, requests, users, setUsers, setRequestedUsers]);
 
   useEffect(() => {
     const animate = () => {
@@ -83,6 +98,23 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
     currentPage * itemsPerPage
   );
 
+  const handleConnect = (userId: string) => {
+    axios
+      .post(`${BASE_URL}/users/friend-request`, {
+        currentUserId: authUser?._id,
+        selectedUserId: userId,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          setRequestedUsers({ ...requestedUsers, [userId]: true });
+          getUsers();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
   const renderItem = ({ item }: { item: User }) => (
     <TouchableOpacity
       key={item._id}
@@ -97,18 +129,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
         borderRadius: 10,
       }}
       onPress={() => {
-        navigation.navigate('Chat', {
-          user: {
-            userImg: item.profilePicture,
-            isOnline: item.isOnline,
-            fullName: item.fullName,
-            lastMessage: item.lastMessage,
-            lastMessageTime: item.lastMessageTime,
-            messageInQueue: item.messageInQueue,
-          },
-          userId: '', // Set userId as needed
-          receiverId: item._id,
-        });
+        navigation.navigate('UserProfile', { user: item });
       }}
     >
       <View
@@ -131,9 +152,14 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
           padding: 10,
           borderRadius: 10,
         }}
-        onPress={() => {}}
+        onPress={() => handleConnect(item._id)}
+        disabled={!!requestedUsers[item._id]}
       >
-        <Text style={{ color: 'white' }}>Connect</Text>
+        {requestedUsers[item._id] ? (
+          <HourGlassIcon width={20} height={20} color="white" />
+        ) : (
+          <Text style={{ color: 'white' }}>Add Friend</Text>
+        )}
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -159,6 +185,10 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
         <View
           style={{
             width: '100%',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            paddingHorizontal: 16,
           }}
         >
           <Text
@@ -171,10 +201,14 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
           >
             Discover
           </Text>
+          <TouchableOpacity onPress={() => setRequestBoxBottomSheetVisible(true)}>
+            <AddUserIcon width={30} height={30} color="white" strokeWidth={4} />
+          </TouchableOpacity>
         </View>
         <Animated.View style={[animatedStyle]}>
           <LottieView
             style={{
+              marginTop: 20,
               height: 1,
               transform: [{ scale: 0.6 }],
               zIndex: 10,
@@ -236,6 +270,15 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
               onPageChange={handlePageChange}
             />
           </View>
+        )}
+
+        {requestBoxBottomSheetVisible && (
+          <RequestBoxBottomSheet
+            isVisible={requestBoxBottomSheetVisible}
+            onSwipeDown={() => setRequestBoxBottomSheetVisible(false)}
+            requests={requests}
+            setRequests={setRequests}
+          />
         )}
       </View>
     </View>

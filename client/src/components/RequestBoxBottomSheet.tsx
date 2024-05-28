@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Image, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 
 import axios from 'axios';
 
-import BinIcon from 'src/assets/icons/bin';
-import SendMessageIcon from 'src/assets/icons/send-message';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
@@ -21,35 +19,27 @@ interface User {
   messageInQueue: number;
 }
 
-interface FriendsBoxBottomSheetProps {
+interface RequestBoxBottomSheetProps {
   isVisible: boolean;
   onSwipeDown: () => void;
-  navigation: any;
+  requests: User[];
+  setRequests: (requests: User[]) => void;
 }
 
-const FriendsBoxBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
+const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
   isVisible,
   onSwipeDown,
-  navigation,
+  requests,
+  setRequests,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
-  const [friends, setFriends] = useState<User[]>([]);
   const { authUser } = useAuthContext();
 
-  const getFriends = async () => {
+  const getRequests = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/users/accepted-friends/${authUser?._id}`);
-      setFriends(res.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const deleteFriend = async (friendId: string) => {
-    try {
-      await axios.delete(`${BASE_URL}/users/remove-friend/${authUser?._id}/${friendId}`);
-      getFriends();
+      const res = await axios.get(`${BASE_URL}/users/friend-request/${authUser?._id}`);
+      setRequests(res.data);
     } catch (error) {
       console.error(error);
     }
@@ -57,13 +47,29 @@ const FriendsBoxBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
 
   useEffect(() => {
     if (authUser) {
-      getFriends();
+      getRequests();
     }
-  }, [authUser, friends, setFriends]);
+  }, [authUser]);
 
-  const renderItem = ({ item, index }: { item: User; index: number }) => (
+  const acceptFriendRequest = async (receiverId: string) => {
+    axios
+      .post(`${BASE_URL}/users/friend-request/accept`, {
+        senderId: receiverId,
+        recepientId: authUser?._id,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          getRequests();
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const renderItem = ({ item }: { item: User }) => (
     <TouchableOpacity
-      key={index}
+      key={item._id}
       style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -90,49 +96,18 @@ const FriendsBoxBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
         <Text>{item.fullName}</Text>
       </View>
 
-      <View
+      <TouchableOpacity
+        onPress={() => {
+          acceptFriendRequest(item._id);
+        }}
         style={{
-          flexDirection: 'row',
-          gap: 10,
+          backgroundColor: '#499dff',
+          padding: 10,
+          borderRadius: 10,
         }}
       >
-        <TouchableOpacity
-          onPress={() => {
-            onSwipeDown();
-            navigation.navigate('Chat', {
-              user: {
-                userImg: item.profilePicture,
-                isOnline: item.isOnline,
-                fullName: item.fullName,
-                lastMessage: item.lastMessage,
-                lastMessageTime: item.lastMessageTime,
-                messageInQueue: item.messageInQueue,
-              },
-              userId: '',
-              receiverId: item._id,
-            });
-          }}
-          style={{
-            backgroundColor: '#499dff',
-            padding: 10,
-            borderRadius: 10,
-          }}
-        >
-          <SendMessageIcon width={20} height={20} color="white" strokeWidth={4} />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => {
-            deleteFriend(item._id);
-          }}
-          style={{
-            backgroundColor: '#ff3b30',
-            padding: 10,
-            borderRadius: 10,
-          }}
-        >
-          <BinIcon width={20} height={20} color="white" strokeWidth={4} />
-        </TouchableOpacity>
-      </View>
+        <Text style={{ color: 'white' }}>Accept</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
@@ -145,15 +120,15 @@ const FriendsBoxBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
         backgroundColor: 'white',
       }}
     >
-      {friends.length > 0 ? (
-        friends.map((item, index) => renderItem({ item, index }))
+      {requests.length > 0 ? (
+        requests.map((request) => renderItem({ item: request }))
       ) : (
         <Text
           style={{
             textAlign: 'center',
           }}
         >
-          No friends found
+          No requests
         </Text>
       )}
     </View>
@@ -181,4 +156,4 @@ const FriendsBoxBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
   );
 };
 
-export default FriendsBoxBottomSheet;
+export default RequestBoxBottomSheet;
