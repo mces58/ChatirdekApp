@@ -20,4 +20,5 @@ export type RootStackParamList = {
   Profile: undefined;
   Main: { userId: string };
   UserProfile: undefined;
+  GroupChat: undefined;
 };
