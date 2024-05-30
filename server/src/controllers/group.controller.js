@@ -32,7 +32,10 @@ const getGroup = async (req, res) => {
   const { groupId } = req.params;
 
   try {
-    const group = await Group.findOne({ _id: groupId, members: req.user._id });
+    const group = await Group.findOne({ _id: groupId }).populate(
+      'members',
+      'fullName profilePicture'
+    );
 
     if (!group) {
       return res.status(404).json({ error: 'Group not found' });
@@ -95,22 +98,16 @@ const getGroupMessages = async (req, res) => {
 
 const addGroupMember = async (req, res) => {
   const { groupId } = req.params;
-  const { userId } = req.body;
+  const { members } = req.body;
 
   try {
-    const group = await Group.findOne({ _id: groupId, owner: req.user._id });
+    const group = await Group.findOne({ _id: groupId });
 
     if (!group) {
       return res.status(404).json({ error: 'Group not found' });
     }
 
-    const user = await User.findOne({ _id: userId });
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    group.members.push(userId);
+    group.members = [...group.members, ...members];
 
     await group.save();
 
@@ -124,7 +121,7 @@ const removeGroupMember = async (req, res) => {
   const { groupId, userId } = req.params;
 
   try {
-    const group = await Group.findOne({ _id: groupId, owner: req.user._id });
+    const group = await Group.findOne({ _id: groupId });
 
     if (!group) {
       return res.status(404).json({ error: 'Group not found' });
@@ -144,21 +141,54 @@ const leaveGroup = async (req, res) => {
   const { groupId } = req.params;
 
   try {
-    const group = await Group.findOne({ _id: groupId, members: req.user._id });
+    const group = await Group.findOne({ _id: groupId });
 
     if (!group) {
       return res.status(404).json({ error: 'Group not found' });
     }
 
     group.members = group.members.filter(
-      (memberId) => memberId.toString() !== req.user._id
+      (memberId) => memberId.toString() !== req.user._id.toString()
     );
+
+    console.log(req.user._id.toString());
+    console.log(group.members);
 
     await group.save();
 
     res.status(200).json({ group });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+const getNonGroupMembers = async (req, res) => {
+  const { groupId, userId } = req.params;
+
+  try {
+    const user = await User.findById(userId).populate(
+      'friends',
+      'userName profilePicture fullName'
+    );
+    const { friends } = user;
+
+    const group = await Group.findOne({ _id: groupId, members: userId }).populate(
+      'members',
+      'fullName profilePicture'
+    );
+
+    if (!group) {
+      return res.status(404).json({ error: 'Group not found' });
+    }
+
+    const nonGroupFriends = friends.filter(
+      (friend) => !group.members.some((member) => member._id.equals(friend._id))
+    );
+
+    res.status(200).json({ nonGroupFriends });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 };
 
@@ -171,4 +201,5 @@ export {
   addGroupMember,
   removeGroupMember,
   leaveGroup,
+  getNonGroupMembers,
 };

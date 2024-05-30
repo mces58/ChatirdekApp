@@ -26,4 +26,6 @@ router.delete(
 
 router.delete('/:groupId/members', protectRoute, GroupController.leaveGroup);
 
+router.get('/:groupId/members/:userId', protectRoute, GroupController.getNonGroupMembers);
+
 export default router;

@@ -17,12 +17,7 @@ import { useAuthContext } from 'src/context/AuthContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 interface GroupChatRouteProps {
-  group: {
-    _id: string;
-    createAt: string;
-    members: string[];
-    name: string;
-  };
+  groupId: string;
 }
 
 interface GroupChatProps {
@@ -31,19 +26,17 @@ interface GroupChatProps {
 }
 
 const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
-  const [users, setUsers] = useState([] as any[]);
   const { authUser } = useAuthContext();
   const scrollViewRef = useRef<ScrollView>(null);
   const [messages, setMessages] = useState([]);
   const [participants, setParticipants] = useState([] as any[]);
   const [inputMessage, setInputMessage] = useState('');
+  const [group, setGroup] = useState({} as any);
 
-  const getUser = async () => {
+  const getGroup = async () => {
     try {
-      route.params.group.members.map(async (member: string) => {
-        const res = await axios.get(`${BASE_URL}/users/${member}`);
-        setUsers((prev) => [...prev, res.data]);
-      });
+      const res = await axios.get(`${BASE_URL}/groups/${route.params.groupId}`);
+      setGroup(res.data.group);
     } catch (error) {
       console.error(error);
     }
@@ -51,9 +44,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
 
   const getMessages = async () => {
     try {
-      const res = await axios.get(
-        `${BASE_URL}/groups/${route.params.group._id}/messages`
-      );
+      const res = await axios.get(`${BASE_URL}/groups/${route.params.groupId}/messages`);
       setMessages(res.data.groupMessages);
       setParticipants(res.data.participants);
     } catch (error) {
@@ -70,7 +61,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
         };
 
         const response = await axios.post(
-          `${BASE_URL}/groups/${route.params.group._id}/messages`,
+          `${BASE_URL}/groups/${group._id}/messages`,
           messageInfo
         );
 
@@ -91,8 +82,8 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   };
 
   useEffect(() => {
-    getUser();
-  }, [setUsers, route.params.group.members]);
+    getGroup();
+  }, [group, setGroup]);
 
   useEffect(() => {
     getMessages();
@@ -138,7 +129,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
         alignItems: 'center',
       }}
     >
-      <View
+      <TouchableOpacity
         style={{
           width: '100%',
           backgroundColor: '#499dff',
@@ -148,6 +139,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
           paddingBottom: 16,
           paddingHorizontal: 16,
         }}
+        onPress={() => navigation.navigate('GroupInfo', { groupId: group._id })}
       >
         <View
           style={{
@@ -166,7 +158,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
               color: 'white',
             }}
           >
-            {route.params.group.name}
+            {group.name}
           </Text>
         </View>
         <View
@@ -178,8 +170,8 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
             marginTop: 5,
           }}
         >
-          {users.length > 3
-            ? users.slice(0, 3).map((user, index) =>
+          {group?.members?.length > 3
+            ? group?.members?.slice(0, 3)?.map((user, index) =>
                 authUser?._id === user._id ? (
                   <Text
                     key={index}
@@ -201,7 +193,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
                   </Text>
                 )
               )
-            : users.map((user, index) =>
+            : group.members?.map((user, index) =>
                 authUser?._id === user._id ? (
                   <Text
                     key={index}
@@ -209,7 +201,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
                       color: 'white',
                     }}
                   >
-                    You{index === users.length - 1 ? '' : ','}
+                    You{index === group.members?.length - 1 ? '' : ','}
                   </Text>
                 ) : (
                   <Text
@@ -219,12 +211,12 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
                     }}
                   >
                     {user.fullName}
-                    {index === users.length - 1 ? '' : ','}
+                    {index === group.members?.length - 1 ? '' : ','}
                   </Text>
                 )
               )}
         </View>
-      </View>
+      </TouchableOpacity>
 
       <ScrollView
         ref={scrollViewRef}
@@ -232,7 +224,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
         style={styles.messageList}
         showsVerticalScrollIndicator={false}
       >
-        {messages.map((item, index) => renderItem({ item, index }))}
+        {messages?.map((item, index) => renderItem({ item, index }))}
       </ScrollView>
 
       <View style={styles.inputContainer}>

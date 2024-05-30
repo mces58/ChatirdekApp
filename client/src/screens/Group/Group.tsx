@@ -35,7 +35,14 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
     if (authUser) {
       getGroups();
     }
-  }, [authUser, createGroupBottomSheetVisible]);
+  }, [
+    authUser,
+    createGroupBottomSheetVisible,
+    navigation,
+    groups,
+    groups.map((groups) => groups.members),
+    setGroups,
+  ]);
 
   return (
     <View
@@ -94,7 +101,7 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
               borderRadius: 10,
             }}
             onPress={() => {
-              navigation.navigate('GroupChat', { group });
+              navigation.navigate('GroupChat', { groupId: group._id });
             }}
           >
             <View
