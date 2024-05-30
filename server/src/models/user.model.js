@@ -25,6 +25,29 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+
+    freindRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    sentFriendRequests: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+
+    resetPasswordToken: String,
+
+    resetPasswordExpire: Date,
   },
   { timestamps: true }
 );

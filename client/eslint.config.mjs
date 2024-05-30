@@ -16,6 +16,8 @@ export default [
   {
     rules: {
       'linebreak-style': ['error', 'windows'],
+      '@typescript-eslint/no-explicit-any': 'off',
+      'react/prop-types': 'off',
     },
   },
 ];

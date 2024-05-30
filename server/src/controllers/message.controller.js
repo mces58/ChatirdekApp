@@ -1,5 +1,6 @@
 import Conversation from 'src/models/conversation.model';
 import Message from 'src/models/message.model';
+import User from 'src/models/user.model';
 import { getReceiverSocketId, io } from 'src/socket/socket';
 
 const sendMessage = async (req, res) => {
@@ -7,6 +8,17 @@ const sendMessage = async (req, res) => {
     const receiverId = req.params.id;
     const { message } = req.body;
     const senderId = req.user._id;
+
+    const sender = await User.findById(senderId);
+    const receiver = await User.findById(receiverId);
+
+    const areFriends = sender.friends.includes(receiverId) && receiver.friends.includes(senderId);
+
+    if (!areFriends) {
+      return res
+        .status(403)
+        .json({ message: 'You can only send messages to your friends.' });
+    }
 
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, receiverId] },
