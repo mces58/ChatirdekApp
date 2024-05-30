@@ -1,18 +1,35 @@
+import cookieParser from 'cookie-parser';
+import dotenv from 'dotenv';
+import dotenvExpand from 'dotenv-expand';
 import express from 'express';
+import path from 'path';
 
-import adminRoute from 'src/routes/admin.route';
+import connectToMongoDB from 'src/db/connect.db';
+import authRoute from 'src/routes/auth.route';
+import messageRoute from 'src/routes/message.route';
 import userRoute from 'src/routes/user.route';
+import { app, server } from 'src/socket/socket';
 
-const app = express();
+dotenvExpand.expand(dotenv.config());
 
-app.use('/admin', adminRoute);
+// eslint-disable-next-line no-underscore-dangle
+const __dirname = path.resolve();
 
-app.use('/user', userRoute);
+app.use(express.json());
+app.use(cookieParser());
 
-app.get('/', (req, res) => {
-  res.send('Home Page');
+app.use('/api/auth', authRoute);
+app.use('/api/messages', messageRoute);
+app.use('/api/users', userRoute);
+
+app.use(express.static(path.join(__dirname, '/client/dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
 });
 
-app.listen(3000, () => {
-  console.log('Server is running on port 3000');
+const PORT = process.env.PORT || 4000;
+server.listen(PORT, () => {
+  connectToMongoDB();
+  console.log(`Server is running on port ${PORT}`);
 });

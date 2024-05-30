@@ -1,9 +1,10 @@
 import { Router } from 'express';
 
-import userGet from '../controllers/user.controller';
+import getUsers from 'src/controllers/user.controller';
+import protectRoute from 'src/middlewares/protectRoute.middleware';
 
 const router = Router();
 
-router.get('/', userGet);
+router.get('/', protectRoute, getUsers);
 
 export default router;
