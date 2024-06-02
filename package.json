@@ -10,7 +10,8 @@
     "lint:client": "cd client && npx eslint . --fix",
     "prepare": "husky",
     "server": "cd server && npm run dev",
-    "client": "cd client && npm run start"
+    "client": "cd client && npm run start",
+    "install:all": "npm install && cd client && npm install && cd .. && cd server && npm install"
   },
   "keywords": [],
   "author": "",
