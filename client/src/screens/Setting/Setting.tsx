@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
@@ -14,6 +14,7 @@ import HelpBottomSheet from 'src/components/HelpBottomSheet';
 import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
 import PrivacyBottomSheet from 'src/components/PrivarcyBottomSheet';
 import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 interface SettingProps {
@@ -35,6 +36,9 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const [privacyBoxVisible, setPrivacyBoxVisible] = useState(false);
   const [blockContactsBoxVisible, setBlockContactsBoxVisible] = useState(false);
   const [chatBoxVisible, setChatBoxVisible] = useState(false);
+
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   useEffect(() => {
     const getUser = async () => {
@@ -90,13 +94,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
     }
   };
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingVertical: 50,
-        paddingHorizontal: 10,
-      }}
-    >
+    <View style={styles.screenContainer}>
       <View
         style={{
           flexDirection: 'row',
@@ -437,3 +435,13 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 };
 
 export default Setting;
+
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      paddingVertical: 50,
+      paddingHorizontal: 10,
+      backgroundColor: theme.backgroundColor,
+    },
+  });

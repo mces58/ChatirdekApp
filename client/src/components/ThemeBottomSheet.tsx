@@ -31,7 +31,7 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
         style={{
           fontSize: 20,
           fontWeight: 'bold',
-          color: theme.color,
+          color: theme.textColor,
         }}
       >
         Choose your theme
@@ -47,15 +47,18 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
           paddingHorizontal: 20,
           paddingVertical: 10,
           borderRadius: 10,
-          backgroundColor: theme.background,
+          backgroundColor: theme.backgroundColor,
           borderWidth: 1,
-          borderColor: theme.color,
+          borderColor: theme.textColor,
         }}
-        onPress={setLightTheme}
+        onPress={() => {
+          setLightTheme();
+          onSwipeDown();
+        }}
       >
         <Text
           style={{
-            color: theme.color,
+            color: theme.textColor,
           }}
         >
           Light
@@ -73,15 +76,18 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
           paddingHorizontal: 20,
           paddingVertical: 10,
           borderRadius: 10,
-          backgroundColor: theme.background,
+          backgroundColor: theme.backgroundColor,
           borderWidth: 1,
-          borderColor: theme.color,
+          borderColor: theme.textColor,
         }}
-        onPress={setDarkTheme}
+        onPress={() => {
+          setDarkTheme();
+          onSwipeDown();
+        }}
       >
         <Text
           style={{
-            color: theme.color,
+            color: theme.textColor,
           }}
         >
           Dark
@@ -100,7 +106,7 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
       content={content}
       modalStyle={{
         height: SCREEN_HEIGHT * 0.3,
-        backgroundColor: theme.background,
+        backgroundColor: theme.backgroundColor,
         borderTopLeftRadius: 20,
         borderTopRightRadius: 20,
         position: 'absolute',

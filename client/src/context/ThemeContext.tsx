@@ -1,18 +1,23 @@
 import React, { createContext, useContext, useState } from 'react';
 
-type Theme = {
-  background: string;
-  color: string;
+import { Colors } from 'src/constants/color/colors';
+
+export type Theme = {
+  backgroundColor: string;
+  textColor: string;
+  borderColor: string;
 };
 
 const lightTheme: Theme = {
-  background: '#ffffff',
-  color: '#000000',
+  backgroundColor: Colors.primary.light,
+  textColor: Colors.primary.dark,
+  borderColor: Colors.primary.dark,
 };
 
 const darkTheme: Theme = {
-  background: '#121212',
-  color: '#ffffff',
+  backgroundColor: Colors.primary.dark,
+  textColor: Colors.primary.light,
+  borderColor: Colors.primary.light,
 };
 
 type ThemeContextType = {
@@ -41,7 +46,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   );
 };
 
-// useTheme özel kancası
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
