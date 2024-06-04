@@ -5,19 +5,34 @@ import { Colors } from 'src/constants/color/colors';
 export type Theme = {
   backgroundColor: string;
   textColor: string;
+  textMutedColor?: string;
   borderColor: string;
+  iconColor: string;
+  headerBackgroundColor: string;
+  shadowColor?: string;
+  bottomSheetBackgroundColor?: string;
 };
 
 const lightTheme: Theme = {
-  backgroundColor: Colors.primary.light,
-  textColor: Colors.primary.dark,
-  borderColor: Colors.primary.dark,
+  backgroundColor: Colors.primaryColors.light,
+  textColor: Colors.primaryColors.dark,
+  textMutedColor: Colors.primaryColors.textMuted,
+  borderColor: Colors.primaryColors.gray,
+  iconColor: Colors.primaryColors.dark,
+  headerBackgroundColor: Colors.primaryColors.headerColor,
+  shadowColor: Colors.primaryColors.dark,
+  bottomSheetBackgroundColor: Colors.primaryColors.bottomSheetColor,
 };
 
 const darkTheme: Theme = {
-  backgroundColor: Colors.primary.dark,
-  textColor: Colors.primary.light,
-  borderColor: Colors.primary.light,
+  backgroundColor: Colors.primaryColors.dark,
+  textColor: Colors.primaryColors.light,
+  textMutedColor: Colors.primaryColors.textMuted,
+  borderColor: Colors.primaryColors.light,
+  iconColor: Colors.primaryColors.light,
+  headerBackgroundColor: Colors.primaryColors.dark,
+  shadowColor: Colors.primaryColors.light,
+  bottomSheetBackgroundColor: Colors.primaryColors.dark,
 };
 
 type ThemeContextType = {

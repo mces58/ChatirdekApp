@@ -8,8 +8,8 @@ import ArrowIcon from 'src/assets/icons/arrow';
 import IdIcon from 'src/assets/icons/id';
 import PenIcon from 'src/assets/icons/pen';
 import AddMemberGroupBottomSheet from 'src/components/AddMemberGroup';
+import SetProfileValueBottomSheet from 'src/components/bottomSheet/SetProfileValueBottomSheet';
 import GroupModal from 'src/components/GroupModal';
-import SetProfileValueBottomSheet from 'src/components/SetProfileValueBottomSheet';
 import { useAuthContext } from 'src/context/AuthContext';
 import { BASE_URL } from 'src/services/baseUrl';
 

@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-interface CreateGroupIconProps {
+interface CloseIconProps {
   width: number;
   height: number;
   color: string;
@@ -10,47 +10,39 @@ interface CreateGroupIconProps {
   opacity?: number;
 }
 
-const CreateGroupIcon: FC<CreateGroupIconProps> = (props) => {
-  const { width, height, color, strokeWidth = 2, opacity = 1 } = props;
+const CloseIcon: FC<CloseIconProps> = (props) => {
+  const { width, height, color, strokeWidth = 1, opacity = 1 } = props;
 
   return (
     <View style={[{ width, height }]}>
-      <Svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" opacity={opacity}>
+      <Svg width="100%" height="100%" viewBox="0 0 14 14" fill="none">
         <Path
-          d="M3.25 7.75a4.25 4.25 0 1 0 8.5 0 4.25 4.25 0 1 0 -8.5 0Z"
-          fill="none"
           stroke={color}
           strokeLinecap="round"
           strokeLinejoin="round"
+          d="m9.5 4.5 -5 5"
           strokeWidth={strokeWidth}
+          opacity={opacity}
         />
         <Path
-          d="M0.5 20.5a7 7 0 0 1 14 0Z"
-          fill="none"
           stroke={color}
           strokeLinecap="round"
           strokeLinejoin="round"
+          d="m4.5 4.5 5 5"
           strokeWidth={strokeWidth}
+          opacity={opacity}
         />
         <Path
-          d="M16.5 20.5h7a5.5 5.5 0 0 0 -8.027 -4.885"
-          fill="none"
           stroke={color}
           strokeLinecap="round"
           strokeLinejoin="round"
+          d="M7 13.5c3.5899 0 6.5 -2.9101 6.5 -6.5C13.5 3.41015 10.5899 0.5 7 0.5 3.41015 0.5 0.5 3.41015 0.5 7c0 3.5899 2.91015 6.5 6.5 6.5Z"
           strokeWidth={strokeWidth}
-        />
-        <Path
-          d="M14.694 10.25a3.25 3.25 0 1 0 6.5 0 3.25 3.25 0 1 0 -6.5 0Z"
-          fill="none"
-          stroke={color}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={strokeWidth}
+          opacity={opacity}
         />
       </Svg>
     </View>
   );
 };
 
-export default CreateGroupIcon;
+export default CloseIcon;

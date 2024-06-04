@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { Image, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
-import Animated, {
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  Image,
+  NativeModules,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from 'react-native';
+import {
   Easing,
-  useAnimatedStyle,
   useSharedValue,
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
 
 import axios from 'axios';
-import LottieView from 'lottie-react-native';
 
-import animation from 'src/assets/animatons/discover1.json';
-import AddUserIcon from 'src/assets/icons/add-user';
+import { EarthIcon } from 'src/assets/icons/headers';
 import HourGlassIcon from 'src/assets/icons/hour-glass';
+import Header from 'src/components/headers/Header';
 import Pagination from 'src/components/Pagination';
 import RequestBoxBottomSheet from 'src/components/RequestBoxBottomSheet';
 import { useAuthContext } from 'src/context/AuthContext';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 interface User {
@@ -83,11 +91,11 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
     return () => clearInterval(interval);
   }, [translateX, rotateY, SCREEN_WIDTH]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ translateX: translateX.value }, { rotateY: `${rotateY.value}deg` }],
-    };
-  });
+  // const animatedStyle = useAnimatedStyle(() => {
+  //   return {
+  //     transform: [{ translateX: translateX.value }, { rotateY: `${rotateY.value}deg` }],
+  //   };
+  // });
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -164,63 +172,18 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
     </TouchableOpacity>
   );
 
+  const { theme } = useTheme();
+  const { StatusBarManager } = NativeModules;
+  const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+  const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+
   return (
-    <View
-      style={{
-        flex: 1,
-        marginTop: 30,
-        gap: 10,
-        backgroundColor: 'white',
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: '#499dff',
-          borderBottomWidth: 1,
-          borderBottomColor: '#f2f2f2',
-          paddingVertical: 52,
-          paddingLeft: 16,
-        }}
-      >
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            paddingHorizontal: 16,
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              marginBottom: 16,
-              color: 'white',
-            }}
-          >
-            Discover
-          </Text>
-          <TouchableOpacity onPress={() => setRequestBoxBottomSheetVisible(true)}>
-            <AddUserIcon width={30} height={30} color="white" strokeWidth={4} />
-          </TouchableOpacity>
-        </View>
-        <Animated.View style={[animatedStyle]}>
-          <LottieView
-            style={{
-              marginTop: 20,
-              height: 1,
-              transform: [{ scale: 0.6 }],
-              zIndex: 10,
-            }}
-            source={animation}
-            autoPlay
-            loop
-            speed={0.7}
-            resizeMode="cover"
-          />
-        </Animated.View>
-      </View>
+    <View style={styles.screenContainer}>
+      <Header
+        title="Discover"
+        icon={<EarthIcon width={30} height={30} />}
+        onIconPress={() => setRequestBoxBottomSheetVisible(true)}
+      />
 
       <View
         style={{
@@ -286,3 +249,12 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
 };
 
 export default Discover;
+
+const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
+  StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      backgroundColor: theme.backgroundColor,
+      paddingTop: STATUSBAR_HEIGHT,
+    },
+  });

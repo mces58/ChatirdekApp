@@ -1,11 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  NativeModules,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import axios from 'axios';
 
-import CreateGroupIcon from 'src/assets/icons/create-group';
+import { GroupPeopleIcon } from 'src/assets/icons/headers';
 import CreateGroupBottomSheet from 'src/components/CreateGroupBottomSheet';
+import Header from 'src/components/headers/Header';
 import { useAuthContext } from 'src/context/AuthContext';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 interface GroupProps {
@@ -17,6 +26,10 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
     useState<boolean>(false);
   const [groups, setGroups] = useState([] as any[]);
   const { authUser } = useAuthContext();
+  const { theme } = useTheme();
+  const { StatusBarManager } = NativeModules;
+  const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+  const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
 
   const getGroups = async () => {
     try {
@@ -45,40 +58,12 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
   ]);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: '#fff',
-        marginTop: 24,
-      }}
-    >
-      <View
-        style={{
-          backgroundColor: '#499dff',
-          borderBottomWidth: 1,
-          borderBottomColor: '#f2f2f2',
-          justifyContent: 'space-between',
-          paddingVertical: 32,
-          paddingHorizontal: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 24,
-            fontWeight: 'bold',
-            marginBottom: 16,
-            color: 'white',
-          }}
-        >
-          Groups
-        </Text>
-
-        <TouchableOpacity onPress={() => setCreateGroupBottomSheetVisible(true)}>
-          <CreateGroupIcon width={30} height={30} color="white" strokeWidth={1} />
-        </TouchableOpacity>
-      </View>
+    <View style={styles.screenContainer}>
+      <Header
+        title="Groups"
+        icon={<GroupPeopleIcon width={30} height={30} />}
+        onIconPress={() => setCreateGroupBottomSheetVisible(true)}
+      />
 
       <View
         style={{
@@ -142,3 +127,12 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
 };
 
 export default Group;
+
+const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
+  StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      backgroundColor: theme.backgroundColor,
+      paddingTop: STATUSBAR_HEIGHT,
+    },
+  });

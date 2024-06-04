@@ -17,7 +17,7 @@ import {
 
 import axios from 'axios';
 
-import BaseBottomSheet from 'src/components/BaseBottomSheet';
+import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import LoadingIndicator from 'src/components/Loading';
 import { BASE_URL } from 'src/services/baseUrl';
 

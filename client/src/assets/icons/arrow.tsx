@@ -2,17 +2,20 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+import { Colors } from 'src/constants/color/colors';
+import { useTheme } from 'src/context/ThemeContext';
+
 interface ArrowIconProps {
   width: number;
   height: number;
-  color: string;
   direction: 'top' | 'right' | 'bottom' | 'left';
   strokeWidth?: number;
   opacity?: number;
 }
 
 const ArrowIcon: FC<ArrowIconProps> = (props) => {
-  const { width, height, color, direction, strokeWidth = 2, opacity = 1 } = props;
+  const { width, height, direction, strokeWidth = 2, opacity = 1 } = props;
+  const { theme } = useTheme();
   let d = '';
   switch (direction) {
     case 'top':
@@ -30,6 +33,12 @@ const ArrowIcon: FC<ArrowIconProps> = (props) => {
     default:
       break;
   }
+
+  const color =
+    theme.backgroundColor === Colors.primaryColors.light
+      ? Colors.primaryColors.dark
+      : Colors.primaryColors.light;
+
   return (
     <View style={[{ width, height }]}>
       <Svg width="100%" height="100%" viewBox="0 0 32 32" fill="none">

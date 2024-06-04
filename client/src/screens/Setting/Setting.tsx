@@ -1,44 +1,62 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  NativeModules,
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
-import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
 
-import ArrowIcon from 'src/assets/icons/arrow';
-import AboutUsBottomSheet from 'src/components/AboutUsBottomSheet';
-import BlockContactsBottomSheet from 'src/components/BlockContactsBottomSheet';
-import ChatsBottomSheet from 'src/components/ChatsBottomSheet';
-import HelpBottomSheet from 'src/components/HelpBottomSheet';
-import LanguageBottomSheet from 'src/components/LanguageBottomSheet';
-import PrivacyBottomSheet from 'src/components/PrivarcyBottomSheet';
-import ThemeBottomSheet from 'src/components/ThemeBottomSheet';
+import { SettingLeafIcon } from 'src/assets/icons/headers';
+import Header from 'src/components/headers/Header';
+import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
+import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
+
+import AboutUsBottomSheet from './components/bottomSheets/AboutUsBottomSheet';
+import ChatsBottomSheet from './components/bottomSheets/ChatsBottomSheet';
+import HelpBottomSheet from './components/bottomSheets/HelpBottomSheet';
+import LanguageBottomSheet from './components/bottomSheets/LanguageBottomSheet';
+import PrivacyBottomSheet from './components/bottomSheets/PrivacyBottomSheet';
+import ThemeBottomSheet from './components/bottomSheets/ThemeBottomSheet';
+import BottomSheetWrapper from './components/BottomSheetWrapper';
+import { SettingBottomSheet } from './constants/setting-screen';
+import settingBottomSheets from './constants/setting-screen';
+import { BottomSheetNames } from './constants/sheet-names';
 
 interface SettingProps {
   navigation: any;
 }
 
 const Setting: React.FC<SettingProps> = ({ navigation }) => {
-  const [user, setUser] = useState<{
-    _id: string;
-    fullName: string;
-    userName: string;
-    profilePicture: string;
-    createdAt: string;
-  } | null>(null);
-  const [languageBoxVisible, setLanguageBoxVisible] = useState(false);
-  const [themeBoxVisible, setThemeBoxVisible] = useState(false);
-  const [aboutUsBoxVisible, setAboutUsBoxVisible] = useState(false);
-  const [helpBoxVisible, setHelpBoxVisible] = useState(false);
-  const [privacyBoxVisible, setPrivacyBoxVisible] = useState(false);
-  const [blockContactsBoxVisible, setBlockContactsBoxVisible] = useState(false);
-  const [chatBoxVisible, setChatBoxVisible] = useState(false);
-
+  const [user, setUser] = useState<User | null>(null);
+  const [visibleSheet, setVisibleSheet] = useState<BottomSheetNames>(null);
+  const [settings] = useState<SettingBottomSheet[]>(settingBottomSheets);
   const { theme } = useTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const { StatusBarManager } = NativeModules;
+  const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+  const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+
+  const bottomSheets = {
+    Language: LanguageBottomSheet,
+    Theme: ThemeBottomSheet,
+    Chats: ChatsBottomSheet,
+    Privacy: PrivacyBottomSheet,
+    Help: HelpBottomSheet,
+    AboutUs: AboutUsBottomSheet,
+  };
+
+  const handleToggleSheet = (sheetName: BottomSheetNames): void => {
+    setVisibleSheet((prev: BottomSheetNames | null) =>
+      prev === sheetName ? null : sheetName
+    );
+  };
 
   useEffect(() => {
     const getUser = async () => {
@@ -57,34 +75,6 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
     getUser();
   }, []);
 
-  const handleLanguage = () => {
-    setLanguageBoxVisible(true);
-  };
-
-  const handleTheme = () => {
-    setThemeBoxVisible(true);
-  };
-
-  const handleAboutUs = () => {
-    setAboutUsBoxVisible(true);
-  };
-
-  const handleHelp = () => {
-    setHelpBoxVisible(true);
-  };
-
-  const handlePrivacy = () => {
-    setPrivacyBoxVisible(true);
-  };
-
-  const handleBlockContacts = () => {
-    setBlockContactsBoxVisible(true);
-  };
-
-  const handleChat = () => {
-    setChatBoxVisible(true);
-  };
-
   const handleLogout = async () => {
     try {
       await AsyncStorage.removeItem('authToken');
@@ -93,355 +83,80 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
       console.log('error logging out', error);
     }
   };
+
   return (
     <View style={styles.screenContainer}>
-      <View
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          marginBottom: 16,
-          paddingHorizontal: 16,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-          }}
-        >
-          Settings
-        </Text>
-      </View>
+      <Header title="Settings" icon={<SettingLeafIcon width={30} height={30} />} />
 
-      <TouchableOpacity
-        style={{
-          flexDirection: 'row',
-          gap: 16,
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          paddingHorizontal: 16,
-          borderBottomWidth: 1,
-          borderBottomColor: '#CCC',
-        }}
+      <ProfileContainer
+        user={user!}
         onPress={() => navigation.navigate('Profile', { user })}
-      >
-        <View
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginBottom: 16,
-            gap: 16,
-            backgroundColor: '#f2f2f2',
-          }}
-        >
+      />
+
+      <View style={styles.container}>
+        {settings.map((setting: SettingBottomSheet, index: number) => (
           <View
-            style={{
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 1,
-              },
-              shadowOpacity: 0.22,
-              shadowRadius: 2.22,
-              elevation: 10,
-              borderRadius: 50,
-            }}
+            style={[
+              styles.listItemContainer,
+              index === settings.length - 1 && { borderBottomWidth: 0 },
+            ]}
+            key={setting.name || index}
           >
-            <Image
-              source={{ uri: user?.profilePicture }}
-              style={{
-                width: 100,
-                height: 100,
-                borderRadius: 50,
-                borderColor: '#000',
-              }}
-            />
-          </View>
-          <View
-            style={{
-              flexDirection: 'column',
-              gap: 4,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: 'bold',
+            <TouchableOpacity
+              style={styles.listItem}
+              onPress={() => {
+                setting.name === 'Logout'
+                  ? handleLogout()
+                  : handleToggleSheet(setting.name as BottomSheetNames);
               }}
             >
-              {user?.fullName}
-            </Text>
-            <Text
-              style={{
-                fontSize: 14,
-                color: '#888',
-              }}
-            >
-              {user?.userName}
-            </Text>
+              {setting.icon}
+              <Text style={styles.text}>{setting.label}</Text>
+            </TouchableOpacity>
           </View>
-        </View>
-        <ArrowIcon width={25} height={25} color="#000" direction="right" />
-      </TouchableOpacity>
-
-      <View
-        style={{
-          marginTop: 6,
-          paddingVertical: 16,
-          paddingHorizontal: 16,
-          borderBottomWidth: 1,
-          borderBottomColor: '#CCC',
-          gap: 30,
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleLanguage}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>{i18next.t('languageTitle')}</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleChat}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>Chats</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleTheme}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>Theme</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleBlockContacts}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>Block Contacts</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handlePrivacy}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>Privacy</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleHelp}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>Help & Support</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleAboutUs}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>About Us</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}
-          onPress={handleLogout}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              gap: 10,
-            }}
-          >
-            <Text>Icon</Text>
-            <Text>Log out</Text>
-          </View>
-          <ArrowIcon width={25} height={25} color="#000" direction="right" />
-        </TouchableOpacity>
+        ))}
       </View>
-
-      <View
-        style={{
-          flexDirection: 'column',
-          alignItems: 'center',
-          gap: 10,
-          marginTop: 10,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 40,
-            fontWeight: 'bold',
-          }}
-        >
-          MCES
-        </Text>
-        <Text
-          style={{
-            fontSize: 16,
-            fontWeight: 'bold',
-            color: '#888',
-          }}
-        >
-          Version 1.0.0
-        </Text>
-      </View>
-
-      {languageBoxVisible && (
-        <LanguageBottomSheet
-          isVisible={languageBoxVisible}
-          onSwipeDown={() => setLanguageBoxVisible(false)}
-        />
-      )}
-
-      {themeBoxVisible && (
-        <ThemeBottomSheet
-          isVisible={themeBoxVisible}
-          onSwipeDown={() => setThemeBoxVisible(false)}
-        />
-      )}
-
-      {aboutUsBoxVisible && (
-        <AboutUsBottomSheet
-          isVisible={aboutUsBoxVisible}
-          onSwipeDown={() => setAboutUsBoxVisible(false)}
-        />
-      )}
-
-      {helpBoxVisible && (
-        <HelpBottomSheet
-          isVisible={helpBoxVisible}
-          onSwipeDown={() => setHelpBoxVisible(false)}
-        />
-      )}
-
-      {privacyBoxVisible && (
-        <PrivacyBottomSheet
-          isVisible={privacyBoxVisible}
-          onSwipeDown={() => setPrivacyBoxVisible(false)}
-        />
-      )}
-
-      {blockContactsBoxVisible && (
-        <BlockContactsBottomSheet
-          isVisible={blockContactsBoxVisible}
-          onSwipeDown={() => setBlockContactsBoxVisible(false)}
-        />
-      )}
-
-      {chatBoxVisible && (
-        <ChatsBottomSheet
-          isVisible={chatBoxVisible}
-          onSwipeDown={() => setChatBoxVisible(false)}
-        />
-      )}
+      {settings
+        .filter((setting) => setting.name !== 'Logout')
+        .map((setting) => (
+          <BottomSheetWrapper
+            key={setting.name}
+            BottomSheetComponent={bottomSheets[setting.name as keyof typeof bottomSheets]}
+            isVisible={visibleSheet === setting.name}
+            onSwipeDown={() => handleToggleSheet(setting.name as BottomSheetNames)}
+          />
+        ))}
     </View>
   );
 };
 
 export default Setting;
 
-const createStyles = (theme: Theme) =>
+const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
   StyleSheet.create({
     screenContainer: {
       flex: 1,
-      paddingVertical: 50,
-      paddingHorizontal: 10,
       backgroundColor: theme.backgroundColor,
+      paddingTop: STATUSBAR_HEIGHT,
+      gap: 10,
+    },
+    container: {
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+    },
+    listItemContainer: {
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borderColor,
+      paddingVertical: 22,
+    },
+    listItem: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+    },
+    text: {
+      fontFamily: 'Nunito-Bold',
+      color: theme.textColor,
+      fontSize: 16,
     },
   });

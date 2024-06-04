@@ -17,7 +17,7 @@ import { useAuthContext } from 'src/context/AuthContext';
 import { useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
-import BaseBottomSheet from './BaseBottomSheet';
+import BaseBottomSheet from './bottomSheet/BaseBottomSheet';
 
 interface AddMemberGroupBottomSheetProps {
   isVisible: boolean;

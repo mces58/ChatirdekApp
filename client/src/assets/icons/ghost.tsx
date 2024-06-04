@@ -2,16 +2,24 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+import { Colors } from 'src/constants/color/colors';
+import { useTheme } from 'src/context/ThemeContext';
+
 interface GhostIconProps {
   width: number;
   height: number;
-  color: string;
   strokeWidth?: number;
   opacity?: number;
 }
 
 const GhostIcon: FC<GhostIconProps> = (props) => {
-  const { width, height, color, strokeWidth = 2, opacity = 1 } = props;
+  const { width, height, strokeWidth = 2, opacity = 1 } = props;
+  const { theme } = useTheme();
+
+  const color =
+    theme.backgroundColor === Colors.primaryColors.light
+      ? Colors.primaryColors.dark
+      : Colors.primaryColors.light;
 
   return (
     <View style={[{ width, height }]}>

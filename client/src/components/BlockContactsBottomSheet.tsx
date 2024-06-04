@@ -13,7 +13,7 @@ import {
 
 import { useTheme } from 'src/context/ThemeContext';
 
-import BaseBottomSheet from './BaseBottomSheet';
+import BaseBottomSheet from './bottomSheet/BaseBottomSheet';
 
 interface BlockContactsBottomSheetProps {
   isVisible: boolean;

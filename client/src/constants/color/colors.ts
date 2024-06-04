@@ -5,8 +5,14 @@ const primaryColors = {
   danger: '#dc3545',
   warning: '#ffc107',
   info: '#17a2b8',
-  light: '#f8f9fa',
+  light: '#F6F6F6',
   dark: '#343a40',
+  gray: '#CCCCCC',
+  textMuted: '#999',
+  beige: '#F5F5DC',
+  pewter: '#F9F9FB',
+  headerColor: '#ADFFBF',
+  bottomSheetColor: '#fff',
 };
 
 const secondaryColors = {
@@ -32,7 +38,7 @@ const tertiaryColors = {
 };
 
 export const Colors = {
-  primary: primaryColors,
-  secondary: secondaryColors,
-  tertiary: tertiaryColors,
+  primaryColors,
+  secondaryColors,
+  tertiaryColors,
 };
