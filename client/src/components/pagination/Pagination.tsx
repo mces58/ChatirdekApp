@@ -1,5 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+
+import { Colors } from 'src/constants/color/colors';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface PaginationProps {
   totalItems: number;
@@ -15,6 +18,8 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
 }) => {
   const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -24,7 +29,7 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.button, currentPage === 1 && styles.disabled]}
+        style={[styles.button, styles.shadow, currentPage === 1 && styles.disabled]}
         onPress={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
@@ -42,7 +47,11 @@ const Pagination: React.FC<PaginationProps> = ({
       ))}
 
       <TouchableOpacity
-        style={[styles.button, currentPage === totalPages && styles.disabled]}
+        style={[
+          styles.button,
+          styles.shadow,
+          currentPage === totalPages && styles.disabled,
+        ]}
         onPress={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
@@ -52,29 +61,42 @@ const Pagination: React.FC<PaginationProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  button: {
-    marginHorizontal: 5,
-    padding: 10,
-    backgroundColor: '#499dff',
-    borderRadius: 5,
-  },
-  active: {
-    backgroundColor: '#ff4949',
-  },
-  disabled: {
-    backgroundColor: '#cccccc',
-  },
-  text: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-});
-
 export default Pagination;
+
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 10,
+      marginVertical: 5,
+    },
+    button: {
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      backgroundColor: theme.textColor,
+      borderRadius: 10,
+    },
+    active: {
+      backgroundColor: Colors.primaryColors.danger,
+    },
+    disabled: {
+      backgroundColor: theme.borderColor,
+    },
+    text: {
+      fontFamily: 'Nunito-SemiBold',
+      fontSize: 14,
+      color: theme.backgroundColor,
+    },
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+  });

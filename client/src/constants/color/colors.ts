@@ -13,6 +13,8 @@ const primaryColors = {
   pewter: '#F9F9FB',
   headerColor: '#ADFFBF',
   bottomSheetColor: '#fff',
+  linearGradient1: 'rgba(255, 195, 113, 0.9)',
+  linearGradient2: 'rgba(255, 95, 109, 0.9)',
 };
 
 const secondaryColors = {

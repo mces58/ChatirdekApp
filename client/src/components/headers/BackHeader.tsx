@@ -1,5 +1,12 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -7,14 +14,20 @@ interface BackHeaderProps {
   title: string;
   icon?: React.ReactNode;
   onPress?: () => void;
+  componentSize?: StyleProp<ViewStyle> & { height: number };
 }
 
-const BackHeader: React.FC<BackHeaderProps> = ({ title, icon, onPress }) => {
+const BackHeader: React.FC<BackHeaderProps> = ({
+  title,
+  icon,
+  onPress,
+  componentSize = { height: 100 },
+}) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, componentSize]}>
       <TouchableOpacity
         onPress={onPress ? onPress : () => {}}
         style={styles.textContainer}
@@ -32,7 +45,6 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       width: '100%',
-      height: 100,
       backgroundColor: theme.headerBackgroundColor,
       flexDirection: 'row',
       alignItems: 'center',

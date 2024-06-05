@@ -15,7 +15,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ imageUri, isVisible, onClos
     <Modal visible={isVisible} transparent={true} animationType="fade">
       <View style={styles.modalContainer}>
         <TouchableOpacity style={styles.modalCloseButton} onPress={onClose}>
-          <CrossIcon width={20} height={20} color={Colors.primaryColors.beige} />
+          <CrossIcon width={20} height={20} customColor={Colors.primaryColors.beige} />
         </TouchableOpacity>
         <Image source={{ uri: imageUri }} style={styles.fullScreenImage} />
       </View>

@@ -2,22 +2,31 @@ import React, { FC } from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
+import { Colors } from 'src/constants/color/colors';
+import { useTheme } from 'src/context/ThemeContext';
+
 interface CrossIconProps {
   width: number;
   height: number;
-  color: string;
+  customColor?: string;
   strokeWidth?: number;
   opacity?: number;
 }
 
 const CrossIcon: FC<CrossIconProps> = (props) => {
-  const { width, height, color, strokeWidth = 2, opacity = 1 } = props;
+  const { width, height, customColor, strokeWidth = 2, opacity = 1 } = props;
+  const { theme } = useTheme();
+
+  const color =
+    theme.backgroundColor === Colors.primaryColors.light
+      ? Colors.primaryColors.dark
+      : Colors.primaryColors.light;
 
   return (
     <View style={[{ width, height }]}>
       <Svg width="100%" height="100%" viewBox="0 0 14 14" fill="none">
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="m13.5 0.5 -13 13"
@@ -26,7 +35,7 @@ const CrossIcon: FC<CrossIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="m0.5 0.5 13 13"

@@ -1,7 +1,14 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TextStyle,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 
-import ArrowIcon from 'src/assets/icons/arrow';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -10,45 +17,64 @@ import ProfileImage from './ProfileImage';
 interface ProfileContainerProps {
   user: User;
   onPress?: () => void;
+  icon?: React.ReactNode;
+  componentSize?: StyleProp<ViewStyle> & { width: number; height: number };
+  showUserNames?: boolean;
+  textStyles?: StyleProp<TextStyle> & { fontSize?: number; color?: string };
+  disabled?: boolean;
 }
 
-const ProfileContainer: React.FC<ProfileContainerProps> = ({ user, onPress }) => {
+const ProfileContainer: React.FC<ProfileContainerProps> = ({
+  user,
+  onPress,
+  icon,
+  componentSize = {
+    width: 100,
+    height: 100,
+  },
+  showUserNames = true,
+  textStyles,
+  disabled = false,
+}) => {
   const { theme } = useTheme();
-  const styles = useMemo(() => createStyles(theme), [theme]);
+  const styles = useMemo(() => createStyles(theme, textStyles), [theme]);
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity
+      style={[styles.container, !showUserNames && { borderBottomWidth: 0 }]}
+      onPress={onPress}
+      disabled={disabled}
+    >
       <View style={styles.row}>
         <ProfileImage
           imageUri={user?.profilePicture}
-          componentSize={{
-            width: 100,
-            height: 100,
-          }}
+          componentSize={componentSize}
           disabled
         />
         <View style={styles.textContainer}>
-          <Text style={styles.fullName}>{user?.fullName}</Text>
-          <Text style={styles.userName}>{user?.userName}</Text>
+          <Text style={[styles.fullName, { color: textStyles?.color }]}>
+            {user?.fullName}
+          </Text>
+          {showUserNames && <Text style={styles.userName}>{user?.userName}</Text>}
         </View>
       </View>
-      <ArrowIcon width={25} height={25} direction="right" />
+      {icon}
     </TouchableOpacity>
   );
 };
 
 export default ProfileContainer;
 
-const createStyles = (theme: Theme) =>
+const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
       paddingHorizontal: 16,
+      paddingVertical: 10,
       borderBottomWidth: 1,
       borderBottomColor: theme.borderColor,
-      paddingVertical: 10,
     },
     row: {
       flexDirection: 'row',
@@ -59,9 +85,8 @@ const createStyles = (theme: Theme) =>
       gap: 1,
     },
     fullName: {
-      fontSize: 18,
+      fontSize: (textStyles as TextStyle)?.fontSize ?? 18,
       fontFamily: 'Poppins-SemiBold',
-      color: theme.textColor,
     },
     userName: {
       fontSize: 14,

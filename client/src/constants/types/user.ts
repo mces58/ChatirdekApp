@@ -15,7 +15,12 @@ export interface User {
   _id: string;
   fullName: string;
   userName: string;
+  email: string;
   profilePicture: string;
   about: string;
   createdAt: string;
+  gender: string;
+  friends: string[];
+  friendRequests: string[];
+  sentRequests: string[];
 }

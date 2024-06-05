@@ -12,6 +12,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { jwtDecode } from 'jwt-decode';
 
+import ArrowIcon from 'src/assets/icons/arrow';
 import { SettingLeafIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
@@ -86,11 +87,17 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
   return (
     <View style={styles.screenContainer}>
-      <Header title="Settings" icon={<SettingLeafIcon width={30} height={30} />} />
+      <Header
+        title="Settings"
+        icon={<SettingLeafIcon width={30} height={30} />}
+        disableIcon
+      />
 
       <ProfileContainer
         user={user!}
         onPress={() => navigation.navigate('Profile', { user })}
+        icon={<ArrowIcon width={20} height={20} direction="right" />}
+        textStyles={{ fontSize: 16, color: theme.textColor }}
       />
 
       <View style={styles.container}>
@@ -138,10 +145,9 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       flex: 1,
       backgroundColor: theme.backgroundColor,
       paddingTop: STATUSBAR_HEIGHT,
-      gap: 10,
+      gap: 5,
     },
     container: {
-      paddingVertical: 10,
       paddingHorizontal: 20,
     },
     listItemContainer: {

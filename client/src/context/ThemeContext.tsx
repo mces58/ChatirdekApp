@@ -11,6 +11,8 @@ export type Theme = {
   headerBackgroundColor: string;
   shadowColor?: string;
   bottomSheetBackgroundColor?: string;
+  cardColor?: string;
+  linearGradients?: string[];
 };
 
 const lightTheme: Theme = {
@@ -22,6 +24,11 @@ const lightTheme: Theme = {
   headerBackgroundColor: Colors.primaryColors.headerColor,
   shadowColor: Colors.primaryColors.dark,
   bottomSheetBackgroundColor: Colors.primaryColors.bottomSheetColor,
+  cardColor: Colors.primaryColors.beige,
+  linearGradients: [
+    Colors.primaryColors.linearGradient1,
+    Colors.primaryColors.linearGradient2,
+  ],
 };
 
 const darkTheme: Theme = {
@@ -33,6 +40,11 @@ const darkTheme: Theme = {
   headerBackgroundColor: Colors.primaryColors.dark,
   shadowColor: Colors.primaryColors.light,
   bottomSheetBackgroundColor: Colors.primaryColors.dark,
+  cardColor: Colors.primaryColors.dark,
+  linearGradients: [
+    Colors.primaryColors.linearGradient2,
+    Colors.primaryColors.linearGradient1,
+  ],
 };
 
 type ThemeContextType = {

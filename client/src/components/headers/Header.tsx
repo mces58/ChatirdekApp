@@ -1,17 +1,31 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { Colors } from 'src/constants/color/colors';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface HeaderProps {
   title: string;
   icon?: React.ReactNode;
   onIconPress?: () => void;
+  disableIcon?: boolean;
+  notificationCount?: number;
 }
 
-const Header: React.FC<HeaderProps> = ({ title, icon, onIconPress }) => {
+const Header: React.FC<HeaderProps> = ({
+  title,
+  icon,
+  onIconPress,
+  disableIcon = false,
+  notificationCount,
+}) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const [notifCount, setNotifCount] = useState(notificationCount);
+
+  useEffect(() => {
+    setNotifCount(notificationCount);
+  }, [notificationCount]);
 
   return (
     <View style={styles.container}>
@@ -19,8 +33,14 @@ const Header: React.FC<HeaderProps> = ({ title, icon, onIconPress }) => {
       <TouchableOpacity
         onPress={onIconPress ? onIconPress : () => {}}
         style={styles.icon}
+        disabled={disableIcon}
       >
         {icon}
+        {(notifCount ?? 0) > 0 && (
+          <View style={styles.notificationBadge}>
+            <Text style={styles.notificationText}>{notifCount}</Text>
+          </View>
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -57,5 +77,21 @@ const createStyles = (theme: Theme) =>
     icon: {
       marginRight: 5,
       marginTop: 5,
+    },
+    notificationBadge: {
+      position: 'absolute',
+      top: -7,
+      right: -7,
+      backgroundColor: Colors.primaryColors.danger,
+      borderRadius: 50,
+      width: 20,
+      height: 20,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    notificationText: {
+      fontFamily: 'Nunito-Bold',
+      color: Colors.primaryColors.beige,
+      fontSize: 12,
     },
   });
