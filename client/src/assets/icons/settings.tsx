@@ -8,6 +8,7 @@ import { useTheme } from 'src/context/ThemeContext';
 interface SettingIconProps {
   width: number;
   height: number;
+  customColor?: string;
   strokeWidth?: number;
   opacity?: number;
 }
@@ -212,7 +213,7 @@ const InfoIcon: React.FC<SettingIconProps> = (props) => {
 };
 
 const LocationCompanyIcon: React.FC<SettingIconProps> = (props) => {
-  const { width, height, strokeWidth = 3, opacity = 1 } = props;
+  const { width, height, customColor, strokeWidth = 3, opacity = 1 } = props;
   const { theme } = useTheme();
 
   const color =
@@ -224,42 +225,42 @@ const LocationCompanyIcon: React.FC<SettingIconProps> = (props) => {
     <View style={[{ width, height }]}>
       <Svg width="100%" height="100%" viewBox="0 0 48 48" fill="none" opacity={opacity}>
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M31.3766 31.5312C32.2372 31.4384 32.9064 30.7401 32.9625 29.8764C33.0921 28.2576 33.2619 25.2351 33.2619 20.5475C33.2619 17.0177 33.1652 14.4305 33.0623 12.6769C32.9594 10.9305 31.6668 9.5629 29.9225 9.4281C28.5126 9.32 26.5594 9.2274 24 9.2274S19.4874 9.32 18.0775 9.4281C16.3332 9.5618 15.0396 10.9306 14.9377 12.6769C14.8348 14.4305 14.7381 17.0167 14.7381 20.5475C14.7381 25.2341 14.9079 28.2576 15.0365 29.8764C15.0926 30.7405 15.7624 31.4389 16.6234 31.5312C17.3952 31.6176 18.4902 31.7123 19.9392 31.7802C20.4728 31.8013 20.916 31.3726 20.9127 30.8386C20.9127 29.4513 20.9446 28.5519 20.9786 27.988C21.0115 27.4394 21.3367 26.9856 21.8759 26.8827C22.3308 26.7973 23.0121 26.7222 24 26.7222S25.6692 26.7973 26.1241 26.8827C26.6633 26.9856 26.9885 27.4384 27.0215 27.988C27.0554 28.5519 27.0873 29.4513 27.0873 30.8386C27.084 31.3726 27.5272 31.8013 28.0608 31.7802C29.1685 31.7325 30.2743 31.6494 31.3766 31.5312Z"
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M20.9127 14.8875V15.9166"
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M27.0873 14.8875V15.9166"
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M20.9127 20.5475V21.5766"
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M27.0873 20.5475V21.5766"
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M42.5239 20.5475C42.5239 33.8425 28.7853 43.3196 24.9715 45.6947C24.3783 46.0702 23.6217 46.0702 23.0285 45.6947C19.2157 43.3195 5.4761 33.8425 5.4761 20.5475C5.4761 10.3172 13.7697 2.0237 24 2.0237S42.5239 10.3172 42.5239 20.5475Z"
@@ -271,7 +272,7 @@ const LocationCompanyIcon: React.FC<SettingIconProps> = (props) => {
 };
 
 const LogoutIcon: React.FC<SettingIconProps> = (props) => {
-  const { width, height, strokeWidth = 1.5, opacity = 1 } = props;
+  const { width, height, customColor, strokeWidth = 1.5, opacity = 1 } = props;
   const { theme } = useTheme();
 
   const color =
@@ -285,7 +286,7 @@ const LogoutIcon: React.FC<SettingIconProps> = (props) => {
         <Path
           d="m7.5 12.004 15.75 0"
           fill="none"
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={strokeWidth}
@@ -293,7 +294,7 @@ const LogoutIcon: React.FC<SettingIconProps> = (props) => {
         <Path
           d="m19.5 15.754 3.75 -3.75 -3.75 -3.75"
           fill="none"
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={strokeWidth}
@@ -301,7 +302,7 @@ const LogoutIcon: React.FC<SettingIconProps> = (props) => {
         <Path
           d="M15.75 16.5V21a1.437 1.437 0 0 1 -1.364 1.5H2.113A1.437 1.437 0 0 1 0.75 21V3a1.436 1.436 0 0 1 1.363 -1.5h12.273A1.437 1.437 0 0 1 15.75 3v4.5"
           fill="none"
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeWidth={strokeWidth}

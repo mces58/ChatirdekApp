@@ -200,7 +200,7 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       flex: 1,
       paddingHorizontal: 10,
       paddingVertical: 5,
-      gap: 15,
+      gap: 20,
     },
     linearGradient: {
       width: '100%',
@@ -215,7 +215,8 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     button: {
       backgroundColor: Colors.primaryColors.dark,
-      padding: 10,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
       borderRadius: 10,
     },
     buttonText: {
@@ -229,7 +230,7 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       paddingVertical: 5,
       alignSelf: 'center',
       position: 'absolute',
-      bottom: 70,
+      bottom: 60,
       borderTopWidth: 1,
       borderTopColor: theme.borderColor,
     },

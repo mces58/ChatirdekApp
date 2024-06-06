@@ -18,13 +18,13 @@ import IdIcon from 'src/assets/icons/id';
 import InfoIcon from 'src/assets/icons/info';
 import SetProfileValueBottomSheet from 'src/components/bottomSheet/SetProfileValueBottomSheet';
 import BackHeader from 'src/components/headers/BackHeader';
+import ListInfo from 'src/components/list/ListUserInfo';
 import ChangeProfileImage from 'src/components/profileContainer/ChangeProfileImage';
 import ProfileModal from 'src/components/profileContainer/ProfileModal';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import ProfilePhotoBottomSheet from './components/bottomSheets/ProfilePhotoBottomSheet';
-import ListUserInfo from './components/ListUserInfo';
 
 interface ProfileRouteProps {
   user: User;
@@ -76,27 +76,27 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         onPressIcon={() => setProfilePhotoBoxVisible(true)}
       />
 
-      <ListUserInfo
+      <ListInfo
         title="Full Name"
         text={user.fullName}
         icon={<IdIcon width={30} height={30} />}
         onPress={() => setFullNameBoxVisible(true)}
       />
 
-      <ListUserInfo
+      <ListInfo
         title="User Name"
         text={user.userName}
         icon={<GhostIcon width={30} height={30} />}
         onPress={() => setUserNameBoxVisible(true)}
       />
 
-      <ListUserInfo
+      <ListInfo
         title="About"
         text={user.about}
         icon={<InfoIcon width={30} height={30} strokeWidth={1} />}
       />
 
-      <ListUserInfo
+      <ListInfo
         title="Created At"
         text={user.createdAt.split('T')[0]}
         icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}

@@ -1,17 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  NativeModules,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 
 import ArrowIcon from 'src/assets/icons/arrow';
+import CalendarIcon from 'src/assets/icons/calendar';
+import DiamondIcon from 'src/assets/icons/diamond';
 import IdIcon from 'src/assets/icons/id';
-import PenIcon from 'src/assets/icons/pen';
-import AddMemberGroupBottomSheet from 'src/components/AddMemberGroup';
+import PlussIcon from 'src/assets/icons/plus';
+import QuotationIcon from 'src/assets/icons/quotation';
+import { LogoutIcon } from 'src/assets/icons/settings';
 import SetProfileValueBottomSheet from 'src/components/bottomSheet/SetProfileValueBottomSheet';
-import GroupModal from 'src/components/GroupModal';
+import BackHeader from 'src/components/headers/BackHeader';
+import ListInfo from 'src/components/list/ListUserInfo';
+import ProfileImage from 'src/components/profileContainer/ProfileImage';
+import { Colors } from 'src/constants/color/colors';
+import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
+
+import AddMemberGroupBottomSheet from './components/AddMemberGroupBottomSheet';
+import GroupMemberDetailModal from './components/GroupMemberDetailModal';
 
 interface GroupInfoRouteProps {
   groupId: string;
@@ -28,10 +47,15 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
   const [groupDescription, setGroupDescription] = useState('');
   const [groupNameBoxVisible, setGroupNameBoxVisible] = useState(false);
   const [groupDescriptionBoxVisible, setGroupDescriptionBoxVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [groupMemberDetailModalVisible, setGroupMemberDetailModalVisible] =
+    useState(false);
   const [selectedUser, setSelectedUser] = useState({} as any);
-  const [addMemberVisible, setAddMemberVisible] = useState(false);
+  const [addMemberBottomSheetVisible, setAddMemberBottomSheetVisible] = useState(false);
   const [group, setGroup] = useState({} as any);
+  const { theme } = useTheme();
+  const { StatusBarManager } = NativeModules;
+  const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+  const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
 
   const getGroup = async () => {
     try {
@@ -62,354 +86,99 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView
-      style={{
-        flex: 1,
-        backgroundColor: 'white',
-      }}
-      contentContainerStyle={{
-        flexGrow: 1,
-        paddingVertical: 20,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View
-        style={{
-          width: '100%',
-          backgroundColor: '#499dff',
-          borderBottomWidth: 1,
-          borderBottomColor: '#f2f2f2',
-          paddingTop: 52,
-          paddingBottom: 16,
-          paddingHorizontal: 16,
-        }}
-      >
-        <View
-          style={{
-            width: '100%',
-            flexDirection: 'row',
-            alignItems: 'center',
-          }}
-        >
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ArrowIcon width={30} height={30} color="white" direction="left" />
-          </TouchableOpacity>
-          <Text
-            style={{
-              fontSize: 24,
-              fontWeight: 'bold',
-              color: 'white',
-            }}
-          >
-            {groupName}
-          </Text>
-        </View>
-      </View>
+    <ScrollView style={styles.screenContainer} showsVerticalScrollIndicator={false}>
+      <BackHeader
+        title={groupName}
+        icon={<ArrowIcon width={30} height={30} direction="left" />}
+        componentSize={{ height: 90 }}
+        onPress={() => navigation.goBack()}
+      />
 
-      <View
-        style={{
-          flex: 1,
-          alignItems: 'center',
-          paddingHorizontal: 10,
-        }}
-      >
-        <TouchableOpacity
-          style={{
-            width: '95%',
-            marginTop: 50,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: 'lightgray',
-            paddingBottom: 15,
-          }}
+      <View style={styles.container}>
+        <ListInfo
+          title="Group Name"
+          text={groupName}
+          icon={<IdIcon width={30} height={30} strokeWidth={3} />}
           onPress={() => setGroupNameBoxVisible(true)}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 25,
-            }}
-          >
-            <IdIcon width={30} height={30} color="black" />
-            <View
-              style={{
-                gap: 5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                  color: 'gray',
-                }}
-              >
-                Group Name:
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text>{groupName}</Text>
-              </View>
-            </View>
-          </View>
+        />
 
-          <PenIcon width={25} height={25} color="black" />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={{
-            width: '95%',
-            marginTop: 50,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: 'lightgray',
-            paddingBottom: 15,
-          }}
+        <ListInfo
+          title="Group Description"
+          text={groupDescription}
+          icon={<QuotationIcon width={30} height={30} />}
           onPress={() => setGroupDescriptionBoxVisible(true)}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 25,
-            }}
-          >
-            <IdIcon width={30} height={30} color="black" />
-            <View
-              style={{
-                gap: 5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                  color: 'gray',
-                }}
-              >
-                Group Description:
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text>{groupDescription}</Text>
-              </View>
-            </View>
-          </View>
+        />
 
-          <PenIcon width={25} height={25} color="black" />
-        </TouchableOpacity>
+        <ListInfo
+          title="Created At"
+          text={group.createdAt?.split('T')[0]}
+          icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
+          disabled
+        />
 
-        <View
-          style={{
-            width: '95%',
-            marginTop: 50,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: 'lightgray',
-            paddingBottom: 15,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 25,
-            }}
-          >
-            <IdIcon width={30} height={30} color="black" />
-            <View
-              style={{
-                gap: 5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                  color: 'gray',
-                }}
-              >
-                Created At:
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text>{group?.createdAt?.split('T')[0]} </Text>
-              </View>
-            </View>
-          </View>
-        </View>
+        <ListInfo
+          title="Group Admin"
+          text={group.owner}
+          icon={<DiamondIcon width={30} height={30} />}
+          disabled
+        />
 
-        <View
-          style={{
-            width: '95%',
-            marginTop: 50,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            paddingHorizontal: 10,
-            borderBottomWidth: 1,
-            borderBottomColor: 'lightgray',
-            paddingBottom: 15,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              gap: 25,
-            }}
-          >
-            <IdIcon width={30} height={30} color="black" />
-            <View
-              style={{
-                gap: 5,
-              }}
-            >
-              <Text
-                style={{
-                  fontSize: 12,
-                  fontWeight: 'bold',
-                  color: 'gray',
-                }}
-              >
-                Admin:
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                }}
-              >
-                <Text></Text>
-              </View>
-            </View>
-          </View>
-        </View>
-
-        <View
-          style={{
-            width: '100%',
-            marginTop: 20,
-          }}
-        >
-          <View
-            style={{
-              width: '100%',
-              paddingVertical: 10,
-              paddingHorizontal: 20,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 16,
-                fontWeight: 'bold',
-                color: 'black',
-              }}
-            >
+        <View style={styles.body}>
+          <View style={styles.memberHeaderTextContainer}>
+            <Text style={styles.memberHeaderText}>
               {group?.members?.length > 1
                 ? group?.members?.length + ' Members'
                 : group?.members?.length + ' Member'}
             </Text>
           </View>
-          <View
-            style={{
-              width: '100%',
-              paddingHorizontal: 20,
-              gap: 10,
-            }}
-          >
-            <View
-              style={{
-                width: '100%',
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                gap: 10,
-                paddingVertical: 20,
-                borderBottomWidth: 1,
-                borderBottomColor: 'lightgray',
-              }}
-            >
+          <View style={styles.memberContainer}>
+            <View style={styles.addMemberContainer}>
               <TouchableOpacity
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  gap: 10,
-                }}
-                onPress={() => setAddMemberVisible(true)}
+                style={[styles.addMemberButton, styles.shadow]}
+                onPress={() => setAddMemberBottomSheetVisible(true)}
               >
-                <Text>icon</Text>
-                <Text>Add Members</Text>
+                <PlussIcon
+                  width={20}
+                  height={20}
+                  customColor={Colors.primaryColors.dark}
+                />
+                <Text style={styles.addMemberButtonText}>Add Members</Text>
               </TouchableOpacity>
 
-              <TouchableOpacity onPress={handleLeaveGroup}>
-                <Text>Leave</Text>
+              <TouchableOpacity
+                style={[styles.leaveGroupButton, styles.shadow]}
+                onPress={handleLeaveGroup}
+              >
+                <Text style={styles.leaveGroupButtonText}>Leave</Text>
+                <LogoutIcon
+                  width={20}
+                  height={20}
+                  customColor={Colors.primaryColors.beige}
+                />
               </TouchableOpacity>
             </View>
 
-            {group.members?.map((user, index) => {
+            {group.members?.map((user: User, index: number) => {
               return (
                 <TouchableOpacity
                   key={index}
-                  style={{
-                    width: '100%',
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 10,
-                    paddingVertical: 10,
-                    borderBottomWidth: index === group.members.length - 1 ? 0 : 1,
-                    borderBottomColor: 'lightgray',
-                  }}
+                  style={[
+                    styles.userContainer,
+                    { borderBottomWidth: index === group.members.length - 1 ? 0 : 1 },
+                  ]}
                   onPress={() => {
                     if (authUser?._id !== user._id) {
-                      setModalVisible(true);
+                      setGroupMemberDetailModalVisible(true);
                       setSelectedUser(user);
                     }
                   }}
                 >
-                  <Image
-                    source={{
-                      uri: user.profilePicture,
-                    }}
-                    style={{
-                      width: 50,
-                      height: 50,
-                      borderRadius: 20,
-                    }}
+                  <ProfileImage
+                    imageUri={user.profilePicture}
+                    componentSize={{ width: 50, height: 50 }}
                   />
 
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      fontWeight: 'bold',
-                      color: 'black',
-                    }}
-                  >
+                  <Text style={styles.userName}>
                     {authUser?._id === user._id ? 'You' : user.fullName}
                   </Text>
                 </TouchableOpacity>
@@ -445,20 +214,20 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
         />
       )}
 
-      {modalVisible && (
-        <GroupModal
-          onClose={() => setModalVisible(false)}
-          isVisible={modalVisible}
+      {groupMemberDetailModalVisible && (
+        <GroupMemberDetailModal
+          onClose={() => setGroupMemberDetailModalVisible(false)}
+          isVisible={groupMemberDetailModalVisible}
           user={selectedUser}
           navigation={navigation}
           groupId={group?._id}
         />
       )}
 
-      {addMemberVisible && (
+      {addMemberBottomSheetVisible && (
         <AddMemberGroupBottomSheet
-          isVisible={addMemberVisible}
-          onSwipeDown={() => setAddMemberVisible(false)}
+          isVisible={addMemberBottomSheetVisible}
+          onSwipeDown={() => setAddMemberBottomSheetVisible(false)}
           navigation={navigation}
           groupId={group?._id}
         />
@@ -468,3 +237,95 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
 };
 
 export default GroupInfo;
+
+const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
+  StyleSheet.create({
+    screenContainer: {
+      flex: 1,
+      backgroundColor: theme.backgroundColor,
+      paddingTop: STATUSBAR_HEIGHT,
+    },
+    container: {
+      flex: 1,
+      paddingHorizontal: 10,
+      paddingBottom: 30,
+    },
+    body: {
+      width: '100%',
+      marginTop: 20,
+    },
+    memberHeaderTextContainer: {
+      width: '100%',
+      paddingHorizontal: 20,
+    },
+    memberHeaderText: {
+      fontFamily: 'Poppins-Bold',
+      fontSize: 18,
+      color: theme.textColor,
+    },
+    memberContainer: {
+      width: '100%',
+      paddingHorizontal: 20,
+      gap: 10,
+    },
+    addMemberContainer: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      paddingVertical: 10,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.borderColor,
+    },
+    addMemberButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      backgroundColor: Colors.primaryColors.headerColor,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      borderRadius: 10,
+    },
+    addMemberButtonText: {
+      color: Colors.primaryColors.dark,
+      fontSize: 14,
+      fontFamily: 'Nunito-Bold',
+    },
+    leaveGroupButton: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      backgroundColor: Colors.primaryColors.linearGradient2,
+      paddingHorizontal: 10,
+      paddingVertical: 10,
+      borderRadius: 10,
+    },
+    leaveGroupButtonText: {
+      color: Colors.primaryColors.beige,
+      fontSize: 14,
+      fontFamily: 'Nunito-Bold',
+    },
+    userContainer: {
+      width: '100%',
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: 10,
+      paddingVertical: 10,
+      borderBottomColor: theme.borderColor,
+    },
+    userName: {
+      fontFamily: 'Nunito-Bold',
+      fontSize: 16,
+      color: theme.textColor,
+    },
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 3,
+    },
+  });

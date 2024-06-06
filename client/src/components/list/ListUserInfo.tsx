@@ -4,7 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import PenIcon from 'src/assets/icons/pen';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
-interface ListUserInfoProps {
+interface ListInfoProps {
   title: string;
   text: string;
   icon: React.ReactNode;
@@ -12,7 +12,7 @@ interface ListUserInfoProps {
   disabled?: boolean;
 }
 
-const ListUserInfo: React.FC<ListUserInfoProps> = ({
+const ListInfo: React.FC<ListInfoProps> = ({
   title,
   text,
   icon,
@@ -39,7 +39,7 @@ const ListUserInfo: React.FC<ListUserInfoProps> = ({
   );
 };
 
-export default ListUserInfo;
+export default ListInfo;
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
