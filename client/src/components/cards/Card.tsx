@@ -13,7 +13,7 @@ const Card: React.FC<CardProps> = ({ title, text, icon }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, styles.shadow]}>
       <View style={styles.textContainer}>
         <Text style={styles.title}>{title}:</Text>
         <Text style={styles.text}>{text}</Text>
@@ -53,5 +53,15 @@ const createStyles = (theme: Theme) =>
       fontFamily: 'Poppins-Regular',
       fontSize: 14,
       color: theme.textColor,
+    },
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 3,
     },
   });

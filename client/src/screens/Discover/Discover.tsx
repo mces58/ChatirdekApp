@@ -9,21 +9,18 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
-import { LinearGradient } from 'expo-linear-gradient';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { EarthIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
 import Pagination from 'src/components/pagination/Pagination';
-import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
-import { Colors } from 'src/constants/color/colors';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
-import { GetGradientStartEnd } from 'src/utils/rotate';
 
 import RequestBoxBottomSheet from './components/RequestBoxBottomSheet';
+import UserCard from './components/UserCard';
 
 interface DiscoverProps {
   navigation: any;
@@ -82,31 +79,13 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   };
 
   const renderItem = (user: User, index: number) => (
-    <LinearGradient
-      key={user._id ?? index}
-      colors={[...(theme.linearGradients ?? [])]}
-      {...GetGradientStartEnd(index)}
-      style={[styles.linearGradient, styles.shadow]}
-    >
-      <TouchableOpacity
-        style={styles.userContainer}
-        onPress={() => {
-          navigation.navigate('UserProfile', { user });
-        }}
-      >
-        <ProfileContainer
-          user={user}
-          componentSize={{ width: 55, height: 55 }}
-          textStyles={{ fontSize: 14 }}
-          showUserNames={false}
-          disabled
-        />
-
-        <TouchableOpacity style={styles.button} onPress={() => handleConnect(user._id)}>
-          <Text style={styles.buttonText}>Add Friend</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </LinearGradient>
+    <UserCard
+      key={index}
+      index={index}
+      user={user}
+      onPressCard={() => navigation.navigate('UserProfile', { user })}
+      onPressAddFriend={handleConnect}
+    />
   );
 
   return (
@@ -201,28 +180,6 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       paddingHorizontal: 10,
       paddingVertical: 5,
       gap: 20,
-    },
-    linearGradient: {
-      width: '100%',
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      borderRadius: 20,
-    },
-    userContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-    },
-    button: {
-      backgroundColor: Colors.primaryColors.dark,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 10,
-    },
-    buttonText: {
-      fontFamily: 'Nunito-SemiBold',
-      fontSize: 12,
-      color: Colors.primaryColors.light,
     },
     paginationContainer: {
       width: '100%',

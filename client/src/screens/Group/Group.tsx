@@ -72,6 +72,7 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
           <GroupCard
             key={index}
             group={group}
+            index={index}
             onPressCard={() => navigation.navigate('GroupChat', { groupId: group._id })}
           />
         ))}

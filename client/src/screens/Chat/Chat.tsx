@@ -1,16 +1,13 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import {
   Alert,
-  Button,
-  Image,
   Keyboard,
   KeyboardAvoidingView,
+  NativeModules,
   Platform,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
-  TouchableOpacity,
   View,
 } from 'react-native';
 
@@ -18,6 +15,11 @@ import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 
 import ArrowIcon from 'src/assets/icons/arrow';
+import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
+import SendInput from 'src/components/inputs/SendInput';
+import { Colors } from 'src/constants/color/colors';
+import { Message } from 'src/constants/types/message';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import { BASE_URL } from 'src/services/baseUrl';
 
 type ChatRouteProps = {
@@ -31,11 +33,15 @@ type ChatProps = {
 };
 
 const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const scrollViewRef = useRef<ScrollView>(null);
   const [receiver, setReceiver] = useState({} as any);
   //const { authUser } = useAuthContext();
+  const { theme } = useTheme();
+  const { StatusBarManager } = NativeModules;
+  const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
+  const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
 
   const handleInputText = (text: string) => {
     setInputMessage(text);
@@ -67,7 +73,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
         setMessages((prevMessages) => [...prevMessages, newMessage]);
 
         setInputMessage('');
-      } catch (error) {
+      } catch (error: any) {
         if (error.response && error.response.status === 403) {
           Alert.alert('Error', 'You can only send messages to your friends.');
           setInputMessage('');
@@ -116,26 +122,27 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
     };
   }, []);
 
-  const renderItem = ({ item }) => {
+  const renderItem = (message: Message) => {
     return (
       <View
-        key={item._id}
-        style={
-          item.user._id === route.params.receiverId
+        key={message._id}
+        style={[
+          styles.shadow,
+          message.user._id === route.params.receiverId
             ? styles.theirMessage
-            : styles.myMessage
-        }
+            : styles.myMessage,
+        ]}
       >
-        <Text>{item.text}</Text>
+        <Text style={styles.text}>{message.text}</Text>
         <Text
           style={[
             styles.timestamp,
-            item.user._id === route.params.userId
+            message.user._id === route.params.userId
               ? styles.myTimestamp
               : styles.theirTimestamp,
           ]}
         >
-          {new Date(item.createdAt).toLocaleTimeString([], {
+          {new Date(message.createdAt).toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           })}
@@ -151,18 +158,14 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       keyboardVerticalOffset={0}
     >
       <View style={styles.container}>
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
-            <ArrowIcon width={30} height={30} color="black" direction="left" />
-          </TouchableOpacity>
-          <View style={styles.userInfo}>
-            <Image
-              source={{ uri: receiver.profilePicture }}
-              style={{ width: 50, height: 50, borderRadius: 25 }}
-            />
-            <Text>{receiver.fullName}</Text>
-          </View>
-        </View>
+        <BackHeaderWithImage
+          user={receiver}
+          componentSize={{ height: 95 }}
+          icon={<ArrowIcon width={30} height={30} direction="left" />}
+          onPressIcon={() => navigation.goBack()}
+          imageComponentSize={{ height: 50, width: 50 }}
+          onPressHeader={() => navigation.navigate('UserProfile', { user: receiver })}
+        />
 
         <ScrollView
           ref={scrollViewRef}
@@ -172,17 +175,13 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           style={styles.messageList}
           showsVerticalScrollIndicator={false}
         >
-          {messages.map((item) => renderItem({ item }))}
+          {messages.map((message) => renderItem(message))}
         </ScrollView>
-        <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            value={inputMessage}
-            onChangeText={handleInputText}
-            placeholder="Type your message"
-          />
-          <Button title="Send" onPress={sendMessage} />
-        </View>
+        <SendInput
+          inputMessage={inputMessage}
+          handleInputText={handleInputText}
+          sendMessage={sendMessage}
+        />
       </View>
     </KeyboardAvoidingView>
   );
@@ -190,86 +189,56 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
 
 export default Chat;
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f0f0f0',
-    marginTop: 50,
-  },
-  messageContainer: {
-    backgroundColor: '#fff',
-    padding: 10,
-    borderRadius: 10,
-    marginVertical: 5,
-    marginHorizontal: 10,
-    alignSelf: 'flex-start',
-  },
-  messageText: {
-    fontSize: 16,
-  },
-  messageTime: {
-    fontSize: 12,
-    color: '#888',
-    textAlign: 'right',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    padding: 10,
-    borderTopWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor: '#fff',
-  },
-  input: {
-    flex: 1,
-    padding: 10,
-    borderColor: '#ccc',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginRight: 10,
-  },
-  myMessage: {
-    backgroundColor: 'lightblue',
-    padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    alignSelf: 'flex-end',
-  },
-  theirMessage: {
-    backgroundColor: '#fff',
-    padding: 10,
-    marginVertical: 5,
-    marginHorizontal: 10,
-    borderRadius: 10,
-    alignSelf: 'flex-start',
-  },
-  timestamp: {
-    fontSize: 12,
-    color: '#888',
-    marginTop: 5,
-  },
-  theirTimestamp: {
-    textAlign: 'left',
-  },
-  myTimestamp: {
-    textAlign: 'right',
-  },
-  messageList: {
-    paddingHorizontal: 10,
-    backgroundColor: 'red',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 10,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-  },
-  userInfo: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 10,
-    gap: 10,
-  },
-});
+const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.backgroundColor,
+      paddingTop: STATUSBAR_HEIGHT,
+    },
+    messageList: {
+      paddingHorizontal: 15,
+      paddingVertical: 15,
+    },
+    myMessage: {
+      backgroundColor: Colors.primaryColors.linearGradient2,
+      marginVertical: 5,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      borderRadius: 15,
+      alignSelf: 'flex-end',
+    },
+    theirMessage: {
+      backgroundColor: Colors.primaryColors.linearGradient1,
+      marginVertical: 5,
+      paddingHorizontal: 15,
+      paddingVertical: 10,
+      borderRadius: 15,
+      alignSelf: 'flex-start',
+    },
+    text: {
+      fontFamily: 'Poppins-Regular',
+      fontSize: 14,
+      color: Colors.primaryColors.dark,
+    },
+    timestamp: {
+      fontSize: 11,
+      color: Colors.primaryColors.dark,
+    },
+    myTimestamp: {
+      textAlign: 'right',
+    },
+    theirTimestamp: {
+      textAlign: 'left',
+    },
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 3,
+    },
+  });

@@ -24,3 +24,12 @@ export interface User {
   friendRequests: string[];
   sentRequests: string[];
 }
+
+export interface AuthUser {
+  _id: string;
+  fullName: string;
+  userName: string;
+  profilePicture: string;
+  createdAt: string;
+  token: string;
+}

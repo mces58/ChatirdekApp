@@ -1,31 +1,44 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import { LinearGradient } from 'expo-linear-gradient';
+
 import { Colors } from 'src/constants/color/colors';
 import { Group } from 'src/constants/types/group';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { GetGradientStartEnd } from 'src/utils/rotate';
 
 interface GroupCardProps {
   group: Group;
   onPressCard: () => void;
+  index: number;
 }
 
-const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <TouchableOpacity style={[styles.cardContainer, styles.shadow]} onPress={onPressCard}>
-      <View style={styles.row}>
-        <View style={styles.groupContainer}>
-          <Text style={styles.groupNameText}>{group.name}</Text>
-          <Text style={styles.lastMessageText}>{group.createdAt}</Text>
+    <LinearGradient
+      colors={[
+        Colors.primaryColors.linearGradient1,
+        Colors.primaryColors.linearGradient2,
+      ]}
+      style={[styles.cardContainer, styles.shadow]}
+      {...GetGradientStartEnd(index)}
+    >
+      <TouchableOpacity onPress={onPressCard}>
+        <View style={styles.row}>
+          <View style={styles.groupContainer}>
+            <Text style={styles.groupNameText}>{group.name}</Text>
+            <Text style={styles.lastMessageText}>{group.createdAt}</Text>
+          </View>
+          <Text style={styles.groupMemberText}>
+            {group.members.length} member{group.members.length > 1 ? 's' : ''}
+          </Text>
         </View>
-        <Text style={styles.groupMemberText}>
-          {group.members.length} member{group.members.length > 1 ? 's' : ''}
-        </Text>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </LinearGradient>
   );
 };
 
@@ -37,7 +50,6 @@ const createStyles = (theme: Theme) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      backgroundColor: theme.borderColor,
       width: '100%',
       paddingVertical: 20,
       paddingHorizontal: 20,
