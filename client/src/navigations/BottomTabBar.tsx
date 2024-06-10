@@ -61,7 +61,7 @@ const BottomTabNavigator: React.FC = () => {
           bottom: insets.bottom,
           left: 0,
           right: 0,
-          height: Platform.OS === 'ios' ? 70 : 70,
+          height: Platform.OS === 'ios' ? 70 : 80,
           borderTopLeftRadius: 25,
           borderTopRightRadius: 25,
           width: width,
@@ -77,7 +77,7 @@ const BottomTabNavigator: React.FC = () => {
               style={[
                 styles.linearGradint,
                 {
-                  height: Platform.OS === 'ios' ? 70 : 70,
+                  height: Platform.OS === 'ios' ? 80 : 80,
                 },
               ]}
             />

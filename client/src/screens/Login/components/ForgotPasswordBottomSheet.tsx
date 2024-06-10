@@ -4,7 +4,6 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
   useWindowDimensions,
   View,
 } from 'react-native';
@@ -18,17 +17,25 @@ import {
 import axios from 'axios';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
-import LoadingIndicator from 'src/components/Loading';
+import Button from 'src/components/button/Button';
+import LoadingIndicator from 'src/components/loading/Loading';
+import { Colors } from 'src/constants/color/colors';
+import { ForgotPassword } from 'src/constants/types/user';
 import { BASE_URL } from 'src/services/baseUrl';
 
-type ForgotPasswordProps = {
+import isEmail from 'validator/lib/isEmail';
+
+type ForgotPasswordBottomSheetProps = {
   isVisible: boolean;
   onSwipeDown: (value: boolean) => void;
 };
 
-const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown }) => {
+const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
+  isVisible,
+  onSwipeDown,
+}) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
-  const [userData, setUserData] = useState({
+  const [userData, setUserData] = useState<ForgotPassword>({
     userName: '',
     email: '',
   });
@@ -62,14 +69,22 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
       Alert.alert('Time expired', 'The verification code has expired.');
       setValidationBoxVisible(false);
       setStep(1);
-      setCountdown(maxTime); // Sayaç resetlenir
+      setCountdown(maxTime);
       setVerificationCode('');
     }
 
     return () => clearInterval(timer);
   }, [step, countdown]);
 
-  const handleSendEmail = async (userData: { userName: string; email: string }) => {
+  const handleSendEmail = async (userData: ForgotPassword) => {
+    if (!userData.userName || !userData.email) {
+      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+    }
+
+    if (isEmail(userData.email) === false) {
+      return Alert.alert('Error', 'Please enter a valid email address', [{ text: 'OK' }]);
+    }
+
     setLoading(true);
     try {
       const response = await axios.post(`${BASE_URL}/auth/password/forgot`, userData);
@@ -77,7 +92,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
       if (response.data.success) {
         setValidationBoxVisible(true);
         setStep(2);
-        setCountdown(maxTime); // Sayaç resetlenir
+        setCountdown(maxTime);
         setVerificationCode(response.data.code);
 
         setResetData({
@@ -88,8 +103,7 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
         Alert.alert('Error', response.data.message);
       }
     } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'An error occurred while sending the email.');
+      Alert.alert('Error', 'User not found. Please check your username and email');
     } finally {
       setLoading(false);
     }
@@ -101,18 +115,36 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
   };
 
   const handleVerifyCode = async (code: string) => {
+    if (!code) {
+      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+    }
+
     if (code === verificationCode) {
       setValidationBoxVisible(false);
       setResetPasswordBoxVisible(true);
       setStep(1);
-      setCountdown(maxTime); // Sayaç resetlenir
+      setCountdown(maxTime);
     } else {
       Alert.alert('Error', 'Verification code is incorrect.');
     }
   };
 
   const handleResetPassword = async () => {
-    setLoading(true); // Yükleme başladığında spinner'ı göster
+    if (!resetData.password || !resetData.confirmPassword) {
+      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+    }
+
+    if (resetData.password.length < 6) {
+      return Alert.alert('Error', 'Password must be at least 6 characters long', [
+        { text: 'OK' },
+      ]);
+    }
+
+    if (resetData.password !== resetData.confirmPassword) {
+      return Alert.alert('Error', 'Passwords do not match', [{ text: 'OK' }]);
+    }
+
+    setLoading(true);
     try {
       const response = await axios.put(`${BASE_URL}/auth/password/reset`, resetData);
 
@@ -127,68 +159,46 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
       console.error(error);
       Alert.alert('Error', 'An error occurred while resetting the password.');
     } finally {
-      setLoading(false); // İşlem tamamlandığında spinner'ı gizle
+      setLoading(false);
     }
   };
 
   const content = (
-    <View style={{ flex: 1, padding: 20 }}>
-      <View style={{ alignItems: 'center', marginBottom: 20 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
-          Forgot Password
-        </Text>
-        <Text style={{ textAlign: 'center', color: 'gray' }}>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Forgot Password</Text>
+        <Text style={styles.subHeader}>
           Enter your username and email to receive a verification code.
         </Text>
       </View>
-      <View style={{ marginBottom: 20 }}>
-        <Text style={{ marginBottom: 5 }}>Username</Text>
+
+      <View style={styles.textInputContainer}>
+        <Text style={styles.text}>Username</Text>
         <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 5,
-            padding: 10,
-            marginTop: 10,
-          }}
+          style={styles.textInput}
           placeholder="Enter your username"
           value={userData.userName}
           onChangeText={(text) => setUserData({ ...userData, userName: text })}
         />
       </View>
-      <View style={{ marginBottom: 20 }}>
-        <Text style={{ marginBottom: 5 }}>E-mail</Text>
+
+      <View style={styles.textInputContainer}>
+        <Text style={styles.text}>E-mail</Text>
         <TextInput
-          style={{
-            borderWidth: 1,
-            borderColor: 'black',
-            borderRadius: 5,
-            padding: 10,
-            marginTop: 10,
-          }}
+          style={styles.textInput}
           placeholder="Enter your e-mail"
           value={userData.email}
           onChangeText={(text) => setUserData({ ...userData, email: text })}
         />
       </View>
-      <TouchableOpacity
-        style={{
-          backgroundColor: 'blue',
-          padding: 10,
-          borderRadius: 5,
-          alignItems: 'center',
-          marginTop: 20,
-        }}
-        onPress={() => handleSendEmail(userData)}
-      >
-        <Text style={{ color: 'white' }}>Send</Text>
-      </TouchableOpacity>
+
+      <Button title="Send" onPress={() => handleSendEmail(userData)} />
     </View>
   );
 
   const validationBox = (
     <View style={styles.root}>
-      <Text style={styles.title}>Verification</Text>
+      <Text style={styles.headerText}>Verification</Text>
       <CodeField
         ref={ref}
         {...props}
@@ -208,121 +218,45 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
           </Text>
         )}
       />
-      <Text style={{ textAlign: 'center', marginTop: 20, fontSize: 18 }}>
+      <Text style={styles.time}>
         Time remaining: {Math.floor(countdown / 60)}:{('0' + (countdown % 60)).slice(-2)}
       </Text>
-      <TouchableOpacity
-        style={{
-          backgroundColor: 'blue',
-          padding: 10,
-          borderRadius: 5,
-          alignItems: 'center',
-          justifyContent: 'center',
-          marginTop: 40,
-        }}
-        onPress={() => handleVerifyCode(value)}
-      >
-        <Text style={{ color: 'white', fontSize: 16 }}>Verify Code</Text>
-      </TouchableOpacity>
+      <Button title="Verify Code" onPress={() => handleVerifyCode(value)} />
     </View>
   );
 
   const resetPasswordBox = (
-    <View
-      style={{
-        flex: 1,
-        padding: 20,
-      }}
-    >
-      <View
-        style={{
-          alignItems: 'center',
-          marginBottom: 20,
-        }}
-      >
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            marginBottom: 10,
-          }}
-        >
-          Reset Password
-        </Text>
-        <Text
-          style={{
-            textAlign: 'center',
-            color: 'gray',
-          }}
-        >
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Reset Password</Text>
+        <Text style={styles.subHeader}>
           Set the new password for your account so you can log in again.
         </Text>
       </View>
 
-      <View>
-        <View
-          style={{
-            marginBottom: 30,
-          }}
-        >
-          <Text
-            style={{
-              marginBottom: 5,
-            }}
-          >
-            New Password
-          </Text>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: 'black',
-              borderRadius: 5,
-              padding: 10,
-              marginTop: 10,
-            }}
-            placeholder="Enter your new password"
-            onChangeText={(text) => setResetData({ ...resetData, password: text })}
-            secureTextEntry={true}
-          />
-        </View>
-        <View
-          style={{
-            marginBottom: 30,
-          }}
-        >
-          <Text>Confirm New Password</Text>
-          <TextInput
-            style={{
-              borderWidth: 1,
-              borderColor: 'black',
-              borderRadius: 5,
-              padding: 10,
-              marginTop: 10,
-            }}
-            placeholder="Confirm your new password"
-            onChangeText={(text) => setResetData({ ...resetData, confirmPassword: text })}
-            secureTextEntry={true}
-          />
-        </View>
-        <TouchableOpacity
-          style={{
-            backgroundColor: 'blue',
-            padding: 10,
-            borderRadius: 5,
-            alignItems: 'center',
-            marginTop: 20,
-          }}
-          onPress={handleResetPassword}
-        >
-          <Text
-            style={{
-              color: 'white',
-            }}
-          >
-            Reset Password
-          </Text>
-        </TouchableOpacity>
+      <View style={styles.textInputContainer}>
+        <Text style={styles.text}>New Password</Text>
+        <TextInput
+          style={styles.textInput}
+          value={resetData.password}
+          placeholder="Enter your new password"
+          onChangeText={(text) => setResetData({ ...resetData, password: text })}
+          secureTextEntry={true}
+        />
       </View>
+
+      <View style={styles.textInputContainer}>
+        <Text style={styles.text}>Confirm New Password</Text>
+        <TextInput
+          style={styles.textInput}
+          value={resetData.confirmPassword}
+          placeholder="Confirm your new password"
+          onChangeText={(text) => setResetData({ ...resetData, confirmPassword: text })}
+          secureTextEntry={true}
+        />
+      </View>
+
+      <Button title="Reset Password" onPress={handleResetPassword} />
     </View>
   );
 
@@ -332,17 +266,13 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
       isTransparent={true}
       onSwipeDown={() => onSwipeDown(false)}
       animationType="slide"
-      modalStyle={{
-        height: validationBoxVisible ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.6,
-        backgroundColor: 'white',
-        borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        padding: 20,
-      }}
+      modalStyle={[
+        styles.bottomSheet,
+        styles.shadow,
+        {
+          height: validationBoxVisible ? SCREEN_HEIGHT * 0.4 : SCREEN_HEIGHT * 0.6,
+        },
+      ]}
       content={
         validationBoxVisible ? (
           validationBox
@@ -356,22 +286,95 @@ const ForgotPassword: React.FC<ForgotPasswordProps> = ({ isVisible, onSwipeDown 
   );
 };
 
-export default ForgotPassword;
+export default ForgotPasswordBottomSheet;
 
 const styles = StyleSheet.create({
-  root: { flex: 1, padding: 20 },
-  title: { textAlign: 'center', fontSize: 30 },
-  codeFieldRoot: { marginTop: 20 },
+  bottomSheet: {
+    backgroundColor: Colors.primaryColors.beige,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 20,
+  },
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    gap: 30,
+  },
+  headerContainer: {
+    width: '80%',
+    alignItems: 'center',
+    alignSelf: 'center',
+    gap: 5,
+  },
+  headerText: {
+    fontFamily: 'Poppins-Bold',
+    fontSize: 20,
+    textAlign: 'center',
+    color: Colors.primaryColors.dark,
+  },
+  subHeader: {
+    fontFamily: 'Nunito-Medium',
+    fontSize: 14,
+    textAlign: 'center',
+    color: Colors.primaryColors.textMuted,
+  },
+  textInputContainer: {
+    gap: 10,
+  },
+  text: {
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 16,
+    color: Colors.primaryColors.dark,
+  },
+  textInput: {
+    width: '100%',
+    height: 50,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: Colors.primaryColors.dark,
+    borderRadius: 20,
+  },
+  root: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    gap: 20,
+  },
+  codeFieldRoot: {
+    marginVertical: 5,
+  },
   cell: {
     width: 40,
     height: 40,
-    lineHeight: 38,
+    lineHeight: 35,
     fontSize: 24,
     borderWidth: 2,
-    borderColor: '#00000030',
+    borderColor: Colors.primaryColors.textMuted,
     textAlign: 'center',
+    borderRadius: 10,
   },
   focusCell: {
-    borderColor: '#000',
+    borderColor: Colors.primaryColors.dark,
+  },
+  time: {
+    fontFamily: 'Poppins-SemiBold',
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  shadow: {
+    shadowColor: Colors.primaryColors.dark,
+    shadowOffset: {
+      width: 0,
+      height: 5,
+    },
+    shadowOpacity: 0.34,
+    shadowRadius: 6.27,
+    elevation: 10,
   },
 });

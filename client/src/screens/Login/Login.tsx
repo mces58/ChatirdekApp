@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -21,15 +22,19 @@ import Animated, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
+import { StatusBar } from 'expo-status-bar';
 import LottieView from 'lottie-react-native';
 
 import loginAnimation from 'src/assets/animatons/login.json';
+import Button from 'src/components/button/Button';
+import { Colors } from 'src/constants/color/colors';
+import { LoginData } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useSocketContext } from 'src/context/SocketContext';
 import { BASE_URL } from 'src/services/baseUrl';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
-import ForgotPassword from './ForgotPassword';
+import ForgotPasswordBottomSheet from './components/ForgotPasswordBottomSheet';
 
 type LoginProps = {
   navigation: any;
@@ -37,9 +42,13 @@ type LoginProps = {
 
 const Login: React.FC<LoginProps> = ({ navigation }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
-
   const scale = useSharedValue(1);
   const translateY = useSharedValue(0);
+  const [loginData, setLoginData] = useState<LoginData>({ userName: '', password: '' });
+  const [forgotPasswordBottomSheetVisible, setForgotPasswordBottomSheetVisible] =
+    useState<boolean>(false);
+  const { setAuthUser } = useAuthContext();
+  const { socket } = useSocketContext();
 
   useEffect(() => {
     scale.value = withRepeat(
@@ -67,35 +76,18 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
     };
   });
 
-  const [loginData, setLoginData] = useState({
-    userName: '',
-    password: '',
-  });
-
-  const [forgotPasswordBottomSheetVisible, setForgotPasswordBottomSheetVisible] =
-    useState(false);
-
-  // useEffect(() => {
-  //   const checkLoginStatus = async () => {
-  //     try {
-  //       const token = await AsyncStorage.getItem('authToken');
-  //       console.log('token', token);
-  //       if (token) {
-  //         navigation.replace('Main');
-  //       } else {
-  //         navigation.replace('Login');
-  //       }
-  //     } catch (error) {
-  //       console.log('error', error);
-  //     }
-  //   };
-
-  //   checkLoginStatus();
-  // }, []);
-
-  const { setAuthUser } = useAuthContext();
   const handleLogin = async () => {
-    axios
+    if (!loginData.userName || !loginData.password) {
+      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+    }
+
+    if (loginData.password.length < 4) {
+      return Alert.alert('Error', 'Password must be at least 4 characters long', [
+        { text: 'OK' },
+      ]);
+    }
+
+    await axios
       .post(`${BASE_URL}/auth/login`, loginData)
       .then(async (response) => {
         await AsyncStorage.setItem('authToken', response.data.token);
@@ -103,24 +95,16 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
         navigation.replace('Main');
       })
       .catch((error) => {
-        console.error(error);
+        Alert.alert(
+          'Error',
+          error.response.data.error || 'Username or password is incorrect',
+          [{ text: 'OK' }]
+        );
       });
-
-    // navigation.dispatch(
-    //   CommonActions.reset({
-    //     index: 0,
-    //     routes: [{ name: 'Main' }],
-    //   })
-    // );
   };
 
-  const { socket } = useSocketContext();
-
   useEffect(() => {
-    // Cleanup function to close socket connection when the component unmounts
     return () => {
-      console.log(socket);
-
       if (socket) {
         socket.close();
       }
@@ -129,9 +113,10 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
 
   return (
     <KeyboardAvoidingView
-      style={[styles.itemContainer]}
+      style={styles.screenContainer}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      <StatusBar style="dark" animated backgroundColor={'#FF6347'} />
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
@@ -140,40 +125,23 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
           gap: 50,
         }}
       >
-        <View
-          style={{
-            height: '40%',
-          }}
-        >
+        <View style={styles.header}>
           <LinearGradient
             colors={['#FFCCDD', '#FFA07A', '#FF6347', '#FF4500', '#FF0000']}
             {...GetGradientStartEnd(0)}
-            style={{
-              borderRadius: SCREEN_WIDTH * 0.8,
-              justifyContent: 'flex-end',
-              alignItems: 'center',
-              width: SCREEN_WIDTH * 1.5,
-              height: SCREEN_WIDTH * 1.5,
-              top: -SCREEN_WIDTH * 0.6,
-              left: -SCREEN_WIDTH * 0.25,
-              shadowColor: '#000',
-              shadowOffset: {
-                width: 0,
-                height: 10,
+            style={[
+              styles.lineaderGradient,
+              styles.shadow,
+              {
+                borderRadius: SCREEN_WIDTH * 0.8,
+                width: SCREEN_WIDTH * 1.5,
+                height: SCREEN_HEIGHT * 0.75,
+                top: -SCREEN_WIDTH * 0.6,
+                left: -SCREEN_WIDTH * 0.25,
               },
-              shadowOpacity: 0.3,
-              shadowRadius: 20,
-              elevation: 15,
-            }}
+            ]}
           >
-            <Animated.View
-              style={[
-                {
-                  alignItems: 'center',
-                },
-                animatedStyle,
-              ]}
-            >
+            <Animated.View style={[styles.animation, animatedStyle]}>
               <LottieView
                 source={loginAnimation}
                 style={{
@@ -191,100 +159,55 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
             </Animated.View>
           </LinearGradient>
         </View>
-        <View
-          style={{
-            height: '60%',
-          }}
-        >
-          <View
-            style={{
-              flex: 1,
-              gap: 10,
-              alignItems: 'center',
-            }}
-          >
-            <View>
-              <Text
-                style={{
-                  fontSize: 44,
-                  fontWeight: 'bold',
-                  marginBottom: 10,
-                  marginHorizontal: 20,
-                }}
-              >
-                Login
-              </Text>
-              <Text style={{ fontSize: 20, marginHorizontal: 20 }}>
-                Please enter your credentials to login
-              </Text>
+        <View style={styles.body}>
+          <View style={styles.container}>
+            <View style={styles.textHeaderContainer}>
+              <Text style={styles.textHeader}>Login</Text>
+              <Text style={styles.textBody}>Please enter your credentials to login</Text>
             </View>
 
-            <TextInput
-              style={{
-                height: 50,
-                margin: 12,
-                borderWidth: 1,
-                padding: 10,
-                width: SCREEN_WIDTH * 0.8,
-                borderRadius: 10,
-              }}
-              placeholder="Username"
-              onChangeText={(text) => setLoginData({ ...loginData, userName: text })}
-            />
-            <TextInput
-              style={{
-                height: 50,
-                margin: 12,
-                borderWidth: 1,
-                padding: 10,
-                width: SCREEN_WIDTH * 0.8,
-                borderRadius: 10,
-              }}
-              placeholder="Password"
-              secureTextEntry
-              onChangeText={(text) => setLoginData({ ...loginData, password: text })}
-            />
+            <View style={styles.textInputContainer}>
+              <TextInput
+                style={styles.textInput}
+                placeholder="Username"
+                value={loginData.userName}
+                onChangeText={(text) => setLoginData({ ...loginData, userName: text })}
+              />
+              <TextInput
+                style={styles.textInput}
+                placeholder="Password"
+                secureTextEntry
+                value={loginData.password}
+                onChangeText={(text) => setLoginData({ ...loginData, password: text })}
+              />
+            </View>
 
-            <TouchableOpacity
-              style={{
-                flexDirection: 'row',
-                gap: 10,
-                marginTop: 10,
-              }}
-              onPress={() => setForgotPasswordBottomSheetVisible(true)}
-            >
-              <Text style={{ color: 'blue' }}>Forgot password?</Text>
-            </TouchableOpacity>
+            <View style={styles.forgetPassworContainer}>
+              <TouchableOpacity
+                style={styles.forgetPassworButton}
+                onPress={() => setForgotPasswordBottomSheetVisible(true)}
+              >
+                <Text style={styles.forgetPassworButtonText}>Forgot password?</Text>
+              </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity
-              style={{
-                backgroundColor: 'blue',
-                padding: 10,
-                borderRadius: 10,
-                width: SCREEN_WIDTH * 0.8,
-                alignItems: 'center',
-              }}
-              onPress={handleLogin}
-            >
-              <Text style={{ color: 'white', fontSize: 20 }}>Login</Text>
-            </TouchableOpacity>
+            <Button title="Login" onPress={handleLogin} />
 
-            <View
-              style={{
-                flexDirection: 'row',
-                gap: 10,
-                marginTop: 20,
-              }}
-            >
-              <Text>Don&apos;t have an account?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={{ color: 'blue' }}>Register</Text>
+            <View style={styles.registerContainer}>
+              <Text style={styles.registerText}>Don&apos;t have an account?</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Register');
+                  setLoginData({ userName: '', password: '' });
+                }}
+              >
+                <Text style={styles.registerLinkText}>Register</Text>
               </TouchableOpacity>
             </View>
           </View>
 
           {forgotPasswordBottomSheetVisible && (
-            <ForgotPassword
+            <ForgotPasswordBottomSheet
               isVisible={forgotPasswordBottomSheetVisible}
               onSwipeDown={setForgotPasswordBottomSheetVisible}
             />
@@ -298,8 +221,95 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
 export default Login;
 
 const styles = StyleSheet.create({
-  itemContainer: {
+  screenContainer: {
     flex: 1,
-    backgroundColor: '#eee',
+    backgroundColor: Colors.primaryColors.light,
+  },
+  header: {
+    height: '40%',
+  },
+  lineaderGradient: {
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+  },
+  animation: {
+    alignItems: 'center',
+  },
+  body: {
+    height: '60%',
+  },
+  container: {
+    flex: 1,
+    gap: 25,
+    alignItems: 'center',
+  },
+  textHeaderContainer: {
+    alignItems: 'center',
+  },
+  textHeader: {
+    fontFamily: 'Poppins-Bold',
+    fontSize: 40,
+    color: Colors.primaryColors.dark,
+  },
+  textBody: {
+    fontFamily: 'Nunito-Medium',
+    fontSize: 18,
+    color: Colors.primaryColors.dark,
+  },
+  textInputContainer: {
+    width: '80%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 20,
+  },
+  textInput: {
+    width: '100%',
+    height: 50,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: Colors.primaryColors.dark,
+  },
+  forgetPassworContainer: {
+    width: '80%',
+    alignItems: 'flex-end',
+  },
+  forgetPassworButton: {
+    width: '40%',
+    alignItems: 'center',
+  },
+  forgetPassworButtonText: {
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 14,
+    color: Colors.primaryColors.primary,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.primaryColors.primary,
+    paddingBottom: 5,
+  },
+  registerContainer: {
+    flexDirection: 'row',
+    gap: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  registerText: {
+    fontFamily: 'Nunito-Medium',
+    fontSize: 14,
+    color: Colors.primaryColors.dark,
+  },
+  registerLinkText: {
+    fontFamily: 'Nunito-SemiBold',
+    fontSize: 14,
+    color: Colors.primaryColors.primary,
+  },
+  shadow: {
+    shadowColor: Colors.primaryColors.dark,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 20,
+    elevation: 10,
   },
 });

@@ -1,6 +1,7 @@
 export interface SignupData {
   fullName: string;
   userName: string;
+  email: string;
   password: string;
   confirmPassword: string;
   gender: string;
@@ -9,6 +10,11 @@ export interface SignupData {
 export interface LoginData {
   userName: string;
   password: string;
+}
+
+export interface ForgotPassword {
+  userName: string;
+  email: string;
 }
 
 export interface User {

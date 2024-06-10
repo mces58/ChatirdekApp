@@ -187,9 +187,7 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       paddingVertical: 5,
       alignSelf: 'center',
       position: 'absolute',
-      bottom: 60,
-      borderTopWidth: 1,
-      borderTopColor: theme.borderColor,
+      bottom: 65,
     },
     shadow: {
       shadowColor: theme.shadowColor,
