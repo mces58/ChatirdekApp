@@ -24,14 +24,11 @@ import { Colors } from 'src/constants/color/colors';
 import { User } from 'src/constants/types/user';
 import { useSocketContext } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { HomeProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
 
 import FriendsBottomSheet from './components/FriendsBottomSheet';
 import MessageContainer from './components/MessageContainer';
-
-type HomeProps = {
-  navigation: any;
-};
 
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [search, setSearch] = useState<string>('');
@@ -64,10 +61,12 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       }
     };
     getUser();
-  }, []);
+  }, [users, setUsers]);
 
   useEffect(() => {
-    setIsOnline(users.every((user) => onlineUsers.includes(user._id)));
+    users.every((user) => onlineUsers.includes(user._id))
+      ? setIsOnline(true)
+      : setIsOnline(false);
   }, [onlineUsers, users]);
 
   useEffect(() => {

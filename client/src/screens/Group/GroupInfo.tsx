@@ -9,7 +9,6 @@ import {
   View,
 } from 'react-native';
 
-import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 
 import ArrowIcon from 'src/assets/icons/arrow';
@@ -27,19 +26,11 @@ import { Colors } from 'src/constants/color/colors';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { GroupInfoProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
 
 import AddMemberGroupBottomSheet from './components/AddMemberGroupBottomSheet';
 import GroupMemberDetailModal from './components/GroupMemberDetailModal';
-
-interface GroupInfoRouteProps {
-  groupId: string;
-}
-
-interface GroupInfoProps {
-  navigation: any;
-  route: RouteProp<Record<string, GroupInfoRouteProps>, string>;
-}
 
 const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
   const { authUser } = useAuthContext();
@@ -79,7 +70,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
           Authorization: `Bearer ${authUser?.token}`,
         },
       });
-      navigation.navigate('Group');
+      navigation.goBack();
     } catch (error) {
       console.error(error);
     }

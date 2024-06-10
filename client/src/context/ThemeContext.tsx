@@ -13,6 +13,10 @@ export type Theme = {
   bottomSheetBackgroundColor?: string;
   cardColor?: string;
   linearGradients?: string[];
+  bottomTabBarBackgroundColor?: string[];
+  bottomTabBarIconColor?: string;
+  bottomTabBarActiveIconColor?: string;
+  bottomTabBarActiveTextColor?: string;
 };
 
 const lightTheme: Theme = {
@@ -29,6 +33,13 @@ const lightTheme: Theme = {
     Colors.primaryColors.linearGradient1,
     Colors.primaryColors.linearGradient2,
   ],
+  bottomTabBarBackgroundColor: [
+    Colors.primaryColors.headerColor,
+    Colors.primaryColors.light,
+  ],
+  bottomTabBarIconColor: Colors.primaryColors.textMuted,
+  bottomTabBarActiveIconColor: Colors.primaryColors.success,
+  bottomTabBarActiveTextColor: Colors.primaryColors.success,
 };
 
 const darkTheme: Theme = {
@@ -45,6 +56,10 @@ const darkTheme: Theme = {
     Colors.primaryColors.linearGradient2,
     Colors.primaryColors.linearGradient1,
   ],
+  bottomTabBarBackgroundColor: [Colors.primaryColors.light, Colors.primaryColors.dark],
+  bottomTabBarIconColor: Colors.primaryColors.light,
+  bottomTabBarActiveIconColor: Colors.primaryColors.dark,
+  bottomTabBarActiveTextColor: Colors.primaryColors.light,
 };
 
 type ThemeContextType = {

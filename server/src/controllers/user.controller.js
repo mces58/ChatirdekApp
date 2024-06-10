@@ -33,7 +33,7 @@ const getLastMessagesWithOtherUsers = async (req, res) => {
         (participant) => participant._id.toString() !== userId.toString()
       );
       return {
-        userId: otherParticipant._id,
+        _id: otherParticipant._id,
         fullName: otherParticipant.fullName,
         profilePicture: otherParticipant.profilePicture,
         lastMessage: conversation.messages.length > 0 ? conversation.messages[0] : null,

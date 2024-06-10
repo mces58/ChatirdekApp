@@ -25,14 +25,11 @@ import LottieView from 'lottie-react-native';
 
 import registerAnimation from 'src/assets/animatons/register1.json';
 import RegisterModal from 'src/components/RegisterModal';
+import { RegisterProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
-type LoginProps = {
-  navigation: any;
-};
-
-const Register: React.FC<LoginProps> = ({ navigation }) => {
+const Register: React.FC<RegisterProps> = ({ navigation }) => {
   const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = useWindowDimensions();
 
   const scale = useSharedValue(1);

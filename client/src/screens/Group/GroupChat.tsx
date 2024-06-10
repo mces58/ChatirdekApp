@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 
-import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 
 import ArrowIcon from 'src/assets/icons/arrow';
@@ -19,16 +18,8 @@ import { GroupMessage } from 'src/constants/types/group-message';
 import { AuthUser, User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { GroupChatProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
-
-interface GroupChatRouteProps {
-  groupId: string;
-}
-
-interface GroupChatProps {
-  navigation: any;
-  route: RouteProp<Record<string, GroupChatRouteProps>, string>;
-}
 
 const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   const { authUser } = useAuthContext();

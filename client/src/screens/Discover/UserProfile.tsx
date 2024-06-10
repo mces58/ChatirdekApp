@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 
-import { RouteProp } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 
 import animation from 'src/assets/animatons/user-profile1.json';
@@ -20,17 +19,8 @@ import InfoIcon from 'src/assets/icons/info';
 import Card from 'src/components/cards/Card';
 import BackHeader from 'src/components/headers/BackHeader';
 import ProfileWithText from 'src/components/profileContainer/ProfileWithText';
-import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-
-interface UserProfileRouteProps {
-  user: User;
-}
-
-interface UserProfileProps {
-  navigation: any;
-  route: RouteProp<Record<string, UserProfileRouteProps>, string>;
-}
+import { UserProfileProps } from 'src/navigations/RootStackParamList';
 
 const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();

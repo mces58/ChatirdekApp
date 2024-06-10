@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Platform, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -18,6 +18,8 @@ import {
   GroupIcon,
   SettingIcon,
 } from 'src/assets/icons/bottom-tabs';
+import { Colors } from 'src/constants/color/colors';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import Home from 'src/screens/Chat/Home';
 import Discover from 'src/screens/Discover/Discover';
 import Group from 'src/screens/Group/Group';
@@ -30,6 +32,8 @@ const BottomTabNavigator: React.FC = () => {
   const insets = useSafeAreaInsets();
   const { width } = useWindowDimensions();
   const scale = useSharedValue(1);
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   useEffect(() => {
     scale.value = withRepeat(
@@ -57,27 +61,25 @@ const BottomTabNavigator: React.FC = () => {
           bottom: insets.bottom,
           left: 0,
           right: 0,
-          height: Platform.OS === 'ios' ? 90 : 90,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          ...styles.shadow,
+          height: Platform.OS === 'ios' ? 70 : 70,
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
           width: width,
         },
         tabBarBackground: () => {
           return (
             <LinearGradient
-              colors={['#FFCCDD', '#FFA07A', '#FF6347', '#FF4500', '#FF0000']}
+              colors={[
+                theme.bottomTabBarBackgroundColor?.[0] ?? 'black',
+                theme.bottomTabBarBackgroundColor?.[1] ?? 'lightgray',
+              ]}
               {...GetGradientStartEnd(180)}
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                right: 0,
-                height: Platform.OS === 'ios' ? 90 : 90,
-                backgroundColor: 'red',
-                borderTopLeftRadius: 20,
-                borderTopRightRadius: 20,
-              }}
+              style={[
+                styles.linearGradint,
+                {
+                  height: Platform.OS === 'ios' ? 70 : 70,
+                },
+              ]}
             />
           );
         },
@@ -89,17 +91,26 @@ const BottomTabNavigator: React.FC = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View
-                style={{
-                  gap: 1,
-                  alignItems: 'center',
-                }}
-              >
+              <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
-                  <ChatIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                  <ChatIcon
+                    width={30}
+                    height={30}
+                    color={
+                      focused
+                        ? theme.bottomTabBarActiveIconColor ??
+                          Colors.primaryColors.success
+                        : theme.bottomTabBarIconColor ?? Colors.primaryColors.textMuted
+                    }
+                  />
                 </Animated.View>
                 {focused && (
-                  <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
+                  <Text
+                    style={[
+                      styles.text,
+                      { color: focused && theme.bottomTabBarActiveTextColor },
+                    ]}
+                  >
                     Chats
                   </Text>
                 )}
@@ -115,17 +126,26 @@ const BottomTabNavigator: React.FC = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View
-                style={{
-                  gap: 1,
-                  alignItems: 'center',
-                }}
-              >
+              <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
-                  <GroupIcon width={30} height={30} color={focused ? 'white' : 'gray'} />
+                  <GroupIcon
+                    width={30}
+                    height={30}
+                    color={
+                      focused
+                        ? theme.bottomTabBarActiveIconColor ??
+                          Colors.primaryColors.success
+                        : theme.bottomTabBarIconColor ?? Colors.primaryColors.textMuted
+                    }
+                  />
                 </Animated.View>
                 {focused && (
-                  <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
+                  <Text
+                    style={[
+                      styles.text,
+                      { color: focused && theme.bottomTabBarActiveTextColor },
+                    ]}
+                  >
                     Groups
                   </Text>
                 )}
@@ -141,21 +161,26 @@ const BottomTabNavigator: React.FC = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View
-                style={{
-                  gap: 1,
-                  alignItems: 'center',
-                }}
-              >
+              <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
                   <DiscoverIcon
                     width={30}
                     height={30}
-                    color={focused ? 'white' : 'gray'}
+                    color={
+                      focused
+                        ? theme.bottomTabBarActiveIconColor ??
+                          Colors.primaryColors.success
+                        : theme.bottomTabBarIconColor ?? Colors.primaryColors.textMuted
+                    }
                   />
                 </Animated.View>
                 {focused && (
-                  <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
+                  <Text
+                    style={[
+                      styles.text,
+                      { color: focused && theme.bottomTabBarActiveTextColor },
+                    ]}
+                  >
                     Discover
                   </Text>
                 )}
@@ -171,21 +196,26 @@ const BottomTabNavigator: React.FC = () => {
         options={{
           tabBarIcon: ({ focused }) => {
             return (
-              <View
-                style={{
-                  gap: 1,
-                  alignItems: 'center',
-                }}
-              >
+              <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
                   <SettingIcon
                     width={30}
                     height={30}
-                    color={focused ? 'white' : 'gray'}
+                    color={
+                      focused
+                        ? theme.bottomTabBarActiveIconColor ??
+                          Colors.primaryColors.success
+                        : theme.bottomTabBarIconColor ?? Colors.primaryColors.textMuted
+                    }
                   />
                 </Animated.View>
                 {focused && (
-                  <Text style={{ color: 'white', fontSize: 12, textAlign: 'center' }}>
+                  <Text
+                    style={[
+                      styles.text,
+                      { color: focused && theme.bottomTabBarActiveTextColor },
+                    ]}
+                  >
                     Settings
                   </Text>
                 )}
@@ -200,15 +230,33 @@ const BottomTabNavigator: React.FC = () => {
 
 export default BottomTabNavigator;
 
-const styles = StyleSheet.create({
-  shadow: {
-    shadowColor: '#7F5DF0',
-    shadowOffset: {
-      width: 0,
-      height: 10,
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    linearGradint: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      borderTopLeftRadius: 25,
+      borderTopRightRadius: 25,
     },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.5,
-    elevation: 5,
-  },
-});
+    bottomContainer: {
+      gap: 1,
+      alignItems: 'center',
+    },
+    text: {
+      fontFamily: 'Nunito-Regular',
+      fontSize: 14,
+      textAlign: 'center',
+    },
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 3,
+    },
+  });

@@ -27,7 +27,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('Chat', {
-            receiverId: user.userId,
+            receiverId: user._id,
           });
         }}
         style={[styles.userContainer]}

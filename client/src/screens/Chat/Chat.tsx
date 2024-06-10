@@ -11,7 +11,6 @@ import {
   View,
 } from 'react-native';
 
-import { RouteProp } from '@react-navigation/native';
 import axios from 'axios';
 
 import ArrowIcon from 'src/assets/icons/arrow';
@@ -20,17 +19,8 @@ import SendInput from 'src/components/inputs/SendInput';
 import { Colors } from 'src/constants/color/colors';
 import { Message } from 'src/constants/types/message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { ChatProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
-
-type ChatRouteProps = {
-  userId: string;
-  receiverId: string;
-};
-
-type ChatProps = {
-  navigation: any;
-  route: RouteProp<Record<string, ChatRouteProps>, string>;
-};
 
 const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const [messages, setMessages] = useState<Message[]>([]);

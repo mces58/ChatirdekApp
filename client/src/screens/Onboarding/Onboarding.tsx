@@ -6,19 +6,13 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-
-import { RootStackParamList } from 'src/navigations/RootStackParamList';
+import { OnboardingProps } from 'src/navigations/RootStackParamList';
 
 import CustomButton from './components/Button';
 import Pagination from './components/Pagination';
 import RenderItem from './components/RenderItem';
 
 import data, { OnboardingData } from './data';
-
-interface OnboardingProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'Onboarding'>;
-}
 
 const Onboarding: FC<OnboardingProps> = ({ navigation }) => {
   const flatListRef = useAnimatedRef<FlatList<OnboardingData>>();

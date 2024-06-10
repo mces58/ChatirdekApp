@@ -7,7 +7,6 @@ import {
   View,
 } from 'react-native';
 
-import { RouteProp } from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 
 import animation from 'src/assets/animatons/setting.json';
@@ -23,17 +22,9 @@ import ChangeProfileImage from 'src/components/profileContainer/ChangeProfileIma
 import ProfileModal from 'src/components/profileContainer/ProfileModal';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { ProfileProps } from 'src/navigations/RootStackParamList';
 
 import ProfilePhotoBottomSheet from './components/bottomSheets/ProfilePhotoBottomSheet';
-
-interface ProfileRouteProps {
-  user: User;
-}
-
-interface ProfileProps {
-  navigation: any;
-  route: RouteProp<Record<string, ProfileRouteProps>, string>;
-}
 
 const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
   const [isModalVisible, setModalVisible] = useState(false);

@@ -11,13 +11,13 @@ export default NotificationBubble;
 
 const styles = StyleSheet.create({
   onlineIndicator: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
+    width: 15,
+    height: 15,
+    borderRadius: 99,
     backgroundColor: Colors.primaryColors.success,
     position: 'absolute',
-    top: 10,
-    right: 0,
+    top: 2,
+    right: -2,
     zIndex: 10,
     borderWidth: 1,
     borderColor: Colors.primaryColors.beige,
