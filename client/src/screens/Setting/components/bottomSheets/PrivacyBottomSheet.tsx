@@ -1,8 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import SwitchButton from 'src/components/SwitchButton';
+import { Colors } from 'src/constants/color/colors';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import { PrivacyContent, privacyContent } from '../../constants/privarcy-content';
@@ -30,8 +33,13 @@ const PrivacyBottomSheet: React.FC<PrivacyBottomSheetProps> = ({
           index === privacyContent.length - 1 && { borderBottomWidth: 0 },
         ]}
       >
-        <Text style={styles.text}>{content}</Text>
-        <SwitchButton activeColor={'#FFA901'} inActiveColor={'#F2F5F7'} />
+        <Text style={styles.text}>
+          {i18next.t(`settings.privacyBottomSheet.${content}`)}
+        </Text>
+        <SwitchButton
+          activeColor={Colors.primaryColors.success}
+          inActiveColor={Colors.primaryColors.gray}
+        />
       </View>
     );
   };
@@ -41,7 +49,9 @@ const PrivacyBottomSheet: React.FC<PrivacyBottomSheetProps> = ({
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollViewContent}
     >
-      <Text style={styles.headerText}>Privacy</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('settings.privacyBottomSheet.header')}
+      </Text>
       {contents.map((item, index) => renderContent(item.content, index))}
     </ScrollView>
   );

@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
+
 import { MoonThemeIcon, SunThemeIcon } from 'src/assets/icons/theme';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -26,7 +28,9 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
 
   const content = (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Choose your theme</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('settings.themeBottomSheet.header')}
+      </Text>
       <TouchableOpacity
         style={styles.button}
         onPress={() => {
@@ -34,7 +38,7 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
           onSwipeDown();
         }}
       >
-        <Text style={styles.text}>Light</Text>
+        <Text style={styles.text}>{i18next.t('global.light')}</Text>
         <SunThemeIcon width={30} height={30} />
       </TouchableOpacity>
 
@@ -45,7 +49,7 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
           onSwipeDown();
         }}
       >
-        <Text style={styles.text}>Dark</Text>
+        <Text style={styles.text}>{i18next.t('global.dark')}</Text>
         <MoonThemeIcon width={30} height={30} />
       </TouchableOpacity>
     </View>

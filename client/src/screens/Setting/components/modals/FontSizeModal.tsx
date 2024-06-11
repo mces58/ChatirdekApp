@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import CloseIcon from 'src/assets/icons/close';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
@@ -39,7 +41,9 @@ const FontSizeModal: React.FC<FontSizeModalProps> = ({ isVisible, onClose }) => 
             ]}
           />
         </View>
-        <Text style={styles.text}>{fontSize.label}</Text>
+        <Text style={styles.text}>
+          {i18next.t(`settings.chatsBottomSheet.${fontSize.label}`)}
+        </Text>
       </TouchableOpacity>
     );
   };
@@ -49,7 +53,7 @@ const FontSizeModal: React.FC<FontSizeModalProps> = ({ isVisible, onClose }) => 
       <TouchableOpacity style={styles.closeButton} onPress={onClose}>
         <CloseIcon width={30} height={30} color="red" />
       </TouchableOpacity>
-      <Text style={styles.title}>Font Size</Text>
+      <Text style={styles.title}>{i18next.t('settings.chatsBottomSheet.FontSize')}</Text>
 
       <View style={styles.container}>
         {fonts.map((font, index) => renderFontSize(font, index))}

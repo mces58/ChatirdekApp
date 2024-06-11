@@ -5,23 +5,23 @@ export interface Question {
 
 export const helpQuestions: Question[] = [
   {
-    question: 'How to create a new account?',
+    question: 'question1',
     answerUrl: 'https://google.com',
   },
   {
-    question: 'How to reset password?',
+    question: 'question2',
     answerUrl: 'https://google.com',
   },
   {
-    question: 'How to contact support?',
+    question: 'question3',
     answerUrl: 'https://google.com',
   },
   {
-    question: 'How to delete account?',
+    question: 'question4',
     answerUrl: 'https://google.com',
   },
   {
-    question: 'How to report a bug?',
+    question: 'question5',
     answerUrl: 'https://google.com',
   },
 ];

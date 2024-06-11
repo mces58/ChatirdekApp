@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
+
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -45,7 +47,9 @@ const ChatsBottomSheet: React.FC<ChatsBottomSheetProps> = ({
 
   const content = (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Chat Settings</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('settings.chatsBottomSheet.header')}
+      </Text>
 
       {modals.map((modal: ChatSettingModals, index: number) => (
         <View
@@ -59,7 +63,9 @@ const ChatsBottomSheet: React.FC<ChatsBottomSheetProps> = ({
             onPress={() => handleToggleSheet(modal.name as ModalNames)}
             style={styles.button}
           >
-            <Text style={styles.text}>{modal.label}</Text>
+            <Text style={styles.text}>
+              {i18next.t(`settings.chatsBottomSheet.${modal.name}`)}
+            </Text>
             {modal.icon}
           </TouchableOpacity>
         </View>

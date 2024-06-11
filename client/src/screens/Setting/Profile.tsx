@@ -7,6 +7,7 @@ import {
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
 import LottieView from 'lottie-react-native';
 
 import animation from 'src/assets/animatons/setting.json';
@@ -46,7 +47,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
   return (
     <View style={styles.container}>
       <BackHeader
-        title="Back"
+        title={i18next.t('global.back')}
         icon={<ArrowIcon width={25} height={25} direction="left" />}
         onPress={() => {
           navigation.goBack();
@@ -68,27 +69,27 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
       />
 
       <ListInfo
-        title="Full Name"
+        title={i18next.t('global.fullName')}
         text={user.fullName}
         icon={<IdIcon width={30} height={30} />}
         onPress={() => setFullNameBoxVisible(true)}
       />
 
       <ListInfo
-        title="User Name"
+        title={i18next.t('global.username')}
         text={user.userName}
         icon={<GhostIcon width={30} height={30} />}
         onPress={() => setUserNameBoxVisible(true)}
       />
 
       <ListInfo
-        title="About"
+        title={i18next.t('global.about')}
         text={user.about}
         icon={<InfoIcon width={30} height={30} strokeWidth={1} />}
       />
 
       <ListInfo
-        title="Created At"
+        title={i18next.t('global.createdAt')}
         text={user.createdAt.split('T')[0]}
         icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
         disabled
@@ -112,8 +113,8 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
 
       {fullNameBoxVisible && (
         <SetProfileValueBottomSheet
-          title="Enter Full Name"
-          placeholder="Enter your full name"
+          title={i18next.t('global.fullName')}
+          placeholder={i18next.t('global.fullName')}
           isVisible={fullNameBoxVisible}
           onSwipeDown={() => setFullNameBoxVisible(false)}
           setValue={(value: string) => {
@@ -125,8 +126,8 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
 
       {userNameBoxVisible && (
         <SetProfileValueBottomSheet
-          title="Enter User Name"
-          placeholder="Enter your user name"
+          title={i18next.t('global.username')}
+          placeholder={i18next.t('global.username')}
           isVisible={userNameBoxVisible}
           onSwipeDown={() => setUserNameBoxVisible(false)}
           setValue={(value: string) => {
@@ -138,8 +139,8 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
 
       {aboutBoxVisible && (
         <SetProfileValueBottomSheet
-          title="About"
-          placeholder="Tell us about yourself"
+          title={i18next.t('global.about')}
+          placeholder={i18next.t('global.about')}
           isVisible={aboutBoxVisible}
           onSwipeDown={() => setAboutBoxVisible(false)}
           setValue={(value: string) => {

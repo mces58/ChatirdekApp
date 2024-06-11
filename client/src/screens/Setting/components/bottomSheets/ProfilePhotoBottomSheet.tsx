@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 
 import * as ImagePicker from 'expo-image-picker';
+import i18next from 'i18next';
 
 import BinIcon from 'src/assets/icons/bin';
 import CameraIcon from 'src/assets/icons/camera';
@@ -81,17 +82,17 @@ const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
 
   const items = [
     {
-      title: 'Camera',
+      title: i18next.t('global.camera'),
       icon: <CameraIcon width={30} height={30} strokeWidth={3} />,
       onPress: openCamera,
     },
     {
-      title: 'Gallery',
+      title: i18next.t('global.gallery'),
       icon: <GalleryIcon width={30} height={30} strokeWidth={3} />,
       onPress: openGallery,
     },
     {
-      title: 'Remove',
+      title: i18next.t('global.remove'),
       icon: <BinIcon width={30} height={30} strokeWidth={3} />,
       onPress: removePhoto,
     },
@@ -107,7 +108,9 @@ const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
   };
   const content = (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Profile Photo</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('settings.profilePhotoBottomSheet.header')}
+      </Text>
 
       <View style={styles.row}>{renderItems()}</View>
     </View>

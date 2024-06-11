@@ -1,6 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, useWindowDimensions } from 'react-native';
 
+import i18next from 'i18next';
+
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -27,7 +29,7 @@ const AboutUsBottomSheet: React.FC<AboutUsBottomSheetProps> = ({
       showsVerticalScrollIndicator={false}
     >
       <Text style={styles.headerText}>{aboutUsContent.title}</Text>
-      <Text style={styles.text}>{aboutUsContent.content}</Text>
+      <Text style={styles.text}>{i18next.t(aboutUs.content)}</Text>
     </ScrollView>
   );
 

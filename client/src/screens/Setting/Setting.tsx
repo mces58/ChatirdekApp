@@ -10,6 +10,7 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
+import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
@@ -88,7 +89,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   return (
     <View style={styles.screenContainer}>
       <Header
-        title="Settings"
+        title={i18next.t('settings.settings.header')}
         icon={<SettingLeafIcon width={30} height={30} />}
         disableIcon
       />
@@ -118,7 +119,9 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
               }}
             >
               {setting.icon}
-              <Text style={styles.text}>{setting.label}</Text>
+              <Text style={styles.text}>
+                {i18next.t(`settings.list.${setting.name.toLowerCase()}`)}
+              </Text>
             </TouchableOpacity>
           </View>
         ))}

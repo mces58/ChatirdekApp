@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
+
 import DotIcon from 'src/assets/icons/dot';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import OpenLinkButton from 'src/components/link/OpenLinkButton';
@@ -37,7 +39,10 @@ const HelpBottomSheet: React.FC<HelpBottomSheetProps> = ({ isVisible, onSwipeDow
     (question: Question, index: number) => (
       <View key={index} style={styles.question}>
         <DotIcon width={20} height={20} />
-        <OpenLinkButton url={question.answerUrl} text={question.question} />
+        <OpenLinkButton
+          url={question.answerUrl}
+          text={i18next.t(`settings.helpBottomSheet.${question.question}`)}
+        />
       </View>
     ),
     [styles.question]
@@ -57,24 +62,30 @@ const HelpBottomSheet: React.FC<HelpBottomSheetProps> = ({ isVisible, onSwipeDow
       contentContainerStyle={styles.scrollViewContent}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.headerText}>How can we help you?</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('settings.helpBottomSheet.header')}
+      </Text>
 
       <TextInput
         style={styles.textInput}
-        placeholder="Search Help Center"
+        placeholder={i18next.t('settings.helpBottomSheet.placeholder')}
         placeholderTextColor={theme.textMutedColor}
         value={searchText}
         onChangeText={handleSearchTextChange}
       />
 
       <View style={styles.questionContainer}>
-        <Text style={styles.questionHeader}>Help FAQ</Text>
+        <Text style={styles.questionHeader}>
+          {i18next.t('settings.helpBottomSheet.FAQ')}
+        </Text>
 
         {filteredQuestions.length > 0 ? (
           filteredQuestions.map(renderQuestions)
         ) : (
           <View style={styles.notFoundContainer}>
-            <Text style={styles.notFoundText}>No questions found!</Text>
+            <Text style={styles.notFoundText}>
+              {i18next.t('settings.helpBottomSheet.noQuestionFound')}
+            </Text>
           </View>
         )}
       </View>

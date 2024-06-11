@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import { EnglishFlagIcon, TurkishFlagIcon } from 'src/assets/icons/flag';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import LanguageSwitcher from 'src/constants/localization/LanguageSwitcher';
@@ -21,10 +23,12 @@ const LanguageBottomSheet: React.FC<LanguageBottomSheetProps> = ({
 
   const content = (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Choose your language</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('settings.languageBottomSheet.header')}
+      </Text>
 
       <LanguageSwitcher
-        language="Turkish"
+        language={i18next.t('global.turkish')}
         languageCode="tr"
         onSwipeDown={onSwipeDown}
         componentStyle={styles.button}
@@ -32,7 +36,7 @@ const LanguageBottomSheet: React.FC<LanguageBottomSheetProps> = ({
       />
 
       <LanguageSwitcher
-        language="English"
+        language={i18next.t('global.english')}
         languageCode="en"
         onSwipeDown={onSwipeDown}
         componentStyle={styles.button}

@@ -7,6 +7,8 @@ import {
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
+
 import CloseIcon from 'src/assets/icons/close';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
@@ -36,7 +38,9 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) =
       <TouchableOpacity style={styles.closeButton} onPress={onClose}>
         <CloseIcon width={30} height={30} color="red" />
       </TouchableOpacity>
-      <Text style={styles.title}>Choose a wallpaper color</Text>
+      <Text style={styles.title}>
+        {i18next.t('settings.chatsBottomSheet.WallpaperColor')}
+      </Text>
 
       <View style={styles.sheetBody}>
         <View style={[styles.profile, { backgroundColor: colors[value] }]}>
@@ -68,7 +72,7 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) =
             onClose();
           }}
         >
-          <Text style={styles.btnText}>Confirm</Text>
+          <Text style={styles.btnText}>{i18next.t('global.confirm')}</Text>
         </TouchableOpacity>
       </View>
     </View>

@@ -4,18 +4,15 @@ export interface PrivacyContent {
 
 export const privacyContent: PrivacyContent[] = [
   {
-    content: 'Online Status Hide',
+    content: 'content1',
   },
   {
-    content: 'Profile Picture Hide',
+    content: 'content2',
   },
   {
-    content: 'About Hide',
+    content: 'content3',
   },
   {
-    content: 'Read Receipts',
-  },
-  {
-    content: 'Last Seen',
+    content: 'content4',
   },
 ];

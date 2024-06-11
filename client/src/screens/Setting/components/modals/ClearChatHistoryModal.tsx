@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -19,7 +21,9 @@ const ClearChatHistoryModal: React.FC<ClearChatHistoryModalProps> = ({
 
   const content = (
     <View style={styles.modalContent}>
-      <Text style={styles.title}>Are you sure you want to clear chat history?</Text>
+      <Text style={styles.title}>
+        {i18next.t('settings.chatsBottomSheet.ClearChatHistoryModal.header')}
+      </Text>
 
       <View style={styles.container}>
         <TouchableOpacity
@@ -29,7 +33,7 @@ const ClearChatHistoryModal: React.FC<ClearChatHistoryModalProps> = ({
             onClose();
           }}
         >
-          <Text style={styles.buttonText}>Yes</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.yes')}</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.button, styles.buttonNo]}
@@ -37,7 +41,7 @@ const ClearChatHistoryModal: React.FC<ClearChatHistoryModalProps> = ({
             onClose();
           }}
         >
-          <Text style={styles.buttonText}>No</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.no')}</Text>
         </TouchableOpacity>
       </View>
     </View>
