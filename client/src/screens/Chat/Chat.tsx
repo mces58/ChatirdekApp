@@ -19,6 +19,7 @@ import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
 import SendInput from 'src/components/inputs/SendInput';
 import { Colors } from 'src/constants/color/colors';
 import { Message } from 'src/constants/types/message';
+import { useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { ChatProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
@@ -33,6 +34,8 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+  const { fontSize } = useFontSize();
+  const fontSizeValue = fontSize.value;
 
   const handleInputText = (text: string) => {
     setInputMessage(text);
@@ -123,7 +126,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
             : styles.myMessage,
         ]}
       >
-        <Text style={styles.text}>{message.text}</Text>
+        <Text style={[styles.text, { fontSize: fontSizeValue }]}>{message.text}</Text>
         <Text
           style={[
             styles.timestamp,
@@ -209,7 +212,6 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     text: {
       fontFamily: 'Poppins-Regular',
-      fontSize: 14,
       color: Colors.primaryColors.dark,
     },
     timestamp: {

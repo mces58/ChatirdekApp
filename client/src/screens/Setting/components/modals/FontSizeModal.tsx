@@ -6,9 +6,8 @@ import i18next from 'i18next';
 import CloseIcon from 'src/assets/icons/close';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
+import { FontSize, fontSizes, useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-
-import { FontSize, fontSizes } from '../../constants/font-size';
 
 interface FontSizeModalProps {
   isVisible: boolean;
@@ -16,33 +15,29 @@ interface FontSizeModalProps {
 }
 
 const FontSizeModal: React.FC<FontSizeModalProps> = ({ isVisible, onClose }) => {
-  const [selectedFontSize, setSelectedFontSize] = useState<FontSize>(fontSizes[1]);
+  const { fontSize, setFontSize } = useFontSize();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const [fonts] = useState<FontSize[]>(fontSizes);
 
   const handleFontSizeChange = (fontSize: FontSize) => {
-    setSelectedFontSize(fontSize);
+    setFontSize(fontSize);
     onClose();
   };
 
-  const renderFontSize = (fontSize: FontSize, index: number) => {
+  const renderFontSize = (selectedFontSize: FontSize, index: number) => {
+    const isSelected = selectedFontSize.label === fontSize.label;
     return (
       <TouchableOpacity
         key={index}
         style={styles.item}
-        onPress={() => handleFontSizeChange(fontSize)}
+        onPress={() => handleFontSizeChange(selectedFontSize)}
       >
         <View style={styles.circle}>
-          <View
-            style={[
-              styles.defaultButton,
-              selectedFontSize.label === fontSize.label && styles.actionButton,
-            ]}
-          />
+          <View style={[styles.defaultButton, isSelected && styles.actionButton]} />
         </View>
         <Text style={styles.text}>
-          {i18next.t(`settings.chatsBottomSheet.${fontSize.label}`)}
+          {i18next.t(`settings.chatsBottomSheet.${selectedFontSize.label}`)}
         </Text>
       </TouchableOpacity>
     );

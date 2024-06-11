@@ -17,6 +17,7 @@ import {
   PoppinsRegular,
 } from 'src/assets/fonts/poppins';
 import { AuthContextProvider } from 'src/context/AuthContext';
+import { FontSizeProvider } from 'src/context/FontSizeContext';
 import { SocketContextProvider } from 'src/context/SocketContext';
 import { ThemeProvider } from 'src/context/ThemeContext';
 import AppNavigator from 'src/navigations/AppNavigator';
@@ -51,7 +52,9 @@ export default function App() {
     <AuthContextProvider>
       <SocketContextProvider>
         <ThemeProvider>
-          <AppNavigator />
+          <FontSizeProvider>
+            <AppNavigator />
+          </FontSizeProvider>
         </ThemeProvider>
       </SocketContextProvider>
     </AuthContextProvider>
