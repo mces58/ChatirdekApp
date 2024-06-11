@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import BinIcon from 'src/assets/icons/bin';
 import SendMessageIcon from 'src/assets/icons/send-message';
@@ -110,12 +111,14 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
 
   const content = (
     <View style={styles.container}>
-      <Text style={styles.headerText}>Friends</Text>
+      <Text style={styles.headerText}>{i18next.t('chat.friendsBottomSheet.header')}</Text>
 
       {friends.length > 0 ? (
         friends.map((user, index) => renderItem(user, index))
       ) : (
-        <Text style={styles.headerText}>No friends found</Text>
+        <Text style={styles.headerText}>
+          {i18next.t('chat.friendsBottomSheet.noFriends')}
+        </Text>
       )}
     </View>
   );

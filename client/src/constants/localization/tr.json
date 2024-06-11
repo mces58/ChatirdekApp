@@ -12,6 +12,9 @@
   "global.register": "Kayıt Ol",
   "global.send": "Gönder",
   "global.ok": "Tamam",
+  "global.search": "Ara",
+  "global.you": "Siz",
+  "global.writeMessage": "Mesajınızı Yazın",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",
@@ -44,5 +47,11 @@
   "forgotPassword.verifyButton": "Kodu Doğrula",
   "forgotPassword.resetPasswordHeader": "Şifre Sıfırla",
   "forgotPassword.resetPasswordSubHeader": "Şifrenizi sıfırlamak için lütfen yeni şifrenizi giriniz.",
-  "forgotPassword.resetPasswordButton": "Şifreyi Sıfırla"
+  "forgotPassword.resetPasswordButton": "Şifreyi Sıfırla",
+
+  "chat.home.header": "Mesajlar",
+  "chat.home.noMessages": "Henüz mesajınız yok. Mesaj göndermek için bir arkadaşınızı seçin veya yeni bir arkadaş ekleyin.",
+  "chat.friendsBottomSheet.header": "Arkadaşlar",
+  "chat.friendsBottomSheet.noFriends": "Henüz arkadaşınız yok.",
+  "chat.messageContainer.noMessage": "Henüz mesajınız yok."
 }

@@ -8,12 +8,14 @@ interface SendInputProps {
   inputMessage: string;
   handleInputText: (text: string) => void;
   sendMessage: () => void;
+  placeholder?: string;
 }
 
 const SendInput: React.FC<SendInputProps> = ({
   inputMessage,
   handleInputText,
   sendMessage,
+  placeholder = 'Type your message',
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -24,7 +26,7 @@ const SendInput: React.FC<SendInputProps> = ({
         style={styles.input}
         value={inputMessage}
         onChangeText={handleInputText}
-        placeholder="Type your message"
+        placeholder={placeholder}
         multiline={true}
         numberOfLines={1}
         maxLength={1000}

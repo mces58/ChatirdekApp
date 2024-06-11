@@ -5,6 +5,7 @@ import {
   NativeModules,
   Platform,
   StyleSheet,
+  Text,
   TextInput,
   ToastAndroid,
   TouchableOpacity,
@@ -14,6 +15,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
+import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
 
 import CrossIcon from 'src/assets/icons/cross';
@@ -115,7 +117,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       />
 
       <Header
-        title="Messages"
+        title={i18next.t('chat.home.header')}
         icon={<PencilWriteIcon width={30} height={30} />}
         onIconPress={() => setFriendsBottomSheetVisible(true)}
       />
@@ -123,7 +125,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       <View style={styles.container}>
         <View style={[styles.searchBarContainer, styles.shadow]}>
           <TextInput
-            placeholder="Search"
+            placeholder={i18next.t('global.search')}
             style={styles.searchInput}
             value={search}
             onChangeText={(text) => handleSearch(text)}
@@ -152,6 +154,18 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
             <CrossIcon width={15} height={15} customColor={Colors.primaryColors.dark} />
           </TouchableOpacity>
         </View>
+
+        {users.length === 0 && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
+          >
+            <Text style={styles.noMessageText}>{i18next.t('chat.home.noMessages')}</Text>
+          </View>
+        )}
 
         {renderContent()}
       </View>
@@ -205,6 +219,12 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       right: 20,
       top: 16,
       zIndex: 1,
+    },
+    noMessageText: {
+      fontFamily: 'Poppins-Bold',
+      fontSize: 16,
+      color: theme.textColor,
+      textAlign: 'center',
     },
     shadow: {
       shadowColor: theme.shadowColor,

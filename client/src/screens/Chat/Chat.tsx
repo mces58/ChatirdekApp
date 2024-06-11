@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
@@ -73,6 +74,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       }
     }
   };
+
   useEffect(() => {
     const getUser = async () => {
       const response = await axios.get(`${BASE_URL}/messages/${route.params.receiverId}`);
@@ -102,8 +104,6 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
-      console.log('keyboard is shown');
-
       scrollViewRef.current?.scrollToEnd({ animated: true });
     });
 
@@ -171,6 +171,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           inputMessage={inputMessage}
           handleInputText={handleInputText}
           sendMessage={sendMessage}
+          placeholder={i18next.t('global.writeMessage')}
         />
       </View>
     </KeyboardAvoidingView>

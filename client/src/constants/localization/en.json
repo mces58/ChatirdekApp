@@ -12,6 +12,9 @@
   "global.register": "Register",
   "global.send": "Send",
   "global.ok": "OK",
+  "global.search": "Search",
+  "global.you": "You",
+  "global.writeMessage": "Type your message",
 
   "alert.success": "Success",
   "alert.error": "Error",
@@ -44,5 +47,11 @@
   "forgotPassword.verifyButton": "Verify Code",
   "forgotPassword.resetPasswordHeader": "Reset Password",
   "forgotPassword.resetPasswordSubHeader": "Please enter your new password to reset your password.",
-  "forgotPassword.resetPasswordButton": "Reset Password"
+  "forgotPassword.resetPasswordButton": "Reset Password",
+
+  "chat.home.header": "Messages",
+  "chat.home.noMessages": "You have no messages yet. Select a friend or add a new friend to send a message to.",
+  "chat.friendsBottomSheet.header": "Friends",
+  "chat.friendsBottomSheet.noFriends": "You have no friends yet.",
+  "chat.messageContainer.noMessage": "No messages yet."
 }

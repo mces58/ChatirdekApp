@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import NotificationBubble from 'src/components/bubble/NotificationBubble';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
 import { User } from 'src/constants/types/user';
@@ -50,8 +52,9 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                 <Text style={styles.userName}>{user?.fullName}</Text>
                 <Text style={styles.lastSeen}>
                   {user?.lastMessage.receiverId === authUser?._id
-                    ? user?.lastMessage.message || 'No message'
-                    : 'You: ' + user?.lastMessage.message}
+                    ? user?.lastMessage.message ||
+                      i18next.t('chat.messageContainer.noMessage')
+                    : i18next.t('global.you') + ': ' + user?.lastMessage.message}
                 </Text>
               </View>
 
