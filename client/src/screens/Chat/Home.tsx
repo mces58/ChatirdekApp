@@ -34,7 +34,6 @@ import MessageContainer from './components/MessageContainer';
 
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [search, setSearch] = useState<string>('');
-  const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
   const [users, setUsers] = useState<User[]>([]);
   const [friendsBottomSheetVisible, setFriendsBottomSheetVisible] =
     useState<boolean>(false);
@@ -55,7 +54,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           .post(`${BASE_URL}/users/last-messages`, { userId: user._id })
           .then((response) => {
             setUsers(response.data);
-            setFilteredUsers(response.data);
           })
           .catch((error) => {
             console.log('error retrieving users', error);
@@ -83,16 +81,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-  const handleSearch = (text: string) => {
-    setSearch(text);
-
-    const filteredData = users.filter((item) => {
-      return item.fullName.toLowerCase().includes(text.toLowerCase());
-    });
-    setFilteredUsers(filteredData);
-    console.log(filteredData);
-  };
-
   const renderItem = (item: User) => {
     return <MessageContainer user={item} isOnline={isOnline} navigation={navigation} />;
   };
@@ -100,7 +88,9 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const renderContent = () => {
     return (
       <FlatList
-        data={filteredUsers}
+        data={users.filter((item) =>
+          item.fullName.toLowerCase().includes(search.toLowerCase())
+        )}
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => renderItem(item)}
         showsVerticalScrollIndicator={false}
@@ -128,7 +118,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
             placeholder={i18next.t('global.search')}
             style={styles.searchInput}
             value={search}
-            onChangeText={(text) => handleSearch(text)}
+            onChangeText={(text) => setSearch(text)}
           />
           <TouchableOpacity style={styles.searchIcon}>
             <SearchIcon
@@ -148,7 +138,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
             ]}
             onPress={() => {
               setSearch('');
-              setFilteredUsers(users);
             }}
           >
             <CrossIcon width={15} height={15} customColor={Colors.primaryColors.dark} />
