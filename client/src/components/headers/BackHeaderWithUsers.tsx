@@ -8,6 +8,8 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import i18next from 'i18next';
+
 import { Group } from 'src/constants/types/group';
 import { AuthUser } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -44,7 +46,8 @@ const BackHeaderWithUsers: React.FC<BackHeaderWithUsersProps> = ({
             ? group.members?.slice(0, 3)?.map((user, index: number) =>
                 authUser?._id === user._id ? (
                   <Text key={index} style={styles.membersText}>
-                    You {index === 2 ? '...' : ','}
+                    {i18next.t('global.you')}
+                    {index === 2 ? '...' : ','}
                   </Text>
                 ) : (
                   <Text key={index} style={styles.membersText}>
@@ -56,7 +59,8 @@ const BackHeaderWithUsers: React.FC<BackHeaderWithUsersProps> = ({
             : group.members?.map((user, index) =>
                 authUser?._id === user._id ? (
                   <Text key={index} style={styles.membersText}>
-                    You{index === group.members?.length - 1 ? '' : ','}
+                    {i18next.t('global.you')}
+                    {index === group.members?.length - 1 ? '' : ','}
                   </Text>
                 ) : (
                   <Text key={index} style={styles.membersText}>

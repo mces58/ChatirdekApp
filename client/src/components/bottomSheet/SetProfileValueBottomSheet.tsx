@@ -8,6 +8,8 @@ import {
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
+
 import { Colors } from 'src/constants/color/colors';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -54,7 +56,7 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
           onSwipeDown();
         }}
       >
-        <Text style={styles.buttonText}>Save</Text>
+        <Text style={styles.buttonText}>{i18next.t('global.save')}</Text>
       </TouchableOpacity>
     </View>
   );

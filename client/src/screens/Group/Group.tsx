@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { NativeModules, Platform, ScrollView, StyleSheet, View } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import { GroupPeopleIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
@@ -62,7 +63,7 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
       showsVerticalScrollIndicator={false}
     >
       <Header
-        title="Groups"
+        title={i18next.t('group.group.header')}
         icon={<GroupPeopleIcon width={30} height={30} />}
         onIconPress={() => setCreateGroupBottomSheetVisible(true)}
       />

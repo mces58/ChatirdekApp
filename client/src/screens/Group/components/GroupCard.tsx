@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
+import i18next from 'i18next';
 
 import { Colors } from 'src/constants/color/colors';
 import { Group } from 'src/constants/types/group';
@@ -34,7 +35,10 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index }) => {
             <Text style={styles.lastMessageText}>{group.createdAt}</Text>
           </View>
           <Text style={styles.groupMemberText}>
-            {group.members.length} member{group.members.length > 1 ? 's' : ''}
+            {group.members.length}{' '}
+            {group.members.length > 1
+              ? i18next.t('global.members')
+              : i18next.t('global.member')}
           </Text>
         </View>
       </TouchableOpacity>

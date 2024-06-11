@@ -13,6 +13,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
@@ -57,6 +58,17 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
   }, [authUser]);
 
   const handleCreateGroup = async () => {
+    if (groupName === '') {
+      ToastAndroid.show(i18next.t('toast.enterGroupName'), ToastAndroid.SHORT);
+      return;
+    }
+
+    if (selectedFriends.length === 0) {
+      ToastAndroid.show(i18next.t('toast.selectMembers'), ToastAndroid.SHORT);
+      setGroupName('');
+      return;
+    }
+
     try {
       const res = await axios.post(`${BASE_URL}/groups`, {
         name: groupName,
@@ -65,6 +77,7 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
 
       if (res.status === 201) {
         ToastAndroid.show('Group created successfully', ToastAndroid.SHORT);
+        onSwipeDown();
       }
     } catch (error) {
       console.error(error);
@@ -95,7 +108,7 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
             setSelectedFriends((prev) => prev.filter((id) => id !== user._id));
           }}
         >
-          <Text style={styles.buttonText}>Remove</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.remove')}</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
@@ -104,7 +117,7 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
             setSelectedFriends([...selectedFriends, user._id]);
           }}
         >
-          <Text style={styles.buttonText}>Add</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.add')}</Text>
         </TouchableOpacity>
       )}
     </TouchableOpacity>
@@ -116,12 +129,14 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
       style={{ flex: 1 }}
     >
       <View style={styles.container}>
-        <Text style={[styles.headerText, styles.border]}>New Group</Text>
+        <Text style={[styles.headerText, styles.border]}>
+          {i18next.t('group.createGroupBottomSheet.header')}
+        </Text>
 
         <View style={styles.textInputContainer}>
           <TextInput
             style={styles.textInput}
-            placeholder="Enter group name"
+            placeholder={i18next.t('group.createGroupBottomSheet.placeholder')}
             placeholderTextColor={theme.textMutedColor}
             value={groupName}
             onChangeText={(text) => setGroupName(text)}
@@ -131,13 +146,18 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
         <ScrollView
           contentContainerStyle={styles.scrollView}
           showsVerticalScrollIndicator={false}
+          style={{ width: '100%' }}
         >
-          <Text style={styles.memberHeaderText}>Select members</Text>
-
           {friends.length > 0 ? (
-            friends.map((user, index) => renderItem(user, index))
+            <>
+              <Text style={styles.memberHeaderText}>
+                {i18next.t('group.createGroupBottomSheet.selectMembers')}
+              </Text>
+
+              {friends.map((user, index) => renderItem(user, index))}
+            </>
           ) : (
-            <Text style={styles.noFriendsText}>No friends found</Text>
+            <Text style={styles.noFriendsText}>{i18next.t('global.noFriends')}</Text>
           )}
         </ScrollView>
 
@@ -145,10 +165,11 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
           style={[styles.button, styles.shadow]}
           onPress={() => {
             handleCreateGroup();
-            onSwipeDown();
           }}
         >
-          <Text style={styles.buttonText}>Create Group</Text>
+          <Text style={styles.buttonText}>
+            {i18next.t('group.createGroupBottomSheet.createGroup')}
+          </Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import BaseModal from 'src/components/modal/BaseModal';
 import { ModalAnimation } from 'src/components/modal/modalAnimation';
@@ -53,7 +54,9 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
           onClose();
         }}
       >
-        <Text style={styles.text}>Message {user.fullName}</Text>
+        <Text style={styles.text}>
+          {i18next.t('global.message')}: {user.fullName}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={[styles.row, styles.shadow]}
@@ -65,13 +68,19 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
           onClose();
         }}
       >
-        <Text style={styles.text}>View {user.fullName}</Text>
+        <Text style={styles.text}>
+          {i18next.t('global.view')}: {user.fullName}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={[styles.row, styles.shadow]} onPress={handleRemoveUser}>
-        <Text style={styles.text}>Remove {user.fullName}</Text>
+        <Text style={styles.text}>
+          {i18next.t('global.remove')}: {user.fullName}
+        </Text>
       </TouchableOpacity>
       <TouchableOpacity style={[styles.row, styles.shadow]}>
-        <Text style={styles.text}>Make Group Admin</Text>
+        <Text style={styles.text}>
+          {i18next.t('group.groupMemberDetailModal.makeAdmin')}
+        </Text>
       </TouchableOpacity>
     </View>
   );

@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
@@ -59,15 +60,22 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
   }, [authUser]);
 
   const handleAddGroup = async () => {
+    if (selectedFriends.length === 0) {
+      ToastAndroid.show(i18next.t('toast.selectMembers'), ToastAndroid.SHORT);
+      return;
+    }
+
     try {
-      const res = await axios.post(`${BASE_URL}/groups/${groupId}/members`, {
+      await axios.post(`${BASE_URL}/groups/${groupId}/members`, {
         members: selectedFriends,
       });
 
-      if (res.status === 201) {
-        ToastAndroid.show('Members added successfully', ToastAndroid.SHORT);
-      }
-      console.log(selectedFriends);
+      ToastAndroid.show(
+        i18next.t('toast.memberAdded', { length: selectedFriends.length }),
+        ToastAndroid.SHORT
+      );
+      onSwipeDown();
+      setSelectedFriends([]);
     } catch (error) {
       console.error(error);
     }
@@ -97,7 +105,7 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
             setSelectedFriends((prev) => prev.filter((id) => id !== user._id));
           }}
         >
-          <Text style={styles.buttonText}>Remove</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.remove')}</Text>
         </TouchableOpacity>
       ) : (
         <TouchableOpacity
@@ -106,7 +114,7 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
             setSelectedFriends([...selectedFriends, user._id]);
           }}
         >
-          <Text style={styles.buttonText}>Select</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.select')}</Text>
         </TouchableOpacity>
       )}
     </TouchableOpacity>
@@ -118,14 +126,15 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
       style={{ flex: 1 }}
     >
       <View style={styles.container}>
-        <Text style={styles.headerText}>Add Members to Group</Text>
+        <Text style={styles.headerText}>
+          {i18next.t('group.addMembersBottomSheet.header')}
+        </Text>
 
         <ScrollView
           style={styles.body}
           contentContainerStyle={styles.scrollViewContent}
           showsVerticalScrollIndicator={false}
         >
-          <Text style={styles.bodyHeaderText}>Select members</Text>
           <View style={styles.userContainer}>
             {friends.length > 0 ? (
               friends.map((user, index) => renderItem(user, index))
@@ -138,15 +147,10 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
         <TouchableOpacity
           style={[styles.button, styles.shadow]}
           onPress={() => {
-            if (selectedFriends.length === 0) {
-              ToastAndroid.show('Select at least one friend', ToastAndroid.SHORT);
-              return;
-            }
             handleAddGroup();
-            onSwipeDown();
           }}
         >
-          <Text style={styles.buttonText}>Add Members</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.add')}</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithUsers from 'src/components/headers/BackHeaderWithUsers';
@@ -120,7 +121,9 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
             minute: '2-digit',
           })}
         </Text>
-        <Text style={styles.timestamp}>{isCurrentUser ? 'You' : sender?.fullName}</Text>
+        <Text style={styles.timestamp}>
+          {isCurrentUser ? i18next.t('global.you') : sender?.fullName}
+        </Text>
       </View>
     );
   };
@@ -150,6 +153,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
         inputMessage={inputMessage}
         handleInputText={setInputMessage}
         sendMessage={sendMessage}
+        placeholder={i18next.t('global.writeMessage')}
       />
     </View>
   );

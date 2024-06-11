@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import CalendarIcon from 'src/assets/icons/calendar';
@@ -87,28 +88,28 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
 
       <View style={styles.container}>
         <ListInfo
-          title="Group Name"
+          title={i18next.t('group.groupInfo.groupName')}
           text={groupName}
           icon={<IdIcon width={30} height={30} strokeWidth={3} />}
           onPress={() => setGroupNameBoxVisible(true)}
         />
 
         <ListInfo
-          title="Group Description"
+          title={i18next.t('group.groupInfo.groupDescription')}
           text={groupDescription}
           icon={<QuotationIcon width={30} height={30} />}
           onPress={() => setGroupDescriptionBoxVisible(true)}
         />
 
         <ListInfo
-          title="Created At"
+          title={i18next.t('global.createdAt')}
           text={group.createdAt?.split('T')[0]}
           icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
           disabled
         />
 
         <ListInfo
-          title="Group Admin"
+          title={i18next.t('group.groupInfo.owner')}
           text={group.owner}
           icon={<DiamondIcon width={30} height={30} />}
           disabled
@@ -118,8 +119,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
           <View style={styles.memberHeaderTextContainer}>
             <Text style={styles.memberHeaderText}>
               {group?.members?.length > 1
-                ? group?.members?.length + ' Members'
-                : group?.members?.length + ' Member'}
+                ? group?.members?.length + ' ' + i18next.t('global.members')
+                : group?.members?.length + ' ' + i18next.t('global.member')}
             </Text>
           </View>
           <View style={styles.memberContainer}>
@@ -133,14 +134,18 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                   height={20}
                   customColor={Colors.primaryColors.dark}
                 />
-                <Text style={styles.addMemberButtonText}>Add Members</Text>
+                <Text style={styles.addMemberButtonText}>
+                  {i18next.t('group.groupInfo.addMembers')}
+                </Text>
               </TouchableOpacity>
 
               <TouchableOpacity
                 style={[styles.leaveGroupButton, styles.shadow]}
                 onPress={handleLeaveGroup}
               >
-                <Text style={styles.leaveGroupButtonText}>Leave</Text>
+                <Text style={styles.leaveGroupButtonText}>
+                  {i18next.t('global.leave')}
+                </Text>
                 <LogoutIcon
                   width={20}
                   height={20}
@@ -170,7 +175,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                   />
 
                   <Text style={styles.userName}>
-                    {authUser?._id === user._id ? 'You' : user.fullName}
+                    {authUser?._id === user._id ? i18next.t('global.you') : user.fullName}
                   </Text>
                 </TouchableOpacity>
               );
@@ -181,8 +186,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
 
       {groupNameBoxVisible && (
         <SetProfileValueBottomSheet
-          title="Group Name"
-          placeholder="Enter Group Name"
+          title={i18next.t('group.groupInfo.groupName')}
+          placeholder={i18next.t('group.groupInfo.groupName')}
           isVisible={groupNameBoxVisible}
           onSwipeDown={() => setGroupNameBoxVisible(false)}
           setValue={(value: string) => {
@@ -194,8 +199,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
 
       {groupDescriptionBoxVisible && (
         <SetProfileValueBottomSheet
-          title="Group Description"
-          placeholder="Enter Group Description"
+          title={i18next.t('group.groupInfo.groupDescription')}
+          placeholder={i18next.t('group.groupInfo.groupDescription')}
           isVisible={groupDescriptionBoxVisible}
           onSwipeDown={() => setGroupDescriptionBoxVisible(false)}
           setValue={(value: string) => {
