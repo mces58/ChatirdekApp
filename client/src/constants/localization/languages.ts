@@ -1,5 +1,4 @@
 import enJson from './en.json';
-import esJson from './es.json';
 import trJson from './tr.json';
 
 export interface Language {
@@ -18,11 +17,6 @@ const Languages: Language[] = [
     code: 'tr',
     name: 'Türkçe',
     file: trJson,
-  },
-  {
-    code: 'es',
-    name: 'Español',
-    file: esJson,
   },
 ];
 

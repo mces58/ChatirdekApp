@@ -11,6 +11,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { LinearGradient } from 'expo-linear-gradient';
+import i18next from 'i18next';
 
 import {
   ChatIcon,
@@ -111,7 +112,7 @@ const BottomTabNavigator: React.FC = () => {
                       { color: focused && theme.bottomTabBarActiveTextColor },
                     ]}
                   >
-                    Chats
+                    {i18next.t('navigation.chats')}
                   </Text>
                 )}
               </View>
@@ -146,7 +147,7 @@ const BottomTabNavigator: React.FC = () => {
                       { color: focused && theme.bottomTabBarActiveTextColor },
                     ]}
                   >
-                    Groups
+                    {i18next.t('navigation.groups')}
                   </Text>
                 )}
               </View>
@@ -181,7 +182,7 @@ const BottomTabNavigator: React.FC = () => {
                       { color: focused && theme.bottomTabBarActiveTextColor },
                     ]}
                   >
-                    Discover
+                    {i18next.t('navigation.discover')}
                   </Text>
                 )}
               </View>
@@ -216,7 +217,7 @@ const BottomTabNavigator: React.FC = () => {
                       { color: focused && theme.bottomTabBarActiveTextColor },
                     ]}
                   >
-                    Settings
+                    {i18next.t('navigation.settings')}
                   </Text>
                 )}
               </View>

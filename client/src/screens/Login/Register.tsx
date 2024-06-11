@@ -25,7 +25,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import i18next from 'i18next';
 import LottieView from 'lottie-react-native';
 
-import registerAnimation from 'src/assets/animatons/register1.json';
+import registerAnimation from 'src/assets/animatons/register.json';
 import Button from 'src/components/button/Button';
 import DropDown from 'src/components/dropDown/DropDown';
 import { Colors } from 'src/constants/color/colors';

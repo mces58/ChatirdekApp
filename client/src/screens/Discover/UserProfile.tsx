@@ -11,7 +11,7 @@ import Animated from 'react-native-reanimated';
 import i18next from 'i18next';
 import LottieView from 'lottie-react-native';
 
-import animation from 'src/assets/animatons/user-profile1.json';
+import animation from 'src/assets/animatons/user-profile.json';
 import ArrowIcon from 'src/assets/icons/arrow';
 import CalendarIcon from 'src/assets/icons/calendar';
 import GenderIcon from 'src/assets/icons/gender';

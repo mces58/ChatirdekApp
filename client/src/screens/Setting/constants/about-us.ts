@@ -4,6 +4,6 @@ export interface AboutUs {
 }
 
 export const aboutUs: AboutUs = {
-  title: 'MCES&FS',
+  title: 'CHATIRDEK',
   content: 'settings.aboutus.message',
 };

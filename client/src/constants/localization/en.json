@@ -135,5 +135,10 @@
   "settings.helpBottomSheet.question3": "How to contact support?",
   "settings.helpBottomSheet.question4": "How to delete account?",
   "settings.helpBottomSheet.question5": "How to report a bug?",
-  "settings.aboutus.message": "Chatirdek is a social media platform that allows users to communicate with each other. Chatirdek allows users to message each other, send friend requests and create groups."
+  "settings.aboutus.message": "Chatirdek is a social media platform that allows users to communicate with each other. Chatirdek allows users to message each other, send friend requests and create groups.",
+
+  "navigation.chats": "Messages",
+  "navigation.groups": "Groups",
+  "navigation.discover": "Discover",
+  "navigation.settings": "Settings"
 }

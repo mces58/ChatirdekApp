@@ -135,5 +135,10 @@
   "settings.helpBottomSheet.question3": "Destekle nasıl iletişime geçilir?",
   "settings.helpBottomSheet.question4": "Hesap nasıl silinir?",
   "settings.helpBottomSheet.question5": "Bir hata nasıl bildirilir?",
-  "settings.aboutus.message": "Chatirdek, kullanıcıların birbirleriyle iletişim kurmasını sağlayan bir sosyal medya platformudur. Chatirdek, kullanıcıların birbirleriyle mesajlaşmasını, arkadaşlık isteği göndermesini ve gruplar oluşturmasını sağlar."
+  "settings.aboutus.message": "Chatirdek, kullanıcıların birbirleriyle iletişim kurmasını sağlayan bir sosyal medya platformudur. Chatirdek, kullanıcıların birbirleriyle mesajlaşmasını, arkadaşlık isteği göndermesini ve gruplar oluşturmasını sağlar.",
+
+  "navigation.chats": "Mesajlar",
+  "navigation.groups": "Gruplar",
+  "navigation.discover": "Keşfet",
+  "navigation.settings": "Ayarlar"
 }
