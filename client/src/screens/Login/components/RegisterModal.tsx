@@ -1,6 +1,8 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import Button from 'src/components/button/Button';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
@@ -22,12 +24,12 @@ const RegisterModal: React.FC<RegisterModalProps> = ({
         <Text style={styles.buttonText}>X</Text>
       </TouchableOpacity>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Registration Successful</Text>
-        <Text style={styles.message}>Your registration was completed successfully!</Text>
+        <Text style={styles.title}>{i18next.t('register.modal.header')}</Text>
+        <Text style={styles.message}>{i18next.t('register.modal.subHeader')}</Text>
       </View>
 
       <Button
-        title="Login"
+        title={i18next.t('global.login')}
         onPress={onGoToLogin}
         customStyle={styles.button}
         textStyle={styles.buttonText}

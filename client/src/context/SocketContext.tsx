@@ -7,7 +7,7 @@ import { useAuthContext } from './AuthContext';
 
 interface SocketContextType {
   socket: any;
-  onlineUsers: any[]; // Burada online kullanıcılar için uygun bir tipi belirlemeniz gerekebilir.
+  onlineUsers: any[];
 }
 
 const SocketContext = createContext<SocketContextType>({
@@ -74,7 +74,6 @@ export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({
           console.log(users);
         });
       } else if (nextAppState.match(/inactive|background/) && socket) {
-        // Close socket when app goes to background
         socket.close();
         setSocket(null);
       }

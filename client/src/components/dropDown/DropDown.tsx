@@ -5,12 +5,13 @@ import { Dropdown } from 'react-native-element-dropdown';
 import { Colors } from 'src/constants/color/colors';
 
 interface DropDownProps {
+  title: string;
   data: { label: string; value: string }[];
   value: string;
   setValue: (value: string) => void;
 }
 
-const DropDown: React.FC<DropDownProps> = ({ data, value, setValue }) => {
+const DropDown: React.FC<DropDownProps> = ({ title, data, value, setValue }) => {
   const renderItem = (item: { label: string; value: string }) => {
     return (
       <View style={styles.item}>
@@ -28,7 +29,7 @@ const DropDown: React.FC<DropDownProps> = ({ data, value, setValue }) => {
       maxHeight={300}
       labelField={'label'}
       valueField={'value'}
-      placeholder="Gender"
+      placeholder={title}
       value={value}
       onChange={(item) => {
         setValue(item.value);

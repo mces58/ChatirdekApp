@@ -19,8 +19,8 @@ const languageResources: Resource = Languages.reduce(
 i18next.use(initReactI18next).init({
   compatibilityJSON: 'v3',
   resources: languageResources,
-  lng: 'en',
-  fallbackLng: 'en',
+  lng: 'tr',
+  fallbackLng: 'tr',
   interpolation: {
     escapeValue: false,
   },

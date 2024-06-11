@@ -22,6 +22,7 @@ import Animated, {
 
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
+import i18next from 'i18next';
 import LottieView from 'lottie-react-native';
 
 import registerAnimation from 'src/assets/animatons/register1.json';
@@ -96,31 +97,53 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
       !signupData.confirmPassword ||
       !signupData.gender
     ) {
-      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
-    }
-
-    if (isEmail(signupData.email) === false) {
-      return Alert.alert('Error', 'Please enter a valid email address', [{ text: 'OK' }]);
-    }
-
-    if (signupData.password.length < 4) {
-      return Alert.alert('Error', 'Password must be at least 4 characters long', [
-        { text: 'OK' },
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.fillAllFields'), [
+        { text: i18next.t('global.ok') },
       ]);
     }
 
+    if (isEmail(signupData.email) === false) {
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.invalidEmail'), [
+        { text: i18next.t('global.ok') },
+      ]);
+    }
+
+    if (signupData.password.length < 6) {
+      return Alert.alert(
+        i18next.t('alert.error'),
+        i18next.t('alert.passwordLength', { length: 6 }),
+        [{ text: i18next.t('global.ok') }]
+      );
+    }
+
     if (signupData.password !== signupData.confirmPassword) {
-      return Alert.alert('Error', 'Passwords do not match', [{ text: 'OK' }]);
+      return Alert.alert(
+        i18next.t('alert.error'),
+        i18next.t('alert.passwordsDoNotMatch'),
+        [{ text: i18next.t('global.ok') }]
+      );
     }
 
     axios
       .post(`${BASE_URL}/auth/signup`, signupData)
       .then((response) => {
-        console.log('registration success', response.data);
+        console.log(response.data);
+
         setRegisterModalVisible(true);
+        setSignupData({
+          fullName: '',
+          userName: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          gender: '',
+        });
       })
       .catch((error) => {
-        console.log('registration failed', error);
+        console.log(error);
+        Alert.alert(i18next.t('alert.error'), i18next.t('alert.usernameExists'), [
+          { text: i18next.t('global.ok') },
+        ]);
       });
   };
 
@@ -169,41 +192,39 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
         <View style={styles.body}>
           <View style={styles.container}>
             <View style={styles.textHeaderContainer}>
-              <Text style={styles.textHeader}>Register</Text>
-              <Text style={styles.textBody}>
-                Please fill in the information below to register
-              </Text>
+              <Text style={styles.textHeader}>{i18next.t('register.header')}</Text>
+              <Text style={styles.textBody}>{i18next.t('register.subHeader')}</Text>
             </View>
 
             <View style={styles.textInputContainer}>
               <TextInput
                 style={styles.textInput}
-                placeholder="FullName"
+                placeholder={i18next.t('global.fullName')}
                 value={signupData.fullName}
                 onChangeText={(text) => setSignupData({ ...signupData, fullName: text })}
               />
               <TextInput
                 style={styles.textInput}
-                placeholder="UserName"
+                placeholder={i18next.t('global.username')}
                 value={signupData.userName}
                 onChangeText={(text) => setSignupData({ ...signupData, userName: text })}
               />
               <TextInput
                 style={styles.textInput}
-                placeholder="Email"
+                placeholder={i18next.t('global.email')}
                 value={signupData.email}
                 onChangeText={(text) => setSignupData({ ...signupData, email: text })}
               />
               <TextInput
                 style={styles.textInput}
-                placeholder="Password"
+                placeholder={i18next.t('global.password')}
                 secureTextEntry
                 value={signupData.password}
                 onChangeText={(text) => setSignupData({ ...signupData, password: text })}
               />
               <TextInput
                 style={styles.textInput}
-                placeholder="Confirm Password"
+                placeholder={i18next.t('global.confirmPassword')}
                 secureTextEntry
                 value={signupData.confirmPassword}
                 onChangeText={(text) =>
@@ -211,9 +232,10 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
                 }
               />
               <DropDown
+                title={i18next.t('global.gender')}
                 data={[
-                  { label: 'Male', value: 'male' },
-                  { label: 'Female', value: 'female' },
+                  { label: i18next.t('global.male'), value: 'male' },
+                  { label: i18next.t('global.female'), value: 'female' },
                 ]}
                 value={signupData.gender}
                 setValue={(value) =>
@@ -226,10 +248,12 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
             </View>
 
             <View style={styles.buttonContainer}>
-              <Button title="Register" onPress={handleRegister} />
+              <Button title={i18next.t('global.register')} onPress={handleRegister} />
 
               <View style={styles.linkContainer}>
-                <Text style={styles.loginText}>Already have an account?</Text>
+                <Text style={styles.loginText}>
+                  {i18next.t('register.alreadyHaveAnAccount')}
+                </Text>
                 <TouchableOpacity
                   onPress={() => {
                     navigation.navigate('Login');
@@ -243,7 +267,7 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
                     });
                   }}
                 >
-                  <Text style={styles.loginLinkText}>Login</Text>
+                  <Text style={styles.loginLinkText}>{i18next.t('global.login')}</Text>
                 </TouchableOpacity>
               </View>
             </View>

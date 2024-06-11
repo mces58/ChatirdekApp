@@ -23,6 +23,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
+import i18next from 'i18next';
 import LottieView from 'lottie-react-native';
 
 import loginAnimation from 'src/assets/animatons/login.json';
@@ -78,13 +79,17 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
 
   const handleLogin = async () => {
     if (!loginData.userName || !loginData.password) {
-      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.fillAllFields'), [
+        { text: i18next.t('global.ok') },
+      ]);
     }
 
-    if (loginData.password.length < 4) {
-      return Alert.alert('Error', 'Password must be at least 4 characters long', [
-        { text: 'OK' },
-      ]);
+    if (loginData.password.length < 6) {
+      return Alert.alert(
+        i18next.t('alert.error'),
+        i18next.t('alert.passwordLength', { length: 6 }),
+        [{ text: i18next.t('global.ok') }]
+      );
     }
 
     await axios
@@ -96,9 +101,9 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
       })
       .catch((error) => {
         Alert.alert(
-          'Error',
-          error.response.data.error || 'Username or password is incorrect',
-          [{ text: 'OK' }]
+          i18next.t('alert.error'),
+          i18next.t('alert.incorrectUsernameOrPassword') + `\n(${error.response.status})`,
+          [{ text: i18next.t('global.ok') }]
         );
       });
   };
@@ -162,20 +167,20 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
         <View style={styles.body}>
           <View style={styles.container}>
             <View style={styles.textHeaderContainer}>
-              <Text style={styles.textHeader}>Login</Text>
-              <Text style={styles.textBody}>Please enter your credentials to login</Text>
+              <Text style={styles.textHeader}>{i18next.t('login.header')}</Text>
+              <Text style={styles.textBody}>{i18next.t('login.subHeader')}</Text>
             </View>
 
             <View style={styles.textInputContainer}>
               <TextInput
                 style={styles.textInput}
-                placeholder="Username"
+                placeholder={i18next.t('global.username')}
                 value={loginData.userName}
                 onChangeText={(text) => setLoginData({ ...loginData, userName: text })}
               />
               <TextInput
                 style={styles.textInput}
-                placeholder="Password"
+                placeholder={i18next.t('global.password')}
                 secureTextEntry
                 value={loginData.password}
                 onChangeText={(text) => setLoginData({ ...loginData, password: text })}
@@ -187,21 +192,27 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
                 style={styles.forgetPassworButton}
                 onPress={() => setForgotPasswordBottomSheetVisible(true)}
               >
-                <Text style={styles.forgetPassworButtonText}>Forgot password?</Text>
+                <Text style={styles.forgetPassworButtonText}>
+                  {i18next.t('login.forgotPassword')}
+                </Text>
               </TouchableOpacity>
             </View>
 
-            <Button title="Login" onPress={handleLogin} />
+            <Button title={i18next.t('global.login')} onPress={handleLogin} />
 
             <View style={styles.registerContainer}>
-              <Text style={styles.registerText}>Don&apos;t have an account?</Text>
+              <Text style={styles.registerText}>
+                {i18next.t('login.dontHaveAccount')}
+              </Text>
               <TouchableOpacity
                 onPress={() => {
                   navigation.navigate('Register');
                   setLoginData({ userName: '', password: '' });
                 }}
               >
-                <Text style={styles.registerLinkText}>Register</Text>
+                <Text style={styles.registerLinkText}>
+                  {i18next.t('global.register')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>

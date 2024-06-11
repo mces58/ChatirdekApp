@@ -15,6 +15,7 @@ import {
 } from 'react-native-confirmation-code-field';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import Button from 'src/components/button/Button';
@@ -78,11 +79,15 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
 
   const handleSendEmail = async (userData: ForgotPassword) => {
     if (!userData.userName || !userData.email) {
-      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.fillAllFields'), [
+        { text: i18next.t('global.ok') },
+      ]);
     }
 
     if (isEmail(userData.email) === false) {
-      return Alert.alert('Error', 'Please enter a valid email address', [{ text: 'OK' }]);
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.invalidEmail'), [
+        { text: i18next.t('global.ok') },
+      ]);
     }
 
     setLoading(true);
@@ -103,7 +108,9 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
         Alert.alert('Error', response.data.message);
       }
     } catch (error) {
-      Alert.alert('Error', 'User not found. Please check your username and email');
+      Alert.alert(i18next.t('alert.error'), i18next.t('alert.userNotFound'), [
+        { text: i18next.t('global.ok') },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -116,7 +123,9 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
 
   const handleVerifyCode = async (code: string) => {
     if (!code) {
-      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.fillAllFields'), [
+        { text: i18next.t('global.ok') },
+      ]);
     }
 
     if (code === verificationCode) {
@@ -125,36 +134,44 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
       setStep(1);
       setCountdown(maxTime);
     } else {
-      Alert.alert('Error', 'Verification code is incorrect.');
+      Alert.alert(i18next.t('alert.error'), i18next.t('alert.invalidVerificationCode'), [
+        { text: i18next.t('global.ok') },
+      ]);
     }
   };
 
   const handleResetPassword = async () => {
     if (!resetData.password || !resetData.confirmPassword) {
-      return Alert.alert('Error', 'Please fill all the fields', [{ text: 'OK' }]);
-    }
-
-    if (resetData.password.length < 6) {
-      return Alert.alert('Error', 'Password must be at least 6 characters long', [
-        { text: 'OK' },
+      return Alert.alert(i18next.t('alert.error'), i18next.t('alert.fillAllFields'), [
+        { text: i18next.t('global.ok') },
       ]);
     }
 
+    if (resetData.password.length < 6) {
+      return Alert.alert(
+        i18next.t('alert.error'),
+        i18next.t('alert.passwordLength', { length: 6 }),
+        [{ text: i18next.t('global.ok') }]
+      );
+    }
+
     if (resetData.password !== resetData.confirmPassword) {
-      return Alert.alert('Error', 'Passwords do not match', [{ text: 'OK' }]);
+      return Alert.alert(
+        i18next.t('alert.error'),
+        i18next.t('alert.passwordsDoNotMatch'),
+        [{ text: i18next.t('global.ok') }]
+      );
     }
 
     setLoading(true);
     try {
-      const response = await axios.put(`${BASE_URL}/auth/password/reset`, resetData);
+      await axios.put(`${BASE_URL}/auth/password/reset`, resetData);
 
-      if (response.data.success) {
-        Alert.alert('Success', response.data.message);
-        setResetPasswordBoxVisible(false);
-        onSwipeDown(false);
-      } else {
-        Alert.alert('Error', response.data.message);
-      }
+      Alert.alert(i18next.t('alert.success'), i18next.t('alert.passwordResetSuccess'), [
+        { text: i18next.t('global.ok') },
+      ]);
+      setResetPasswordBoxVisible(false);
+      onSwipeDown(false);
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'An error occurred while resetting the password.');
@@ -166,39 +183,42 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
   const content = (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Forgot Password</Text>
-        <Text style={styles.subHeader}>
-          Enter your username and email to receive a verification code.
-        </Text>
+        <Text style={styles.headerText}>{i18next.t('forgotPassword.header')}</Text>
+        <Text style={styles.subHeader}>{i18next.t('forgotPassword.subHeader')}</Text>
       </View>
 
       <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Username</Text>
+        <Text style={styles.text}>{i18next.t('global.username')}</Text>
         <TextInput
           style={styles.textInput}
-          placeholder="Enter your username"
+          placeholder={i18next.t('global.username') + '...'}
           value={userData.userName}
           onChangeText={(text) => setUserData({ ...userData, userName: text })}
         />
       </View>
 
       <View style={styles.textInputContainer}>
-        <Text style={styles.text}>E-mail</Text>
+        <Text style={styles.text}>{i18next.t('global.email')}</Text>
         <TextInput
           style={styles.textInput}
-          placeholder="Enter your e-mail"
+          placeholder={i18next.t('global.email') + '...'}
           value={userData.email}
           onChangeText={(text) => setUserData({ ...userData, email: text })}
         />
       </View>
 
-      <Button title="Send" onPress={() => handleSendEmail(userData)} />
+      <Button
+        title={i18next.t('global.send')}
+        onPress={() => handleSendEmail(userData)}
+      />
     </View>
   );
 
   const validationBox = (
     <View style={styles.root}>
-      <Text style={styles.headerText}>Verification</Text>
+      <Text style={styles.headerText}>
+        {i18next.t('forgotPassword.validationHeader')}
+      </Text>
       <CodeField
         ref={ref}
         {...props}
@@ -219,44 +239,53 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
         )}
       />
       <Text style={styles.time}>
-        Time remaining: {Math.floor(countdown / 60)}:{('0' + (countdown % 60)).slice(-2)}
+        {i18next.t('forgotPassword.timeRemaining')}: {Math.floor(countdown / 60)}:
+        {('0' + (countdown % 60)).slice(-2)}
       </Text>
-      <Button title="Verify Code" onPress={() => handleVerifyCode(value)} />
+      <Button
+        title={i18next.t('forgotPassword.verifyButton')}
+        onPress={() => handleVerifyCode(value)}
+      />
     </View>
   );
 
   const resetPasswordBox = (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
-        <Text style={styles.headerText}>Reset Password</Text>
+        <Text style={styles.headerText}>
+          {i18next.t('forgotPassword.resetPasswordHeader')}
+        </Text>
         <Text style={styles.subHeader}>
-          Set the new password for your account so you can log in again.
+          {i18next.t('forgotPassword.resetPasswordSubHeader')}
         </Text>
       </View>
 
       <View style={styles.textInputContainer}>
-        <Text style={styles.text}>New Password</Text>
+        <Text style={styles.text}>{i18next.t('global.newPassword')}</Text>
         <TextInput
           style={styles.textInput}
           value={resetData.password}
-          placeholder="Enter your new password"
+          placeholder={i18next.t('global.newPassword') + '...'}
           onChangeText={(text) => setResetData({ ...resetData, password: text })}
           secureTextEntry={true}
         />
       </View>
 
       <View style={styles.textInputContainer}>
-        <Text style={styles.text}>Confirm New Password</Text>
+        <Text style={styles.text}>{i18next.t('global.confirmPassword')}</Text>
         <TextInput
           style={styles.textInput}
           value={resetData.confirmPassword}
-          placeholder="Confirm your new password"
+          placeholder={i18next.t('global.confirmPassword') + '...'}
           onChangeText={(text) => setResetData({ ...resetData, confirmPassword: text })}
           secureTextEntry={true}
         />
       </View>
 
-      <Button title="Reset Password" onPress={handleResetPassword} />
+      <Button
+        title={i18next.t('forgotPassword.resetPasswordButton')}
+        onPress={handleResetPassword}
+      />
     </View>
   );
 
