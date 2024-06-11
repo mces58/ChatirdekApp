@@ -20,6 +20,7 @@ import { AuthContextProvider } from 'src/context/AuthContext';
 import { FontSizeProvider } from 'src/context/FontSizeContext';
 import { SocketContextProvider } from 'src/context/SocketContext';
 import { ThemeProvider } from 'src/context/ThemeContext';
+import { WallpaperProvider } from 'src/context/WallpaperContext';
 import AppNavigator from 'src/navigations/AppNavigator';
 
 const loadFonts = () => {
@@ -53,7 +54,9 @@ export default function App() {
       <SocketContextProvider>
         <ThemeProvider>
           <FontSizeProvider>
-            <AppNavigator />
+            <WallpaperProvider>
+              <AppNavigator />
+            </WallpaperProvider>
           </FontSizeProvider>
         </ThemeProvider>
       </SocketContextProvider>

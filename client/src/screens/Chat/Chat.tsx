@@ -21,6 +21,7 @@ import { Colors } from 'src/constants/color/colors';
 import { Message } from 'src/constants/types/message';
 import { useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { useWallpaper } from 'src/context/WallpaperContext';
 import { ChatProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
 
@@ -36,6 +37,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
   const { fontSize } = useFontSize();
   const fontSizeValue = fontSize.value;
+  const { wallpaper } = useWallpaper();
 
   const handleInputText = (text: string) => {
     setInputMessage(text);
@@ -150,7 +152,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}
     >
-      <View style={styles.container}>
+      <View style={[styles.container, { backgroundColor: wallpaper.color }]}>
         <BackHeaderWithImage
           user={receiver}
           componentSize={{ height: 95 }}

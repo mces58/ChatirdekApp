@@ -18,7 +18,9 @@ import { Colors } from 'src/constants/color/colors';
 import { GroupMessage } from 'src/constants/types/group-message';
 import { AuthUser, User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
+import { useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { useWallpaper } from 'src/context/WallpaperContext';
 import { GroupChatProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
 
@@ -33,6 +35,9 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+  const { fontSize } = useFontSize();
+  const fontSizeValue = fontSize.value;
+  const { wallpaper } = useWallpaper();
 
   const getGroup = async () => {
     try {
@@ -109,7 +114,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
             : [styles.theirMessage, styles.shadow]
         }
       >
-        <Text style={styles.text}>{message.message}</Text>
+        <Text style={[styles.text, { fontSize: fontSizeValue }]}>{message.message}</Text>
         <Text
           style={[
             styles.timestamp,
@@ -129,7 +134,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: wallpaper.color }]}>
       <BackHeaderWithUsers
         authUser={authUser as AuthUser}
         group={group}
@@ -191,7 +196,6 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     text: {
       fontFamily: 'Poppins-Regular',
-      fontSize: 14,
       color: Colors.primaryColors.dark,
     },
     timestamp: {

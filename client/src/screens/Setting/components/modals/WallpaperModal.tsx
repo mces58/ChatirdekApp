@@ -1,11 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import i18next from 'i18next';
 
@@ -13,8 +7,7 @@ import CloseIcon from 'src/assets/icons/close';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-
-import { walpaperColors } from '../../constants/wallpaper-colors';
+import { useWallpaper, walpaperColors } from 'src/context/WallpaperContext';
 
 interface WallpaperModalProps {
   isVisible: boolean;
@@ -22,16 +15,25 @@ interface WallpaperModalProps {
 }
 
 const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) => {
-  const CIRCLE_SIZE = 40;
-  const CIRCLE_RING_SIZE = 2;
+  const { wallpaper, setWallpaper } = useWallpaper();
+  const [selectedColor, setSelectedColor] = useState<string>(wallpaper.color);
   const { theme } = useTheme();
-  const styles = useMemo(
-    () => createStyles(theme, CIRCLE_SIZE, CIRCLE_RING_SIZE),
-    [theme]
-  );
-  const [value, setValue] = useState(0);
-  const [colors] = useState<string[]>(walpaperColors);
-  const [selectedColor, setSelectedColor] = useState<string>('');
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const handleColorChange = (color: string) => {
+    setWallpaper({ color });
+    onClose();
+  };
+
+  const renderColorOption = (color: string, index: number) => {
+    return (
+      <TouchableOpacity
+        key={index}
+        style={[styles.colorOption, { backgroundColor: color }, styles.shadow]}
+        onPress={() => setSelectedColor(color)}
+      />
+    );
+  };
 
   const content = (
     <View style={styles.modalContent}>
@@ -42,39 +44,20 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) =
         {i18next.t('settings.chatsBottomSheet.WallpaperColor')}
       </Text>
 
-      <View style={styles.sheetBody}>
-        <View style={[styles.profile, { backgroundColor: colors[value] }]}>
-          <Text style={styles.profileText}>MB</Text>
-        </View>
-        <View style={styles.group}>
-          {colors.map((item, index) => {
-            const isActive = value === index;
-            return (
-              <View key={item}>
-                <TouchableWithoutFeedback
-                  onPress={() => {
-                    setValue(index);
-                  }}
-                >
-                  <View style={[styles.circle, isActive && { borderColor: item }]}>
-                    <View style={[styles.circleInside, { backgroundColor: item }]} />
-                  </View>
-                </TouchableWithoutFeedback>
-              </View>
-            );
-          })}
-        </View>
-        <TouchableOpacity
-          style={styles.btn}
-          onPress={() => {
-            setSelectedColor(colors[value]);
-            console.log(selectedColor);
-            onClose();
-          }}
-        >
-          <Text style={styles.btnText}>{i18next.t('global.confirm')}</Text>
-        </TouchableOpacity>
+      <View
+        style={[styles.selectedColor, { backgroundColor: selectedColor }, styles.shadow]}
+      />
+
+      <View style={styles.colorContainer}>
+        {walpaperColors.map((color, index) => renderColorOption(color, index))}
       </View>
+
+      <TouchableOpacity
+        style={[styles.btn, styles.shadow]}
+        onPress={() => handleColorChange(selectedColor)}
+      >
+        <Text style={styles.btnText}>{i18next.t('global.confirm')}</Text>
+      </TouchableOpacity>
     </View>
   );
 
@@ -83,13 +66,15 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) =
 
 export default WallpaperModal;
 
-const createStyles = (theme: Theme, CIRCLE_SIZE: number, CIRCLE_RING_SIZE: number) =>
+const createStyles = (theme: Theme) =>
   StyleSheet.create({
     modalContent: {
       backgroundColor: theme.backgroundColor,
-      padding: 20,
-      borderRadius: 10,
+      paddingHorizontal: 20,
+      paddingVertical: 20,
+      borderRadius: 20,
       alignItems: 'center',
+      gap: 20,
     },
     closeButton: {
       position: 'absolute',
@@ -101,56 +86,28 @@ const createStyles = (theme: Theme, CIRCLE_SIZE: number, CIRCLE_RING_SIZE: numbe
       fontFamily: 'Poppins-Bold',
       color: theme.textColor,
     },
-    group: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      marginBottom: 12,
-    },
-    sheetBody: {
-      padding: 24,
-    },
-    profile: {
-      alignSelf: 'center',
+    selectedColor: {
       width: 100,
       height: 100,
-      alignItems: 'center',
+      borderRadius: 50,
       justifyContent: 'center',
-      borderRadius: 9999,
-      marginBottom: 24,
-      shadowColor: theme.shadowColor,
-      shadowOffset: {
-        width: 0,
-        height: 3,
-      },
-      shadowOpacity: 0.29,
-      shadowRadius: 4.65,
-      elevation: 7,
-    },
-    profileText: {
-      fontSize: 34,
-      color: Colors.primaryColors.light,
-      fontFamily: 'Poppins-Bold',
-    },
-    circle: {
-      width: CIRCLE_SIZE + CIRCLE_RING_SIZE * 4,
-      height: CIRCLE_SIZE + CIRCLE_RING_SIZE * 4,
-      borderRadius: 9999,
-      backgroundColor: 'transparent',
-      borderWidth: CIRCLE_RING_SIZE,
+      alignItems: 'center',
+      borderWidth: 3,
       borderColor: theme.borderColor,
-      marginRight: 8,
-      marginBottom: 12,
     },
-    circleInside: {
-      width: CIRCLE_SIZE,
-      height: CIRCLE_SIZE,
-      borderRadius: 9999,
-      position: 'absolute',
-      top: CIRCLE_RING_SIZE,
-      left: CIRCLE_RING_SIZE,
+    colorContainer: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      gap: 20,
+    },
+    colorOption: {
+      width: 60,
+      height: 60,
+      borderRadius: 99,
     },
     btn: {
+      width: '100%',
       alignItems: 'center',
       justifyContent: 'center',
       borderRadius: 20,
@@ -158,18 +115,20 @@ const createStyles = (theme: Theme, CIRCLE_SIZE: number, CIRCLE_RING_SIZE: numbe
       borderWidth: 1,
       borderColor: theme.borderColor,
       backgroundColor: Colors.primaryColors.success,
-      shadowColor: theme.shadowColor,
-      shadowOffset: {
-        width: 0,
-        height: 3,
-      },
-      shadowOpacity: 0.29,
-      shadowRadius: 4.65,
-      elevation: 7,
     },
     btnText: {
       color: Colors.primaryColors.light,
       fontSize: 16,
       fontFamily: 'Poppins-Bold',
+    },
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
     },
   });
