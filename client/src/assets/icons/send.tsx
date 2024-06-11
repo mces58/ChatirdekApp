@@ -5,15 +5,9 @@ import Svg, { Path } from 'react-native-svg';
 import { Colors } from 'src/constants/color/colors';
 import { useTheme } from 'src/context/ThemeContext';
 
-interface SendIconProps {
-  width: number;
-  height: number;
-  customColor?: string;
-  strokeWidth?: number;
-  opacity?: number;
-}
+import { IconProps } from './icon-props';
 
-const SendIcon: React.FC<SendIconProps> = (props) => {
+const SendIcon: React.FC<IconProps> = (props) => {
   const { width, height, customColor, strokeWidth = 0.7, opacity = 1 } = props;
   const { theme } = useTheme();
 

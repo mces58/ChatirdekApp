@@ -124,8 +124,10 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
             <SearchIcon
               width={20}
               height={20}
-              color={
-                search.length > 0 ? Colors.primaryColors.dark : Colors.primaryColors.light
+              customColor={
+                search.length > 0
+                  ? Colors.primaryColors.dark
+                  : Colors.primaryColors.textMuted
               }
             />
           </TouchableOpacity>

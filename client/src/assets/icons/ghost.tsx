@@ -1,19 +1,14 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { Colors } from 'src/constants/color/colors';
 import { useTheme } from 'src/context/ThemeContext';
 
-interface GhostIconProps {
-  width: number;
-  height: number;
-  strokeWidth?: number;
-  opacity?: number;
-}
+import { IconProps } from './icon-props';
 
-const GhostIcon: FC<GhostIconProps> = (props) => {
-  const { width, height, strokeWidth = 2, opacity = 1 } = props;
+const GhostIcon: React.FC<IconProps> = (props) => {
+  const { width, height, customColor, strokeWidth = 2, opacity = 1 } = props;
   const { theme } = useTheme();
 
   const color =
@@ -25,7 +20,7 @@ const GhostIcon: FC<GhostIconProps> = (props) => {
     <View style={[{ width, height }]}>
       <Svg width="100%" height="100%" viewBox="0 0 48 48" fill="none" opacity={opacity}>
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -33,7 +28,7 @@ const GhostIcon: FC<GhostIconProps> = (props) => {
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -41,7 +36,7 @@ const GhostIcon: FC<GhostIconProps> = (props) => {
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -49,7 +44,7 @@ const GhostIcon: FC<GhostIconProps> = (props) => {
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -57,14 +52,14 @@ const GhostIcon: FC<GhostIconProps> = (props) => {
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M18.3999 16.48748c-0.41422 0 -0.75 -0.33578 -0.75 -0.75 0 -0.4142 0.33578 -0.75 0.75 -0.75"
           strokeWidth={strokeWidth}
         />
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="M18.3999 16.48748c0.41422 0 0.75 -0.33578 0.75 -0.75 0 -0.4142 -0.33578 -0.75 -0.75 -0.75"

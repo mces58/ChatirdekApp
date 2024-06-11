@@ -38,7 +38,7 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) =
   const content = (
     <View style={styles.modalContent}>
       <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <CloseIcon width={30} height={30} color="red" />
+        <CloseIcon width={30} height={30} customColor={Colors.primaryColors.danger} />
       </TouchableOpacity>
       <Text style={styles.title}>
         {i18next.t('settings.chatsBottomSheet.WallpaperColor')}
@@ -129,6 +129,6 @@ const createStyles = (theme: Theme) =>
       },
       shadowOpacity: 0.25,
       shadowRadius: 3.84,
-      elevation: 5,
+      elevation: 3,
     },
   });

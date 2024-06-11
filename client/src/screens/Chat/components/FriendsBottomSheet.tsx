@@ -90,7 +90,12 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
             });
           }}
         >
-          <SendMessageIcon width={20} height={20} color="white" strokeWidth={4} />
+          <SendMessageIcon
+            width={20}
+            height={20}
+            customColor={Colors.primaryColors.light}
+            strokeWidth={4}
+          />
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.deleteButton, styles.shadow]}

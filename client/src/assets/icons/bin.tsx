@@ -5,15 +5,9 @@ import Svg, { Path } from 'react-native-svg';
 import { Colors } from 'src/constants/color/colors';
 import { useTheme } from 'src/context/ThemeContext';
 
-interface BinIconProps {
-  width: number;
-  height: number;
-  customColor?: string;
-  strokeWidth?: number;
-  opacity?: number;
-}
+import { IconProps } from './icon-props';
 
-const BinIcon: React.FC<BinIconProps> = (props) => {
+const BinIcon: React.FC<IconProps> = (props) => {
   const { width, height, customColor, strokeWidth = 2, opacity = 1 } = props;
   const { theme } = useTheme();
 

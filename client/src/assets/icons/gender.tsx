@@ -5,15 +5,9 @@ import Svg, { Path } from 'react-native-svg';
 import { Colors } from 'src/constants/color/colors';
 import { useTheme } from 'src/context/ThemeContext';
 
-interface GenderIconProps {
-  width: number;
-  height: number;
-  customColor?: string;
-  strokeWidth?: number;
-  opacity?: number;
-}
+import { IconProps } from './icon-props';
 
-const GenderIcon: React.FC<GenderIconProps> = (props) => {
+const GenderIcon: React.FC<IconProps> = (props) => {
   const { width, height, customColor, strokeWidth = 2, opacity = 1 } = props;
   const { theme } = useTheme();
 
@@ -28,35 +22,35 @@ const GenderIcon: React.FC<GenderIconProps> = (props) => {
         <Path
           strokeLinecap="round"
           strokeLinejoin="round"
-          stroke={color ?? customColor}
+          stroke={customColor ?? color}
           d="M3 6a3 3 0 1 0 6 0 3 3 0 1 0 -6 0"
           strokeWidth={strokeWidth}
         />
         <Path
           strokeLinecap="round"
           strokeLinejoin="round"
-          stroke={color ?? customColor}
+          stroke={customColor ?? color}
           d="M6 9v4.5"
           strokeWidth={strokeWidth}
         />
         <Path
           strokeLinecap="round"
           strokeLinejoin="round"
-          stroke={color ?? customColor}
+          stroke={customColor ?? color}
           d="m11 0.5 -3 3"
           strokeWidth={strokeWidth}
         />
         <Path
           strokeLinecap="round"
           strokeLinejoin="round"
-          stroke={color ?? customColor}
+          stroke={customColor ?? color}
           d="M8.5 0.5H11V3"
           strokeWidth={strokeWidth}
         />
         <Path
           strokeLinecap="round"
           strokeLinejoin="round"
-          stroke={color ?? customColor}
+          stroke={customColor ?? color}
           d="M4.5 12 6 13.5 7.5 12"
           strokeWidth={strokeWidth}
         />

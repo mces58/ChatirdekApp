@@ -17,6 +17,7 @@ import Animated, {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 import ArrowIcon from 'src/assets/icons/arrow';
+import { Colors } from 'src/constants/color/colors';
 
 import { OnboardingData } from '../data';
 
@@ -96,7 +97,12 @@ const CustomButton = ({
           Get Started
         </Animated.Text>
         <Animated.View style={[styles.arrow, arrowAnimationStyle]}>
-          <ArrowIcon width={30} height={30} color={'white'} direction="right" />
+          <ArrowIcon
+            width={30}
+            height={30}
+            customColor={Colors.primaryColors.light}
+            direction="right"
+          />
         </Animated.View>
       </Animated.View>
     </TouchableWithoutFeedback>

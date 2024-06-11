@@ -1,19 +1,14 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { Colors } from 'src/constants/color/colors';
 import { useTheme } from 'src/context/ThemeContext';
 
-interface CalendarIconProps {
-  width: number;
-  height: number;
-  strokeWidth?: number;
-  opacity?: number;
-}
+import { IconProps } from './icon-props';
 
-const CalendarIcon: FC<CalendarIconProps> = (props) => {
-  const { width, height, strokeWidth = 2, opacity = 1 } = props;
+const CalendarIcon: React.FC<IconProps> = (props) => {
+  const { width, height, customColor, strokeWidth = 2, opacity = 1 } = props;
   const { theme } = useTheme();
 
   const color =
@@ -25,7 +20,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
     <View style={[{ width, height }]}>
       <Svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" opacity={opacity}>
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -34,7 +29,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -43,7 +38,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -52,7 +47,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -61,7 +56,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -70,7 +65,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -79,7 +74,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -88,7 +83,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -97,7 +92,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"
@@ -106,7 +101,7 @@ const CalendarIcon: FC<CalendarIconProps> = (props) => {
         />
 
         <Path
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           strokeMiterlimit="10"

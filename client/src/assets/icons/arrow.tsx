@@ -1,20 +1,20 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 import { Colors } from 'src/constants/color/colors';
 import { useTheme } from 'src/context/ThemeContext';
 
+import { IconProps } from './icon-props';
+
 interface ArrowIconProps {
-  width: number;
-  height: number;
   direction: 'top' | 'right' | 'bottom' | 'left';
-  strokeWidth?: number;
-  opacity?: number;
 }
 
-const ArrowIcon: FC<ArrowIconProps> = (props) => {
-  const { width, height, direction, strokeWidth = 2, opacity = 1 } = props;
+type CombinedProps = IconProps & ArrowIconProps;
+
+const ArrowIcon: React.FC<CombinedProps> = (props) => {
+  const { width, height, direction, customColor, strokeWidth = 2, opacity = 1 } = props;
   const { theme } = useTheme();
   let d = '';
   switch (direction) {
@@ -45,7 +45,7 @@ const ArrowIcon: FC<ArrowIconProps> = (props) => {
         <Path
           d={d}
           strokeWidth={strokeWidth}
-          stroke={color}
+          stroke={customColor ?? color}
           strokeLinecap="round"
           strokeLinejoin="round"
           opacity={opacity}

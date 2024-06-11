@@ -1,14 +1,10 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
-interface FlagIconsProps {
-  width: number;
-  height: number;
-  opacity?: number;
-}
+import { IconProps } from './icon-props';
 
-const TurkishFlagIcon: FC<FlagIconsProps> = (props) => {
+const TurkishFlagIcon: React.FC<IconProps> = (props) => {
   const { width, height, opacity = 1 } = props;
 
   return (
@@ -32,7 +28,7 @@ const TurkishFlagIcon: FC<FlagIconsProps> = (props) => {
   );
 };
 
-const EnglishFlagIcon: FC<FlagIconsProps> = (props) => {
+const EnglishFlagIcon: React.FC<IconProps> = (props) => {
   const { width, height, opacity = 1 } = props;
 
   return (

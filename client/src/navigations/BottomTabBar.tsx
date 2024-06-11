@@ -97,7 +97,7 @@ const BottomTabNavigator: React.FC = () => {
                   <ChatIcon
                     width={30}
                     height={30}
-                    color={
+                    customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
                           Colors.primaryColors.success
@@ -132,7 +132,7 @@ const BottomTabNavigator: React.FC = () => {
                   <GroupIcon
                     width={30}
                     height={30}
-                    color={
+                    customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
                           Colors.primaryColors.success
@@ -167,7 +167,7 @@ const BottomTabNavigator: React.FC = () => {
                   <DiscoverIcon
                     width={30}
                     height={30}
-                    color={
+                    customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
                           Colors.primaryColors.success
@@ -202,7 +202,7 @@ const BottomTabNavigator: React.FC = () => {
                   <SettingIcon
                     width={30}
                     height={30}
-                    color={
+                    customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
                           Colors.primaryColors.success

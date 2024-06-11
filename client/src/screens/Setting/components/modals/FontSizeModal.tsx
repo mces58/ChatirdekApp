@@ -46,7 +46,7 @@ const FontSizeModal: React.FC<FontSizeModalProps> = ({ isVisible, onClose }) => 
   const content = (
     <View style={styles.modalContent}>
       <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <CloseIcon width={30} height={30} color="red" />
+        <CloseIcon width={30} height={30} customColor={Colors.primaryColors.danger} />
       </TouchableOpacity>
       <Text style={styles.title}>{i18next.t('settings.chatsBottomSheet.FontSize')}</Text>
 
