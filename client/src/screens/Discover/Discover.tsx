@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { EarthIcon } from 'src/assets/icons/headers';
@@ -91,7 +92,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   return (
     <View style={styles.screenContainer}>
       <Header
-        title="Discover"
+        title={i18next.t('discover.discover.header')}
         icon={<EarthIcon width={30} height={30} />}
         onIconPress={() => setRequestBoxBottomSheetVisible(true)}
         notificationCount={requests.length}
@@ -105,9 +106,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
             cardDisplay && { display: 'none' },
           ]}
         >
-          <Text style={styles.headerText}>
-            You can discover new people here and connect with them
-          </Text>
+          <Text style={styles.headerText}>{i18next.t('discover.discover.message')}</Text>
           <TouchableOpacity onPress={() => setCardDisplay(true)}>
             <CrossIcon width={15} height={15} />
           </TouchableOpacity>

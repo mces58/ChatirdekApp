@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import { LinearGradient } from 'expo-linear-gradient';
+import i18next from 'i18next';
 
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
@@ -47,7 +48,7 @@ const UserCard: React.FC<UserCardProps> = ({
           style={styles.button}
           onPress={() => onPressAddFriend(user._id)}
         >
-          <Text style={styles.buttonText}>Add Friend</Text>
+          <Text style={styles.buttonText}>{i18next.t('global.addFriend')}</Text>
         </TouchableOpacity>
       </TouchableOpacity>
     </LinearGradient>

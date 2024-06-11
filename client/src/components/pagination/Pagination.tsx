@@ -1,6 +1,8 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import i18next from 'i18next';
+
 import { Colors } from 'src/constants/color/colors';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -33,7 +35,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onPress={() => handlePageChange(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        <Text style={styles.text}>Previous</Text>
+        <Text style={styles.text}>{i18next.t('global.previous')}</Text>
       </TouchableOpacity>
 
       {Array.from({ length: totalPages }, (_, index) => (
@@ -55,7 +57,7 @@ const Pagination: React.FC<PaginationProps> = ({
         onPress={() => handlePageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        <Text style={styles.text}>Next</Text>
+        <Text style={styles.text}>{i18next.t('global.next')}</Text>
       </TouchableOpacity>
     </View>
   );

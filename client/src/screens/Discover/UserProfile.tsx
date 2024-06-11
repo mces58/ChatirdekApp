@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import Animated from 'react-native-reanimated';
 
+import i18next from 'i18next';
 import LottieView from 'lottie-react-native';
 
 import animation from 'src/assets/animatons/user-profile1.json';
@@ -46,23 +47,27 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
 
         <View style={styles.userContainer}>
           <Card
-            title="Created At"
+            title={i18next.t('global.createdAt')}
             text={route?.params.user.createdAt?.split('T')[0]}
             icon={<CalendarIcon width={25} height={25} strokeWidth={1.5} />}
           />
           <Card
-            title="Email"
+            title={i18next.t('global.email')}
             text={route?.params.user.email}
             icon={<InfoIcon width={25} height={25} strokeWidth={1.5} />}
           />
           <Card
-            title="Friends Count"
+            title={i18next.t('global.friendCount')}
             text={route?.params.user.friends?.length.toString()}
             icon={<GroupPeopleIcon width={25} height={25} strokeWidth={1.5} />}
           />
           <Card
-            title="Gender"
-            text={route?.params.user.gender}
+            title={i18next.t('global.gender')}
+            text={
+              route?.params.user.gender === 'male'
+                ? i18next.t('global.male')
+                : i18next.t('global.female')
+            }
             icon={<GenderIcon width={25} height={25} strokeWidth={0.8} />}
           />
         </View>

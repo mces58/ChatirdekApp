@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import axios from 'axios';
+import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
@@ -91,7 +92,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
         }}
         style={styles.button}
       >
-        <Text style={styles.buttonText}>Accept</Text>
+        <Text style={styles.buttonText}>{i18next.t('global.accept')}</Text>
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -102,7 +103,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
         requests.map((request, index) => renderItem(request, index))
       ) : (
         <Text style={styles.noRequestsText}>
-          You have no friend requests at the moment 😊
+          {i18next.t('discover.requestBoxBottomSheet.noRequest')}
         </Text>
       )}
     </View>

@@ -15,6 +15,12 @@
   "global.search": "Search",
   "global.you": "You",
   "global.writeMessage": "Type your message",
+  "global.next": "Next",
+  "global.previous": "Previous",
+  "global.accept": "Accept",
+  "global.addFriend": "Add Friend",
+  "global.createdAt": "Created At",
+  "global.friendCount": "Friend Count",
 
   "alert.success": "Success",
   "alert.error": "Error",
@@ -53,5 +59,9 @@
   "chat.home.noMessages": "You have no messages yet. Select a friend or add a new friend to send a message to.",
   "chat.friendsBottomSheet.header": "Friends",
   "chat.friendsBottomSheet.noFriends": "You have no friends yet.",
-  "chat.messageContainer.noMessage": "No messages yet."
+  "chat.messageContainer.noMessage": "No messages yet.",
+
+  "discover.discover.header": "Discover",
+  "discover.discover.message": "You can discover new people here and connect with them",
+  "discover.requestBoxBottomSheet.noRequest": "You have no friend requests at the moment😊"
 }

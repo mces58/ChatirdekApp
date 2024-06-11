@@ -15,6 +15,12 @@
   "global.search": "Ara",
   "global.you": "Siz",
   "global.writeMessage": "Mesajınızı Yazın",
+  "global.next": "İleri",
+  "global.previous": "Geri",
+  "global.accept": "Kabul Et",
+  "global.addFriend": "Arkadaş Ekle",
+  "global.createdAt": "Oluşturulma Tarihi",
+  "global.friendCount": "Arkadaş Sayısı",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",
@@ -53,5 +59,9 @@
   "chat.home.noMessages": "Henüz mesajınız yok. Mesaj göndermek için bir arkadaşınızı seçin veya yeni bir arkadaş ekleyin.",
   "chat.friendsBottomSheet.header": "Arkadaşlar",
   "chat.friendsBottomSheet.noFriends": "Henüz arkadaşınız yok.",
-  "chat.messageContainer.noMessage": "Henüz mesajınız yok."
+  "chat.messageContainer.noMessage": "Henüz mesajınız yok.",
+
+  "discover.discover.header": "Keşfet",
+  "discover.discover.message": "Burada yeni insanlar keşfedebilir ve onlarla bağlantı kurabilirsiniz",
+  "discover.requestBoxBottomSheet.noRequest": "Şu anda hiç arkadaşlık isteğin yok 😊"
 }
