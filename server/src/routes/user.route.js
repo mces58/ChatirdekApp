@@ -11,26 +11,26 @@ import {
   sendAcceptFriendRequest,
   sendFriendRequest,
 } from 'src/controllers/user.controller';
-import protectRoute from 'src/middlewares/protectRoute.middleware';
+import authentication from 'src/middlewares/authentication.middleware';
 
 const router = Router();
 
-router.get('/', protectRoute, getUsers);
+router.get('/', authentication, getUsers);
 
 router.post('/last-messages/', getLastMessagesWithOtherUsers);
 
-router.get('/:userId', protectRoute, getUserById);
+router.get('/:userId', authentication, getUserById);
 
-router.post('/friend-request', protectRoute, sendFriendRequest);
+router.post('/friend-request', authentication, sendFriendRequest);
 
-router.get('/friend-request/:userId', protectRoute, getByIdFriendRequest);
+router.get('/friend-request/:userId', authentication, getByIdFriendRequest);
 
-router.post('/friend-request/accept', protectRoute, sendAcceptFriendRequest);
+router.post('/friend-request/accept', authentication, sendAcceptFriendRequest);
 
-router.get('/accepted-friends/:userId', protectRoute, getByIdAcceptFriendRequest);
+router.get('/accepted-friends/:userId', authentication, getByIdAcceptFriendRequest);
 
-router.get('/non-friends/:userId', protectRoute, getNonFriends);
+router.get('/non-friends/:userId', authentication, getNonFriends);
 
-router.delete('/remove-friend/:userId/:friendId', protectRoute, removeFriend);
+router.delete('/remove-friend/:userId/:friendId', authentication, removeFriend);
 
 export default router;

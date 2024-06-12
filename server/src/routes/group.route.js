@@ -1,31 +1,35 @@
 import { Router } from 'express';
 
-import protectRoute from 'src/middlewares/protectRoute.middleware';
+import authentication from 'src/middlewares/authentication.middleware';
 
 import * as GroupController from '../controllers/group.controller';
 
 const router = Router();
 
-router.post('/', protectRoute, GroupController.createGroup);
+router.post('/', authentication, GroupController.createGroup);
 
-router.get('/', protectRoute, GroupController.getGroups);
+router.get('/', authentication, GroupController.getGroups);
 
-router.get('/:groupId', protectRoute, GroupController.getGroup);
+router.get('/:groupId', authentication, GroupController.getGroup);
 
-router.post('/:groupId/messages', protectRoute, GroupController.sendGroupMessage);
+router.post('/:groupId/messages', authentication, GroupController.sendGroupMessage);
 
-router.get('/:groupId/messages', protectRoute, GroupController.getGroupMessages);
+router.get('/:groupId/messages', authentication, GroupController.getGroupMessages);
 
-router.post('/:groupId/members', protectRoute, GroupController.addGroupMember);
+router.post('/:groupId/members', authentication, GroupController.addGroupMember);
 
 router.delete(
   '/:groupId/members/:userId',
-  protectRoute,
+  authentication,
   GroupController.removeGroupMember
 );
 
-router.delete('/:groupId/members', protectRoute, GroupController.leaveGroup);
+router.delete('/:groupId/members', authentication, GroupController.leaveGroup);
 
-router.get('/:groupId/members/:userId', protectRoute, GroupController.getNonGroupMembers);
+router.get(
+  '/:groupId/members/:userId',
+  authentication,
+  GroupController.getNonGroupMembers
+);
 
 export default router;

@@ -1,91 +1,89 @@
-import bcrypt from 'bcryptjs';
+import { validationResult } from 'express-validator';
 
 import User from 'src/models/user.model';
-import { encode } from 'src/utils/bcryptjs.util';
+import { decode, encode } from 'src/utils/bcryptjs.util';
+import handleErrors from 'src/utils/error.util';
 import generateTokenAndSetCookie from 'src/utils/generateToken.util';
 import sendMail from 'src/utils/sendMail.util';
 
-export const signup = async (req, res) => {
+export const register = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { fullName, userName, email, password, gender } = req.body;
+
   try {
-    const { fullName, userName, password, confirmPassword, gender } = req.body;
+    let user = await User.findOne({ email });
 
-    if (!fullName || !userName || !password || !confirmPassword || !gender) {
-      return res.status(400).json({ message: 'All fields are required' });
+    if (user) {
+      return res
+        .status(400)
+        .json({ errors: [{ msg: 'User already exists. Change email or userName' }] });
     }
 
-    if (password !== confirmPassword) {
-      return res.status(400).json({ message: 'Passwords do not match' });
-    }
-
-    const existing = await User.findOne({ userName }).exec();
-
-    if (existing) {
-      return res.status(400).json({ message: 'User already exists' });
-    }
-
-    const profilePicture = `https://avatar.iran.liara.run/public/${
+    const avatar = `https://avatar.iran.liara.run/public/${
       gender === 'male' ? 'boy' : 'girl'
     }?username=${userName}`;
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await encode(password);
 
-    const user = new User({
+    user = new User({
       fullName,
       userName,
+      email,
       password: hashedPassword,
+      avatar,
       gender,
-      profilePicture,
     });
 
     if (user) {
       await user.save();
       generateTokenAndSetCookie(res, user);
       return res.status(201).json({
-        _id: user._id,
-        fullName: user.fullName,
-        userName: user.userName,
-        profilePicture: user.profilePicture,
+        success: true,
+        message: 'User created successfully',
+        data: user,
       });
     }
     return res.status(500).json({ message: 'Failed to create user' });
   } catch (error) {
-    console.error('signup error:', error);
-    res.status(500).json({ message: 'Something went wrong', error });
+    handleErrors(res, error);
   }
 };
 
 export const login = async (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { userName, password } = req.body;
+
   try {
-    const { userName, password } = req.body;
-
-    if (!userName || !password) {
-      return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    const user = await User.findOne({ userName }).select('+password').exec();
+    const user = await User.findOne({ userName });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await decode(password, user.password);
 
     if (match) {
       const token = generateTokenAndSetCookie(res, user);
       return res.status(200).json({
-        _id: user._id,
-        fullName: user.fullName,
-        userName: user.userName,
-        profilePicture: user.profilePicture,
+        success: true,
+        message: 'User logged in successfully',
         token,
-        createdAt: user.createdAt,
+        data: user,
       });
     }
     return res.status(401).json({ message: 'Invalid credentials' });
   } catch (error) {
-    console.error('login error:', error);
-    res.status(500).json({ message: 'Something went wrong' });
+    handleErrors(res, error);
   }
 };
 
@@ -94,80 +92,87 @@ export const logout = (req, res) => {
     res.clearCookie('token');
     return res.status(200).json({ message: 'User logged out successfully' });
   } catch (error) {
-    console.error('logout error:', error);
-    res.status(500).json({ message: 'Something went wrong' });
+    handleErrors(res, error);
   }
 };
 
 export const forgotPassword = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { userName } = req.body;
+
   try {
-    const { email, userName } = req.body;
-    if (!userName) return next(new Error('Please enter email'));
-
     const user = await User.findOne({ userName });
-    if (!user) return next(new Error('User not found'));
-
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
     try {
-      const code = await sendMail(email);
-
+      const code = await sendMail(user.email);
       res.status(200).json({
         success: true,
-        message: 'Email sent successfully',
+        message: `Email sent successfully: ${user.email}`,
         code,
       });
     } catch (error) {
-      return next(new Error('Email could not be sent'));
+      next(error);
     }
 
     return Promise.resolve();
   } catch (error) {
     next(error);
-
     return Promise.reject(error);
   }
 };
 
 export const resetPassword = async (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
+  }
+
+  const { userName, password } = req.body;
+
   try {
-    const { userName, password } = req.body;
     const user = await User.findOne({ userName });
 
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
     const hashedPassword = await encode(password);
-
     user.password = hashedPassword;
-
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: 'Password reset successful',
+      message: 'Password reset successfully',
     });
 
     return Promise.resolve();
   } catch (error) {
     next(error);
-
     return Promise.reject(error);
   }
 };
 
 export const me = async (req, res) => {
   try {
-    const { id } = req.params;
-    const user = await User.findById(id).exec();
-
-    if (user) {
-      return res.status(200).json({
-        _id: user._id,
-        fullName: user.fullName,
-        userName: user.userName,
-        profilePicture: user.profilePicture,
-        createdAt: user.createdAt,
-      });
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
     }
-    return res.status(404).json({ message: 'User not found' });
+
+    return res.status(200).json({
+      success: true,
+      message: 'User found',
+      data: user,
+    });
   } catch (error) {
-    console.error('me error:', error);
-    res.status(500).json({ message: 'Something went wrong' });
+    handleErrors(res, error);
   }
 };

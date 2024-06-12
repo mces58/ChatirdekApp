@@ -1,28 +1,38 @@
 import mongoose from 'mongoose';
 
-const groupMessageSchema = new mongoose.Schema({
-  groupId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'Group',
-    required: true,
+const groupMessageSchema = new mongoose.Schema(
+  {
+    groupId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Group',
+      required: [true, 'Group ID is required'],
+    },
+    message: {
+      type: String,
+      required: [true, 'Message is required'],
+    },
+    senderId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: [true, 'Sender ID is required'],
+    },
   },
-
-  message: {
-    type: String,
-    required: true,
-  },
-
-  senderId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true,
-  },
-
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        delete ret.__v;
+        delete ret.updatedAt;
+        delete ret._id;
+        return ret;
+      },
+    },
+    toObject: {
+      virtuals: true,
+    },
+  }
+);
 
 const GroupMessage = mongoose.model('GroupMessage', groupMessageSchema);
 

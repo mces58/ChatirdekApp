@@ -2,14 +2,14 @@ import jwt from 'jsonwebtoken';
 
 import User from 'src/models/user.model';
 
-const protectRoute = async (req, res, next) => {
+const authentication = async (req, res, next) => {
+  const { token } = req.cookies || '';
+
+  if (!token) {
+    return res.status(401).json({ message: 'Not authorized, no token' });
+  }
+
   try {
-    const { token } = req.cookies;
-
-    if (!token) {
-      return res.status(401).json({ message: 'Not authorized, no token' });
-    }
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded) {
@@ -30,4 +30,4 @@ const protectRoute = async (req, res, next) => {
   }
 };
 
-export default protectRoute;
+export default authentication;

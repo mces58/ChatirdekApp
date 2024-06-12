@@ -6,6 +6,7 @@ const conversationSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
+        required: [true, 'Conversation must have participants'],
       },
     ],
     messages: [
@@ -15,9 +16,28 @@ const conversationSchema = new mongoose.Schema(
         default: [],
       },
     ],
-    deletedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+    deletedBy: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    toJSON: {
+      virtuals: true,
+      transform: (doc, ret) => {
+        delete ret.__v;
+        delete ret.updatedAt;
+        delete ret._id;
+        return ret;
+      },
+    },
+    toObject: {
+      virtuals: true,
+    },
+  }
 );
 
 const Conversation = mongoose.model('Conversation', conversationSchema);

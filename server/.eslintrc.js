@@ -22,10 +22,12 @@ module.exports = {
   rules: {
     'linebreak-style': ['error', 'windows'],
     'import/no-unresolved': ['error', { ignore: ['^src/'] }],
-    'no-underscore-dangle': ['error', { allow: ['_id'] }],
+    'no-underscore-dangle': ['error', { allow: ['_id', '__v', '_update'] }],
     'comma-dangle': ['error', 'only-multiline'],
     'object-curly-newline': ['error', { multiline: true, consistent: true }],
     'consistent-return': 'off',
+    'func-names': 'off',
+    'no-param-reassign': 'off',
     'import/order': [
       'error',
       {

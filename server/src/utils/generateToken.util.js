@@ -6,7 +6,7 @@ const generateTokenAndSetCookie = (res, user) => {
   });
 
   res.cookie('token', token, {
-    maxAge: 15 * 24 * 60 * 60 * 1000, // 15 days
+    maxAge: 24 * 60 * 60 * 1000, // 1 day
     httpOnly: true,
     sameSite: 'strict',
     secure: process.env.NODE_ENV !== 'development',
