@@ -6,6 +6,7 @@ import path from 'path';
 
 import connectToMongoDB from 'src/db/connect.db';
 import authRoute from 'src/routes/auth.route';
+import relationshipRoute from 'src/routes/friend.route';
 import groupRoute from 'src/routes/group.route';
 import messageRoute from 'src/routes/message.route';
 import userRoute from 'src/routes/user.route';
@@ -21,6 +22,7 @@ app.use(cookieParser());
 
 app.use('/api/auth', authRoute);
 app.use('/api/messages', messageRoute);
+app.use('/api/friendship', relationshipRoute);
 app.use('/api/users', userRoute);
 app.use('/api/groups', groupRoute);
 

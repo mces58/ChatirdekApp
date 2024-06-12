@@ -28,6 +28,7 @@ module.exports = {
     'consistent-return': 'off',
     'func-names': 'off',
     'no-param-reassign': 'off',
+    'operator-linebreak': 'off',
     'import/order': [
       'error',
       {
