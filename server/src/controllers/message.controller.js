@@ -1,5 +1,3 @@
-import { validationResult } from 'express-validator';
-
 import Conversation from 'src/models/conversation.model';
 import Message from 'src/models/message.model';
 import User from 'src/models/user.model';
@@ -46,12 +44,6 @@ export const getMessages = async (req, res) => {
 };
 
 export const sendMessage = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { id: currentUserId } = req.user;
   const { selectedUserId } = req.params;
   const { message } = req.body;

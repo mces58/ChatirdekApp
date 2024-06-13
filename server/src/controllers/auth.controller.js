@@ -1,5 +1,3 @@
-import { validationResult } from 'express-validator';
-
 import User from 'src/models/user.model';
 import { decode, encode } from 'src/utils/bcryptjs.util';
 import handleErrors from 'src/utils/error.util';
@@ -7,12 +5,6 @@ import generateTokenAndSetCookie from 'src/utils/generateToken.util';
 import sendMail from 'src/utils/sendMail.util';
 
 export const register = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { fullName, userName, email, password, gender } = req.body;
 
   try {
@@ -55,12 +47,6 @@ export const register = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { userName, password } = req.body;
 
   try {
@@ -97,12 +83,6 @@ export const logout = (req, res) => {
 };
 
 export const forgotPassword = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { userName } = req.body;
 
   try {
@@ -129,12 +109,6 @@ export const forgotPassword = async (req, res, next) => {
 };
 
 export const resetPassword = async (req, res, next) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-
   const { userName, password } = req.body;
 
   try {
@@ -162,7 +136,7 @@ export const resetPassword = async (req, res, next) => {
 
 export const me = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.user.id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
