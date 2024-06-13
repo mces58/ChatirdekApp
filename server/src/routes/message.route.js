@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { check } from 'express-validator';
 
 import {
+  getLastMessage,
   getMessages,
   sendImageMessage,
   sendMessage,
@@ -33,5 +34,10 @@ router
 router
   .route('/send/image/:selectedUserId')
   .post(authentication, upload.single('image'), sendImageMessage);
+
+// @route   GET /api/messages/last-message/:selectedUserId
+// @desc    Get the last message between the logged in user and a specific user
+// @access  Private
+router.route('/last-message/:selectedUserId').get(authentication, getLastMessage);
 
 export default router;

@@ -203,3 +203,41 @@ export const sendImageMessage = async (req, res) => {
     handleErrors(res, error);
   }
 };
+
+export const getLastMessage = async (req, res) => {
+  const { id: currentUserId } = req.user;
+  const { selectedUserId } = req.params;
+
+  try {
+    const currentUser = await User.findById(currentUserId);
+    const selectedUser = await User.findById(selectedUserId);
+
+    if (!selectedUser || !currentUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const conversation = await Conversation.findOne({
+      participants: { $all: [currentUserId, selectedUserId] },
+    }).populate('messages');
+
+    if (!conversation) {
+      return res.status(404).json({
+        success: false,
+        message: 'No messages found',
+      });
+    }
+
+    const { messages } = conversation;
+    const lastMessage = messages[messages.length - 1];
+
+    res.status(200).json({
+      success: true,
+      data: lastMessage,
+    });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
