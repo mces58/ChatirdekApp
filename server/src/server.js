@@ -4,6 +4,7 @@ import path from 'path';
 
 import dotEnvConfig from 'src/configs/dotEnv.config';
 import connectToMongoDB from 'src/db/connect.db';
+import error from 'src/middlewares/error.middleware';
 import authRoute from 'src/routes/auth.route';
 import friendshipRoute from 'src/routes/friend.route';
 import groupRoute from 'src/routes/group.route';
@@ -25,9 +26,9 @@ app.use('/api/groups', groupRoute);
 
 app.use(express.static(path.join(__dirname, '/client/dist')));
 
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
-});
+app.use(error.converter);
+app.use(error.notFound);
+app.use(error.handler);
 
 const PORT = dotEnvConfig.PORT || 4000;
 server.listen(PORT, () => {
