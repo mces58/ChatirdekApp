@@ -5,7 +5,6 @@ const groupSchema = new mongoose.Schema(
     name: {
       type: String,
       required: [true, 'Group name is required'],
-      unique: true,
       trim: true,
       maxlength: [100, 'Group name must be less than 100 characters'],
     },

@@ -4,7 +4,7 @@ import dotEnvConfig from 'src/configs/dotEnv.config';
 
 const generateTokenAndSetCookie = (res, user) => {
   const token = jwt.sign({ _id: user._id }, dotEnvConfig.JWT.SECRET, {
-    expiresIn: '15d',
+    expiresIn: dotEnvConfig.JWT.EXPIRESTIME,
   });
 
   res.cookie('token', token, {

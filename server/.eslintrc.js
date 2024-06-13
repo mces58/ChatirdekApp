@@ -30,6 +30,7 @@ module.exports = {
     'no-param-reassign': 'off',
     'operator-linebreak': 'off',
     'implicit-arrow-linebreak': 'off',
+    'function-paren-newline': 'off',
     'import/order': [
       'error',
       {

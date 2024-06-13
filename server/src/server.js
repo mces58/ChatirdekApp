@@ -8,6 +8,7 @@ import error from 'src/middlewares/error.middleware';
 import authRoute from 'src/routes/auth.route';
 import friendshipRoute from 'src/routes/friend.route';
 import groupRoute from 'src/routes/group.route';
+import groupMessageRoute from 'src/routes/groupMessage.route';
 import messageRoute from 'src/routes/message.route';
 import userRoute from 'src/routes/user.route';
 import { app, server } from 'src/socket/socket';
@@ -23,6 +24,7 @@ app.use('/api/messages', messageRoute);
 app.use('/api/friendship', friendshipRoute);
 app.use('/api/users', userRoute);
 app.use('/api/groups', groupRoute);
+app.use('/api/group/messages', groupMessageRoute);
 
 app.use(express.static(path.join(__dirname, '/client/dist')));
 

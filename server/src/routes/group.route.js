@@ -1,35 +1,70 @@
 import { Router } from 'express';
 
+import {
+  addMember,
+  createGroup,
+  deleteGroup,
+  getGroup,
+  getGroups,
+  leaveGroup,
+  removeMember,
+  updateGroup,
+} from 'src/controllers/group.controller';
 import authentication from 'src/middlewares/authentication.middleware';
-
-import * as GroupController from '../controllers/group.controller';
+import validate from 'src/middlewares/validate.middleware';
+import groupValidation from 'src/validations/group.validation';
 
 const router = Router();
 
-router.post('/', authentication, GroupController.createGroup);
+// @route   POST /api/groups/
+// @desc    Create a group
+// @access  Private
+router
+  .route('/')
+  .post(validate(groupValidation.createGroup), authentication, createGroup);
 
-router.get('/', authentication, GroupController.getGroups);
+// @route   PUT /api/groups/:groupId
+// @desc    Update a group
+// @access  Private
+router
+  .route('/:groupId')
+  .put(validate(groupValidation.updateGroup), authentication, updateGroup);
 
-router.get('/:groupId', authentication, GroupController.getGroup);
+router
+  .route('/:groupId')
+  .delete(validate(groupValidation.deleteGroup), authentication, deleteGroup);
 
-router.post('/:groupId/messages', authentication, GroupController.sendGroupMessage);
+// @route   GET /api/groups/
+// @desc    Get all groups
+// @access  Private
+router.route('/').get(authentication, getGroups);
 
-router.get('/:groupId/messages', authentication, GroupController.getGroupMessages);
+// @route   GET /api/groups/:groupId
+// @desc    Get a group
+// @access  Private
+router
+  .route('/:groupId')
+  .get(validate(groupValidation.getGroup), authentication, getGroup);
 
-router.post('/:groupId/members', authentication, GroupController.addGroupMember);
+// @route   POST /api/groups/:groupId/members
+// @desc    Add member to a group
+// @access  Private
+router
+  .route('/:groupId/members/add')
+  .post(validate(groupValidation.addMember), authentication, addMember);
 
-router.delete(
-  '/:groupId/members/:userId',
-  authentication,
-  GroupController.removeGroupMember
-);
+// @route   DELETE /api/groups/:groupId/members/remove/:userId
+// @desc    Remove member from a group
+// @access  Private
+router
+  .route('/:groupId/members/remove/:userId')
+  .delete(validate(groupValidation.removeMember), authentication, removeMember);
 
-router.delete('/:groupId/members', authentication, GroupController.leaveGroup);
-
-router.get(
-  '/:groupId/members/:userId',
-  authentication,
-  GroupController.getNonGroupMembers
-);
+// @route   DELETE /api/groups/:groupId/members/leave
+// @desc    Leave a group
+// @access  Private
+router
+  .route('/:groupId/members/leave')
+  .delete(validate(groupValidation.leaveGroup), authentication, leaveGroup);
 
 export default router;

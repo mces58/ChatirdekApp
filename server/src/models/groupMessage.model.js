@@ -7,14 +7,18 @@ const groupMessageSchema = new mongoose.Schema(
       ref: 'Group',
       required: [true, 'Group ID is required'],
     },
-    message: {
-      type: String,
-      required: [true, 'Message is required'],
-    },
     senderId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
       required: [true, 'Sender ID is required'],
+    },
+    message: {
+      type: String,
+      trim: true,
+      maxlength: [500, 'Message content must be less than 500 characters'],
+    },
+    image: {
+      type: String,
     },
   },
   {

@@ -25,11 +25,22 @@ const converter = (err, req, res, next) => {
     return next(apiError);
   }
   err.message = [{ message: err.message }];
-  return next(err);
+  logger.error(err.stack);
+  return res.status(err.status).json({
+    status: err.status,
+    errors: err.message,
+    ...(dotEnvConfig.ENV === 'development' && { stack: err.stack }),
+  });
 };
 
-const notFound = (req, res, next) =>
-  next(new APIError(httpStatus[httpStatus.NOT_FOUND], httpStatus.NOT_FOUND));
+const notFound = (req, res) => {
+  logger.error(`Not found - ${req.originalUrl}`);
+  return res.status(httpStatus.NOT_FOUND).json({
+    status: httpStatus.NOT_FOUND,
+    errors: httpStatus[httpStatus.NOT_FOUND],
+    url: req.originalUrl,
+  });
+};
 
 const handler = (err, req, res) => {
   let { status, message } = err;

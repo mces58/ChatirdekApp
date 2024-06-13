@@ -11,7 +11,7 @@ export const getFriends = async (req, res) => {
       data: friends,
     });
   } catch (error) {
-    handleErrors(error, res);
+    handleErrors(res, error);
   }
 };
 
@@ -53,7 +53,7 @@ export const sendFriendRequest = async (req, res) => {
       message: 'Friend request sent successfully',
     });
   } catch (error) {
-    handleErrors(res, error, 'Failed to send friend request');
+    handleErrors(res, error);
   }
 };
 
@@ -72,7 +72,7 @@ export const getIncomingFriendRequests = async (req, res) => {
       data: incomingFriendRequests,
     });
   } catch (error) {
-    handleErrors(error, res);
+    handleErrors(res, error);
   }
 };
 
@@ -91,7 +91,7 @@ export const getOutgoingFriendRequests = async (req, res) => {
       data: outgoingFriendRequests,
     });
   } catch (error) {
-    handleErrors(error, res);
+    handleErrors(res, error);
   }
 };
 
@@ -135,7 +135,7 @@ export const acceptFriendRequest = async (req, res) => {
       message: 'Friend request accepted successfully',
     });
   } catch (error) {
-    handleErrors(error, res);
+    handleErrors(res, error);
   }
 };
 
@@ -163,7 +163,7 @@ export const getNonFriends = async (req, res) => {
       data: nonFriends,
     });
   } catch (error) {
-    handleErrors(error, res);
+    handleErrors(res, error);
   }
 };
 
@@ -202,6 +202,6 @@ export const removeFriend = async (req, res) => {
       message: 'Friend removed successfully',
     });
   } catch (error) {
-    handleErrors(error, res);
+    handleErrors(res, error);
   }
 };
