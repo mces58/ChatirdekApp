@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 
+import dotEnvConfig from 'src/configs/dotEnv.config';
 import User from 'src/models/user.model';
 
 const authentication = async (req, res, next) => {
@@ -10,7 +11,7 @@ const authentication = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, dotEnvConfig.JWT.SECRET);
 
     if (!decoded) {
       return res.status(401).json({ message: 'Not authorized, token failed' });

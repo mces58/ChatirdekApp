@@ -1,9 +1,15 @@
 import { sign, verify } from 'jsonwebtoken';
 
-const jwtSign = (id) => sign({ id }, process.env.JWT_SECRET, {
-  expiresIn: process.env.JWT_EXPIRES_TIME,
-});
+import dotEnvConfig from 'src/configs/dotEnv.config';
 
-const jwtVerify = (token) => verify(token, process.env.JWT_SECRET);
+const jwtSign = (id) => {
+  const token = sign({ id }, dotEnvConfig.JWT.SECRET, {
+    expiresIn: dotEnvConfig.JWT.EXPIRESTIME,
+  });
+
+  return token;
+};
+
+const jwtVerify = (token) => verify(token, dotEnvConfig.JWT.SECRET);
 
 export { jwtSign, jwtVerify };

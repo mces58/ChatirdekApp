@@ -1,5 +1,6 @@
 import nodeMailer from 'nodemailer';
 
+import dotEnvConfig from 'src/configs/dotEnv.config';
 import mailConfig from 'src/configs/mail.config';
 
 export const generateVerificationCode = () =>
@@ -12,7 +13,7 @@ const sendMail = async (email) => {
     const verificationCode = generateVerificationCode();
 
     const mailOptions = {
-      from: `Admin <${process.env.SMTP_EMAIL}>`,
+      from: `Admin <${dotEnvConfig.SMTP.EMAIL}>`,
       to: email,
       subject: 'Password Recovery',
       html: `

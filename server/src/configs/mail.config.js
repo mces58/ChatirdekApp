@@ -1,16 +1,13 @@
-import dotenv from 'dotenv';
-import dotenvExpand from 'dotenv-expand';
-
-dotenvExpand.expand(dotenv.config());
+import dotEnvConfig from 'src/configs/dotEnv.config';
 
 const mailConfig = {
-  service: process.env.SMTP_SERVICE,
-  host: process.env.SMTP_HOST,
-  port: process.env.SMTP_PORT,
-  secure: process.env.SMTP_SECURE,
+  service: dotEnvConfig.SMTP.SERVICE,
+  host: dotEnvConfig.SMTP.HOST,
+  port: dotEnvConfig.SMTP.PORT,
+  secure: dotEnvConfig.SMTP.SECURE,
   auth: {
-    user: process.env.SMTP_EMAIL,
-    pass: process.env.SMTP_PASSWORD,
+    user: dotEnvConfig.SMTP.EMAIL,
+    pass: dotEnvConfig.SMTP.PASSWORD,
   },
 };
 
