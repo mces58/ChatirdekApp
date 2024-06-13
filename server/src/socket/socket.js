@@ -2,6 +2,8 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 
+import logger from 'src/utils/logger.util';
+
 const app = express();
 
 const server = http.createServer(app);
@@ -19,7 +21,7 @@ const userSocketMap = {};
 export const getReceiverSocketId = (receiverId) => userSocketMap[receiverId];
 
 io.on('connection', (socket) => {
-  console.log('a user connected', socket.id);
+  logger.info('a user connected', socket.id);
 
   const { userId } = socket.handshake.query;
   if (userId !== 'undefined') userSocketMap[userId] = socket.id;
@@ -27,7 +29,7 @@ io.on('connection', (socket) => {
   io.emit('getOnlineUsers', Object.keys(userSocketMap));
 
   socket.on('disconnect', () => {
-    console.log('user disconnected', socket.id);
+    logger.info('user disconnected', socket.id);
     delete userSocketMap[userId];
     io.emit('getOnlineUsers', Object.keys(userSocketMap));
   });

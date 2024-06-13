@@ -10,6 +10,7 @@ import groupRoute from 'src/routes/group.route';
 import messageRoute from 'src/routes/message.route';
 import userRoute from 'src/routes/user.route';
 import { app, server } from 'src/socket/socket';
+import logger from 'src/utils/logger.util';
 
 const __dirname = path.resolve();
 
@@ -31,5 +32,5 @@ app.get('*', (req, res) => {
 const PORT = dotEnvConfig.PORT || 4000;
 server.listen(PORT, () => {
   connectToMongoDB();
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });

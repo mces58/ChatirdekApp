@@ -12,7 +12,7 @@ const uploadImage = async (image) => {
   try {
     const { path } = image;
     const newPath = await cloudinary.uploader.upload(path, {
-      folder: 'chat-app',
+      folder: 'CHATIRDEK',
       transformation: [{ width: 150, height: 150, crop: 'fill' }],
     });
 

@@ -2,9 +2,9 @@ import nodeMailer from 'nodemailer';
 
 import dotEnvConfig from 'src/configs/dotEnv.config';
 import mailConfig from 'src/configs/mail.config';
+import logger from 'src/utils/logger.util';
 
 export const generateVerificationCode = () =>
-  // eslint-disable-next-line implicit-arrow-linebreak
   Math.floor(1000 + Math.random() * 9000).toString();
 
 const sendMail = async (email) => {
@@ -25,10 +25,11 @@ const sendMail = async (email) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log('Message sent: %s', info.messageId);
+    logger.info(`Email sent: ${info.response}`);
     return verificationCode;
   } catch (error) {
-    console.error('sendMail error: ', error);
+    logger.error(error);
+    return null;
   }
 };
 

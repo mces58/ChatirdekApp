@@ -29,6 +29,7 @@ module.exports = {
     'func-names': 'off',
     'no-param-reassign': 'off',
     'operator-linebreak': 'off',
+    'implicit-arrow-linebreak': 'off',
     'import/order': [
       'error',
       {
