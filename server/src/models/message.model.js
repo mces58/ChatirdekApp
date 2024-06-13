@@ -16,13 +16,11 @@ const messageSchema = new mongoose.Schema(
     },
     message: {
       type: String,
-      required: [true, 'Message content is required'],
       trim: true,
       maxlength: [500, 'Message content must be less than 500 characters'],
     },
-    isRead: {
-      type: Boolean,
-      default: false,
+    image: {
+      type: String,
     },
   },
   {
