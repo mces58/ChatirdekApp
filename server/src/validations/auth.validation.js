@@ -24,13 +24,13 @@ const login = {
 
 const forgotPassword = {
   body: Joi.object().keys({
-    userName: Joi.string().alphanum().min(2).max(30).required().label('Username'),
+    email: Joi.string().trim().email().required().label('Email'),
   }),
 };
 
 const resetPassword = {
   body: Joi.object().keys({
-    userName: Joi.string().alphanum().min(2).max(30).required().label('Username'),
+    email: Joi.string().trim().email().required().label('Email'),
     password: Joi.string().min(6).required().label('Password'),
     confirmPassword: Joi.string()
       .valid(Joi.ref('password'))

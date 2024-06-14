@@ -13,8 +13,13 @@ export interface LoginData {
 }
 
 export interface ForgotPassword {
-  userName: string;
   email: string;
+}
+
+export interface ResetPassword {
+  email: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export interface User {

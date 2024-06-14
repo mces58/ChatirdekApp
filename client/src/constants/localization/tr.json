@@ -77,7 +77,7 @@
   "register.modal.subHeader": "Kaydınız başarıyla tamamlandı!",
 
   "forgotPassword.header": "Şifremi Unuttum",
-  "forgotPassword.subHeader": "Doğrulama kodunu almak için kullanıcı adınızı ve e-posta adresinizi girin.",
+  "forgotPassword.subHeader": "Doğrulama kodunu almak için e-posta adresinizi girin.",
   "forgotPassword.validationHeader": "Doğrulama Kodu",
   "forgotPassword.timeRemaining": "Kalan Süre",
   "forgotPassword.verifyButton": "Kodu Doğrula",

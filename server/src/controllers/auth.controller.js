@@ -85,19 +85,19 @@ export const logout = (req, res) => {
 };
 
 export const forgotPassword = async (req, res, next) => {
-  const { userName } = req.body;
+  const { email } = req.body;
 
   try {
-    const user = await User.findOne({ userName });
+    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
     try {
-      const code = await sendMail(user.email);
+      const code = await sendMail(email);
       res.status(200).json({
         success: true,
         message: `Email sent successfully: ${user.email}`,
-        code,
+        data: code,
       });
     } catch (error) {
       next(error);
@@ -111,10 +111,10 @@ export const forgotPassword = async (req, res, next) => {
 };
 
 export const resetPassword = async (req, res, next) => {
-  const { userName, password } = req.body;
+  const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ userName });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });

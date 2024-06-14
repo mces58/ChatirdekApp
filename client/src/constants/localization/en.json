@@ -77,7 +77,7 @@
   "register.modal.subHeader": "Your registration was completed successfully!",
 
   "forgotPassword.header": "Forgot Password",
-  "forgotPassword.subHeader": "Enter your username and email to receive a verification code.",
+  "forgotPassword.subHeader": "Enter your email to receive a verification code.",
   "forgotPassword.validationHeader": "Verification Code",
   "forgotPassword.timeRemaining": "Time Remaining",
   "forgotPassword.verifyButton": "Verify Code",

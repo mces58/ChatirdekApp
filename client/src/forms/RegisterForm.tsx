@@ -197,6 +197,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primaryColors.dark,
   },
   errorText: {
+    fontFamily: 'Nunito-Regular',
     fontSize: 12,
     color: Colors.primaryColors.danger,
   },
