@@ -1,10 +1,15 @@
-import { ForgotPassword, RegisterData } from 'src/constants/types/user';
+import { ForgotPassword, LoginData, RegisterData } from 'src/constants/types/user';
 
 import apiService from './api-service';
 
 class AuthService {
   public register = async (data: RegisterData): Promise<any> => {
     const response = await apiService.post('/auth/register', data);
+    return response;
+  };
+
+  public login = async (data: LoginData): Promise<any> => {
+    const response = await apiService.post('/auth/login', data);
     return response;
   };
 

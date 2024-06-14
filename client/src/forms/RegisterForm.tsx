@@ -47,6 +47,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
       Alert.alert('Error', i18next.t('error.register'), [
         { text: i18next.t('global.ok') },
       ]);
+      resetForm();
     }
   };
 
@@ -58,7 +59,15 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
         submitRegister(values, resetForm);
       }}
     >
-      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+      {({
+        handleChange,
+        handleBlur,
+        handleSubmit,
+        values,
+        errors,
+        touched,
+        resetForm,
+      }) => (
         <View style={styles.container}>
           <View style={styles.textInputContainer}>
             <TextInput
@@ -150,7 +159,12 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
               <Text style={styles.loginText}>
                 {i18next.t('register.alreadyHaveAnAccount')}
               </Text>
-              <TouchableOpacity onPress={gotoLogin}>
+              <TouchableOpacity
+                onPress={() => {
+                  resetForm();
+                  gotoLogin();
+                }}
+              >
                 <Text style={styles.loginLinkText}>{i18next.t('global.login')}</Text>
               </TouchableOpacity>
             </View>
