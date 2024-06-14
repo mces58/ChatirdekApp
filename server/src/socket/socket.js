@@ -28,6 +28,16 @@ io.on('connection', (socket) => {
 
   io.emit('getOnlineUsers', Object.keys(userSocketMap));
 
+  socket.on('joinGroup', (groupId) => {
+    socket.join(groupId);
+    logger.info(`User ${userId} joined group ${groupId}`);
+  });
+
+  socket.on('leaveGroup', (groupId) => {
+    socket.leave(groupId);
+    logger.info(`User ${userId} left group ${groupId}`);
+  });
+
   socket.on('disconnect', () => {
     logger.info('user disconnected', socket.id);
     delete userSocketMap[userId];
