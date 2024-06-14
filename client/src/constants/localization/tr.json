@@ -54,10 +54,15 @@
   "alert.invalidVerificationCode": "Geçersiz doğrulama kodu.",
   "alert.usernameExists": "Bu kullanıcı adı zaten kullanımda.",
   "alert.passwordResetSuccess": "Şifreniz başarıyla sıfırlandı.",
+  "alert.alphanum": "Yalnızca harf ve rakam içerebilir.",
+  "alert.minCharacter": "En az {{length}} karakter olmalıdır.",
+  "alert.maxCharacter": "En fazla {{length}} karakter olmalıdır.",
 
   "toast.enterGroupName": "Lütfen grup adını giriniz.",
   "toast.selectMembers": "Lütfen en az bir üye seçiniz.",
   "toast.memberAdded": "Üyeler eklendi.",
+
+  "error.register": "Aynı e-posta adresi veya kullanıcı adı ile kayıtlı bir hesap bulunmaktadır.",
 
   "login.header": "Hoşgeldiniz",
   "login.subHeader": "Lütfen giriş yapmak için bilgilerinizi giriniz.",

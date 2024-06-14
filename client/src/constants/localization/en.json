@@ -54,10 +54,15 @@
   "alert.invalidVerificationCode": "Invalid verification code.",
   "alert.usernameExists": "Username already exists.",
   "alert.passwordResetSuccess": "Password reset successfully.",
+  "alert.alphanum": "It can only contain letters and numbers.",
+  "alert.minCharacter": "It must be at least {{length}} characters long.",
+  "alert.maxCharacter": "It must be at most {{length}} characters long.",
 
   "toast.enterGroupName": "Please enter group name.",
   "toast.selectMembers": "Please select friends to add to the group.",
   "toast.memberAdded": "Members added successfully.",
+
+  "error.register": "There is an account registered with the same email address or username.",
 
   "login.header": "Welcome",
   "login.subHeader": "Please enter your information to log in.",

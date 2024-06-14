@@ -1,45 +1,16 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
+import { BASE_URL } from './baseUrl';
+
 class APIService {
   private instance: AxiosInstance;
-  private static authToken: string | null = null;
-
-  /**
-   * Base API url
-   */
-  private static readonly BASE_URL = 'http://172.16.24.239:5000/api';
+  private static readonly BASE_URL = BASE_URL;
 
   constructor() {
     this.instance = axios.create({
       baseURL: APIService.BASE_URL,
       withCredentials: true,
     });
-
-    // Interceptor to add token to headers
-    this.instance.interceptors.request.use(
-      (config: AxiosRequestConfig) => {
-        if (APIService.authToken) {
-          config.headers = {
-            ...config.headers,
-            Authorization: `Bearer ${APIService.authToken}`,
-          };
-        }
-        return config;
-      },
-      (error) => {
-        return Promise.reject(error);
-      }
-    );
-  }
-
-  // Method to set the token
-  public static setAuthToken(token: string) {
-    APIService.authToken = token;
-  }
-
-  // Method to clear the token
-  public static clearAuthToken() {
-    APIService.authToken = null;
   }
 
   public async get<T>(url: string, config?: AxiosRequestConfig): Promise<T> {

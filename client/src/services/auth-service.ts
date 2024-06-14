@@ -1,17 +1,12 @@
-import { LoginData, SignupData } from 'src/constants/types/user';
+import { RegisterData } from 'src/constants/types/user';
 
-import APIService from './api-service';
+import apiService from './api-service';
 
 class AuthService {
-  public async login(LoginData: LoginData) {
-    const authRes = await APIService.post('auth/login', LoginData, undefined);
-    return authRes;
-  }
-
-  public async signup(SignupData: SignupData) {
-    const authRes = await APIService.post('auth/signup', SignupData, undefined);
-    return authRes;
-  }
+  public register = async (data: RegisterData): Promise<any> => {
+    const response = await apiService.post('/auth/register', data);
+    return response;
+  };
 }
 
 export default new AuthService();
