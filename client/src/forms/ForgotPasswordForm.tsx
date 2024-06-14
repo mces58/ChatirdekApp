@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { Alert, StyleSheet, Text, TextInput, View } from 'react-native';
 
 import { Formik } from 'formik';
 import i18next from 'i18next';
@@ -42,7 +42,9 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
         resetForm();
       }
     } catch (error) {
-      console.log(error);
+      Alert.alert('Error', i18next.t('error.forgotPassword'), [
+        { text: i18next.t('global.ok') },
+      ]);
     } finally {
       setLoading(false);
     }

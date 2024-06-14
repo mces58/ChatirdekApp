@@ -63,6 +63,7 @@
   "toast.memberAdded": "Üyeler eklendi.",
 
   "error.register": "Aynı e-posta adresi veya kullanıcı adı ile kayıtlı bir hesap bulunmaktadır.",
+  "error.forgotPassword": "Bu e-posta adresi ile kayıtlı bir hesap bulunamadı. Lütfen e-posta adresinizi kontrol edin.",
 
   "login.header": "Hoşgeldiniz",
   "login.subHeader": "Lütfen giriş yapmak için bilgilerinizi giriniz.",

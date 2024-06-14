@@ -63,6 +63,7 @@
   "toast.memberAdded": "Members added successfully.",
 
   "error.register": "There is an account registered with the same email address or username.",
+  "error.forgotPassword": "No registered account was found with this email address. Please check your email address.",
 
   "login.header": "Welcome",
   "login.subHeader": "Please enter your information to log in.",
