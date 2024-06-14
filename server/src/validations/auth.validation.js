@@ -39,9 +39,24 @@ const resetPassword = {
   }),
 };
 
+const updateProfile = {
+  body: Joi.object().keys({
+    fullName: Joi.string().trim().min(2).max(50).label('Full Name'),
+    userName: Joi.string().alphanum().min(2).max(30).label('Username'),
+    email: Joi.string().trim().email().label('Email'),
+    gender: Joi.string().valid('male', 'female').label('Gender'),
+    avatar: Joi.string().label('Avatar'),
+    about: Joi.string().max(160).label('About'),
+    hideOnlineStatus: Joi.boolean().label('Hide Online Status'),
+    hideAvatar: Joi.boolean().label('Hide Avatar'),
+    hideAbout: Joi.boolean().label('Hide About'),
+  }),
+};
+
 export default {
   register,
   login,
   forgotPassword,
   resetPassword,
+  updateProfile,
 };

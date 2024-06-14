@@ -5,10 +5,13 @@ import {
   login,
   logout,
   me,
+  meUpdate,
+  meUpdateAvatar,
   register,
   resetPassword,
 } from 'src/controllers/auth.controller';
 import authentication from 'src/middlewares/authentication.middleware';
+import upload from 'src/middlewares/multer.middleware';
 import validate from 'src/middlewares/validate.middleware';
 import authValidation from 'src/validations/auth.validation';
 
@@ -47,5 +50,15 @@ router
 // @desc    Get current user
 // @access  Private
 router.route('/me').get(authentication, me);
+
+// @route   PUT /api/auth/me
+// @desc    Update current user
+// @access  Private
+router.route('/me').put(validate(authValidation.updateProfile), authentication, meUpdate);
+
+// @route   PUT /api/auth/me/avatar
+// @desc    Update current user avatar
+// @access  Private
+router.route('/me/avatar').put(authentication, upload.single('image'), meUpdateAvatar);
 
 export default router;

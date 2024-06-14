@@ -1,7 +1,9 @@
 import User from 'src/models/user.model';
 import { decode, encode } from 'src/utils/bcryptjs.util';
+import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
 import generateTokenAndSetCookie from 'src/utils/generateToken.util';
+import removeLocalImage from 'src/utils/removeLocalImage.util';
 import sendMail from 'src/utils/sendMail.util';
 
 export const register = async (req, res) => {
@@ -146,6 +148,85 @@ export const me = async (req, res) => {
       message: 'User found',
       data: user,
     });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
+export const meUpdate = async (req, res) => {
+  const { id } = req.user;
+  const { fullName, userName, email, about, hideOnlineStatus, hideAvatar, hideAbout } =
+    req.body;
+
+  try {
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const [emailExists, userNameExists] = await Promise.all([
+      email && email !== user.email ? User.findOne({ email }) : null,
+      userName && userName !== user.userName ? User.findOne({ userName }) : null,
+    ]);
+
+    if (emailExists) {
+      return res.status(400).json({ message: 'Email is already in use' });
+    }
+    if (userNameExists) {
+      return res.status(400).json({ message: 'Username is already in use' });
+    }
+
+    Object.assign(user, {
+      fullName: fullName || user.fullName,
+      userName: userName || user.userName,
+      email: email || user.email,
+      about: about || user.about,
+      hideOnlineStatus:
+        hideOnlineStatus !== undefined ? hideOnlineStatus : user.hideOnlineStatus,
+      hideAvatar: hideAvatar !== undefined ? hideAvatar : user.hideAvatar,
+      hideAbout: hideAbout !== undefined ? hideAbout : user.hideAbout,
+    });
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'User updated',
+      data: user,
+    });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
+export const meUpdateAvatar = async (req, res) => {
+  const { id } = req.user;
+  const image = req.file;
+
+  try {
+    if (!image) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please upload an image',
+      });
+    }
+
+    const user = await User.findById(id);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    const url = await uploadImage(image);
+    user.avatar = url;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Avatar updated',
+      data: user,
+    });
+
+    removeLocalImage(image.path);
   } catch (error) {
     handleErrors(res, error);
   }
