@@ -32,7 +32,7 @@ export const AuthContextProvider: React.FC<AuthContextProviderProps> = ({ childr
         const user = await AsyncStorage.getItem('authUser');
 
         if (user) {
-          setAuthUser(user ? JSON.parse(user) : null);
+          setAuthUser(JSON.parse(user));
         }
       } catch (error) {
         console.error(error);

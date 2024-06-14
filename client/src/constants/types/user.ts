@@ -37,10 +37,5 @@ export interface User {
 }
 
 export interface AuthUser {
-  _id: string;
-  fullName: string;
-  userName: string;
-  profilePicture: string;
-  createdAt: string;
   token: string;
 }

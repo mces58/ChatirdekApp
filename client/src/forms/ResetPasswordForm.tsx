@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { ResetPassword } from 'src/constants/types/user';
 import authService from 'src/services/auth-service';
 import { resetPasswordValidation } from 'src/validations/resetPassword';
@@ -33,7 +34,7 @@ const ResetPasswordForm: React.FC<ResetPasswordFormProps> = ({
   ): Promise<void> => {
     setLoading(true);
     try {
-      const response = await authService.resetPassword({ ...values, email });
+      const response: Response = await authService.resetPassword({ ...values, email });
 
       if (response.success) {
         successFunction();

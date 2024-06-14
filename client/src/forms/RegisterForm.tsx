@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import DropDown from 'src/components/dropDown/DropDown';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { RegisterData } from 'src/constants/types/user';
 import RegisterModal from 'src/screens/Login/components/RegisterModal';
 import authService from 'src/services/auth-service';
@@ -33,7 +34,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
     resetForm: () => void
   ): Promise<void> => {
     try {
-      const response = await authService.register(values);
+      const response: Response = await authService.register(values);
       if (response.success) {
         setRegisterModalVisible(true);
         resetForm();

@@ -7,6 +7,7 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { ForgotPassword } from 'src/constants/types/user';
 import authService from 'src/services/auth-service';
 import { forgotPasswordValidation } from 'src/validations/forgotPassword';
@@ -33,7 +34,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
   ): Promise<void> => {
     setLoading(true);
     try {
-      const response = await authService.forgotPassord(value);
+      const response: Response = await authService.forgotPassord(value);
 
       if (response.success) {
         successFunction();

@@ -7,7 +7,9 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { LoginData } from 'src/constants/types/user';
+import { useAuthContext } from 'src/context/AuthContext';
 import authService from 'src/services/auth-service';
 import { loginValidation } from 'src/validations/login';
 
@@ -22,6 +24,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
   gotoRegister,
   gotoMain,
 }) => {
+  const { setAuthUser } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(false);
 
   const initialValues: LoginData = {
@@ -32,9 +35,10 @@ const LoginForm: React.FC<LoginFormProps> = ({
   const handleLogin = async (values: LoginData, resetForm: () => void): Promise<void> => {
     setLoading(true);
     try {
-      const response = await authService.login(values);
-
+      const response: Response = await authService.login(values);
       if (response.success) {
+        const { token } = response.data;
+        setAuthUser(token);
         gotoMain();
         resetForm();
       }

@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
 
 import { BASE_URL } from './baseUrl';
@@ -10,6 +11,14 @@ class APIService {
     this.instance = axios.create({
       baseURL: APIService.BASE_URL,
       withCredentials: true,
+    });
+
+    this.instance.interceptors.request.use(async (config) => {
+      const token = await AsyncStorage.getItem('authToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
     });
   }
 
