@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import i18next from 'i18next';
@@ -6,7 +6,10 @@ import i18next from 'i18next';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import SwitchButton from 'src/components/SwitchButton';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
+import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import authService from 'src/services/auth-service';
 
 import { PrivacyContent, privacyContent } from '../../constants/privarcy-content';
 
@@ -23,8 +26,51 @@ const PrivacyBottomSheet: React.FC<PrivacyBottomSheetProps> = ({
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, SCREEN_HEIGHT), [theme]);
   const [contents] = useState<PrivacyContent[]>(privacyContent);
+  const [active, setActive] = useState({
+    hideOnlineStatus: false,
+    hideAvatar: false,
+    hideAbout: false,
+  });
+  const { authUser } = useAuthContext();
 
-  const renderContent = (content: string, index: number) => {
+  useEffect(() => {
+    const getMe = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await authService.getMe(authUser.toString());
+
+          if (response.success) {
+            setActive({
+              hideOnlineStatus: response.data.hideOnlineStatus,
+              hideAvatar: response.data.hideAvatar,
+              hideAbout: response.data.hideAbout,
+            });
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getMe();
+  }, [authUser]);
+
+  const updateMe = async (type: string, value: boolean) => {
+    try {
+      if (authUser) {
+        const response: Response = await authService.updateMe(
+          { [type]: value },
+          authUser.toString()
+        );
+        if (response.success) {
+          console.log('Updated');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const renderContent = (item: PrivacyContent, index: number) => {
     return (
       <View
         key={index}
@@ -34,11 +80,22 @@ const PrivacyBottomSheet: React.FC<PrivacyBottomSheetProps> = ({
         ]}
       >
         <Text style={styles.text}>
-          {i18next.t(`settings.privacyBottomSheet.${content}`)}
+          {i18next.t(`settings.privacyBottomSheet.${item.content}`)}
         </Text>
         <SwitchButton
           activeColor={Colors.primaryColors.success}
           inActiveColor={Colors.primaryColors.gray}
+          active={
+            item.label === 'hideOnlineStatus'
+              ? active.hideOnlineStatus
+              : item.label === 'hideAvatar'
+                ? active.hideAvatar
+                : active.hideAbout
+          }
+          setActive={(value: boolean) => {
+            setActive((prev) => ({ ...prev, [item.label]: value }));
+            updateMe(item.label, value);
+          }}
         />
       </View>
     );
@@ -52,7 +109,7 @@ const PrivacyBottomSheet: React.FC<PrivacyBottomSheetProps> = ({
       <Text style={styles.headerText}>
         {i18next.t('settings.privacyBottomSheet.header')}
       </Text>
-      {contents.map((item, index) => renderContent(item.content, index))}
+      {contents.map((item, index) => renderContent(item, index))}
     </ScrollView>
   );
 
@@ -61,7 +118,9 @@ const PrivacyBottomSheet: React.FC<PrivacyBottomSheetProps> = ({
       animationType="slide"
       isTransparent
       isVisible={isVisible}
-      onSwipeDown={onSwipeDown}
+      onSwipeDown={() => {
+        onSwipeDown();
+      }}
       content={content}
       modalStyle={styles.bottomSheet}
     />
@@ -73,7 +132,7 @@ export default PrivacyBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.5,
+      height: SCREEN_HEIGHT * 0.4,
       backgroundColor: theme.bottomSheetBackgroundColor,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,

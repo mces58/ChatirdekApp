@@ -23,6 +23,24 @@ class AuthService {
     const response: Response = await apiService.put('/auth/password/reset', data);
     return response;
   };
+
+  public getMe = async (token: string): Promise<any> => {
+    const response: Response = await apiService.get('/auth/me', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  };
+
+  public updateMe = async (data: any, token: string): Promise<any> => {
+    const response: Response = await apiService.put('/auth/me', data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  };
 }
 
 export default new AuthService();

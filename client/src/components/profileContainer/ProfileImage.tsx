@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Image, StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
+
+import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface ProfileImageProps {
   imageUri: string;
@@ -14,6 +16,9 @@ const ProfileImage: React.FC<ProfileImageProps> = ({
   disabled = false,
   onPress,
 }) => {
+  const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
   return (
     <TouchableOpacity style={componentSize} onPress={onPress} disabled={disabled}>
       <Image source={{ uri: imageUri }} style={styles.image} />
@@ -23,10 +28,13 @@ const ProfileImage: React.FC<ProfileImageProps> = ({
 
 export default ProfileImage;
 
-const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 999,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    image: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 999,
+      borderWidth: 1,
+      borderColor: theme.textColor,
+    },
+  });

@@ -43,6 +43,8 @@
   "global.confirm": "Confirm",
   "global.yes": "Yes",
   "global.no": "No",
+  "global.empty": "Empty",
+  "global.writeAbout": "Write about yourself",
 
   "alert.success": "Success",
   "alert.error": "Error",

@@ -43,6 +43,8 @@
   "global.confirm": "Onayla",
   "global.yes": "Evet",
   "global.no": "Hayır",
+  "global.empty": "Boş",
+  "global.writeAbout": "Hakkında yaz...",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",

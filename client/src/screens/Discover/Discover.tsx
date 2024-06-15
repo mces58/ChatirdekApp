@@ -116,19 +116,6 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
       />
 
       <View style={styles.container}>
-        <View
-          style={[
-            styles.headerContainer,
-            styles.shadow,
-            cardDisplay && { display: 'none' },
-          ]}
-        >
-          <Text style={styles.headerText}>{i18next.t('discover.discover.message')}</Text>
-          <TouchableOpacity onPress={() => setCardDisplay(true)}>
-            <CrossIcon width={15} height={15} />
-          </TouchableOpacity>
-        </View>
-
         <View style={styles.body}>
           {loading ? (
             <LoadingIndicator />
@@ -142,6 +129,21 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
                 </View>
               ) : (
                 <>
+                  <View
+                    style={[
+                      styles.headerContainer,
+                      styles.shadow,
+                      cardDisplay && { display: 'none' },
+                    ]}
+                  >
+                    <Text style={styles.headerText}>
+                      {i18next.t('discover.discover.message')}
+                    </Text>
+                    <TouchableOpacity onPress={() => setCardDisplay(true)}>
+                      <CrossIcon width={15} height={15} />
+                    </TouchableOpacity>
+                  </View>
+
                   {paginatedData.map((user, index) => renderItem(user, index))}
                   {users.length > itemsPerPage && (
                     <View style={styles.paginationContainer}>

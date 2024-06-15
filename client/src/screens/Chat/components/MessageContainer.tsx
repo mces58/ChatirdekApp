@@ -30,7 +30,11 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
             <View>
               {isOnline && <NotificationBubble />}
               <ProfileImage
-                imageUri={user.receiver.avatar}
+                imageUri={
+                  user.receiver.hideAvatar
+                    ? `https://robohash.org/${user.receiver.id}`
+                    : user.receiver.avatar
+                }
                 componentSize={{
                   height: 50,
                   width: 50,

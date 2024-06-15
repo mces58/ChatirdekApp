@@ -46,7 +46,11 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
       disabled={disabled}
     >
       <View style={styles.row}>
-        <ProfileImage imageUri={user.avatar} componentSize={componentSize} disabled />
+        <ProfileImage
+          imageUri={user.hideAvatar ? `https://robohash.org/${user.id}` : user.avatar}
+          componentSize={componentSize}
+          disabled
+        />
         <View style={styles.textContainer}>
           <Text style={[styles.fullName, { color: textStyles?.color }]}>
             {user?.fullName}

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import React, { useEffect } from 'react';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import Animated, {
   interpolateColor,
   useAnimatedStyle,
@@ -9,14 +9,22 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { Colors } from 'src/constants/color/colors';
+
 interface SwitchButtonProps {
   activeColor: string;
   inActiveColor: string;
+  active: boolean;
+  setActive: (active: boolean) => void;
 }
 
-const SwitchButton: React.FC<SwitchButtonProps> = ({ activeColor, inActiveColor }) => {
+const SwitchButton: React.FC<SwitchButtonProps> = ({
+  activeColor,
+  inActiveColor,
+  active,
+  setActive,
+}) => {
   const switchTranslate = useSharedValue(0);
-  const [active, setActive] = useState(false);
   const progress = useDerivedValue(() => {
     return withTiming(active ? 22 : 0);
   });
@@ -58,34 +66,40 @@ const SwitchButton: React.FC<SwitchButtonProps> = ({ activeColor, inActiveColor 
   });
 
   return (
-    <TouchableWithoutFeedback
+    <TouchableOpacity
       onPress={() => {
         setActive(!active);
       }}
+      style={styles.main}
     >
       <Animated.View style={[styles.container, backgroundColorStyle]}>
         <Animated.View style={[styles.circle, customSpringStyles]} />
       </Animated.View>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   );
 };
 
 export default SwitchButton;
 
 const styles = StyleSheet.create({
+  main: {
+    width: 60,
+    height: 40,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   container: {
     width: 50,
     height: 28,
     borderRadius: 30,
     justifyContent: 'center',
-    backgroundColor: '#F2F5F7',
   },
   circle: {
     width: 24,
     height: 24,
     borderRadius: 30,
-    backgroundColor: 'white',
-    shadowColor: 'black',
+    backgroundColor: Colors.primaryColors.beige,
+    shadowColor: Colors.primaryColors.dark,
     shadowOffset: {
       width: 0,
       height: 2,

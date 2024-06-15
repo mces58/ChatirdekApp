@@ -9,17 +9,17 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import i18next from 'i18next';
-import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import { SettingLeafIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
+import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import authService from 'src/services/auth-service';
 
 import AboutUsBottomSheet from './components/bottomSheets/AboutUsBottomSheet';
 import ChatsBottomSheet from './components/bottomSheets/ChatsBottomSheet';
@@ -44,6 +44,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+  const { authUser } = useAuthContext();
 
   const bottomSheets = {
     Language: LanguageBottomSheet,
@@ -61,21 +62,21 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   };
 
   useEffect(() => {
-    const getUser = async () => {
-      const token = await AsyncStorage.getItem('authToken');
-      const user: { _id: string } = jwtDecode(token as string);
+    const getMe = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await authService.getMe(authUser.toString());
 
-      axios
-        .get(`${BASE_URL}/auth/me/${user._id}`)
-        .then((response) => {
-          setUser(response.data);
-        })
-        .catch((error) => {
-          console.log('error retrieving users', error);
-        });
+          if (response.success) {
+            setUser(response.data);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
     };
-    getUser();
-  }, []);
+    getMe();
+  }, [user, authUser, setUser]);
 
   const handleLogout = async () => {
     try {

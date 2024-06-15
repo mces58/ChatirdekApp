@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   NativeModules,
   Platform,
@@ -44,6 +44,8 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
   );
   const [user, setUser] = useState<User>(route.params.user);
 
+  useEffect(() => {}, [setUser, route.params.user]);
+
   return (
     <View style={styles.container}>
       <BackHeader
@@ -62,7 +64,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         resizeMode="cover"
       />
       <ChangeProfileImage
-        imageUri={image ? image : route?.params?.user?.profilePicture}
+        imageUri={image ? image : route?.params?.user?.avatar}
         componentSize={{ width: 200, height: 200 }}
         onPressImage={() => setModalVisible(true)}
         onPressIcon={() => setProfilePhotoBoxVisible(true)}
@@ -86,6 +88,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         title={i18next.t('global.about')}
         text={user.about}
         icon={<InfoIcon width={30} height={30} strokeWidth={1} />}
+        onPress={() => setAboutBoxVisible(true)}
       />
 
       <ListInfo
@@ -96,7 +99,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
       />
 
       <ProfileModal
-        imageUri={image ? image : route?.params?.user?.profilePicture}
+        imageUri={image ? image : route?.params?.user?.avatar}
         isVisible={isModalVisible}
         onClose={() => setModalVisible(false)}
       />
@@ -121,6 +124,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
             setUser({ ...user, fullName: value });
           }}
           value={user.fullName}
+          type="fullName"
         />
       )}
 
@@ -134,6 +138,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
             setUser({ ...user, userName: value });
           }}
           value={user.userName}
+          type="userName"
         />
       )}
 
@@ -147,6 +152,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
             setUser({ ...user, about: value });
           }}
           value={user.about}
+          type="about"
         />
       )}
     </View>

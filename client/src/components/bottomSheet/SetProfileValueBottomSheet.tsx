@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import {
+  Alert,
   StyleSheet,
   Text,
   TextInput,
@@ -8,10 +9,15 @@ import {
   View,
 } from 'react-native';
 
+import { Formik } from 'formik';
 import i18next from 'i18next';
 
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
+import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import authService from 'src/services/auth-service';
+import { newValueSchema } from 'src/validations/newValue';
 
 import BaseBottomSheet from './BaseBottomSheet';
 
@@ -22,6 +28,7 @@ interface SetProfileValueBottomSheetProps {
   onSwipeDown: () => void;
   setValue: (value: string) => void;
   value: string;
+  type: string;
 }
 
 const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
@@ -31,35 +38,34 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
   onSwipeDown,
   setValue,
   value,
+  type,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, SCREEN_HEIGHT), [theme]);
-  const [newValue, onChangeText] = useState(value);
+  const { authUser } = useAuthContext();
+  const [tempUserName] = useState<string>(value);
 
-  const content = (
-    <View style={styles.container}>
-      <Text style={styles.headerText}>{title}</Text>
-      <TextInput
-        style={styles.textInput}
-        placeholder={placeholder}
-        placeholderTextColor={'#ccc'}
-        onChangeText={(text) => onChangeText(text)}
-        value={newValue}
-      />
-
-      <TouchableOpacity
-        style={[styles.button, styles.shadow]}
-        onPress={() => {
-          setValue(newValue);
-          onChangeText('');
-          onSwipeDown();
-        }}
-      >
-        <Text style={styles.buttonText}>{i18next.t('global.save')}</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const handleUpdateMe = async (value: string, resetForm: () => void) => {
+    try {
+      if (authUser) {
+        setValue(value);
+        const response: Response = await authService.updateMe(
+          { [type]: value },
+          authUser.toString()
+        );
+        if (response.success) {
+          resetForm();
+        }
+      }
+    } catch (error) {
+      Alert.alert(i18next.t('alert.error'), i18next.t('alert.usernameExists'));
+      setValue(tempUserName);
+    } finally {
+      resetForm();
+      onSwipeDown();
+    }
+  };
 
   return (
     <BaseBottomSheet
@@ -67,7 +73,38 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
       isTransparent
       isVisible={isVisible}
       onSwipeDown={onSwipeDown}
-      content={content}
+      content={
+        <Formik
+          initialValues={{ newValue: value }}
+          validationSchema={newValueSchema(type)}
+          onSubmit={(values, { resetForm }) => {
+            handleUpdateMe(values.newValue, resetForm);
+          }}
+        >
+          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+            <View style={styles.container}>
+              <Text style={styles.headerText}>{title}</Text>
+              <TextInput
+                style={styles.textInput}
+                placeholder={placeholder}
+                placeholderTextColor={'#ccc'}
+                onChangeText={handleChange('newValue')}
+                onBlur={handleBlur('newValue')}
+                value={values.newValue}
+              />
+              {touched.newValue && errors.newValue && (
+                <Text style={styles.errorText}>{errors.newValue}</Text>
+              )}
+              <TouchableOpacity
+                style={[styles.button, styles.shadow]}
+                onPress={() => handleSubmit()}
+              >
+                <Text style={styles.buttonText}>{i18next.t('global.save')}</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </Formik>
+      }
       modalStyle={styles.bottomSheet}
     />
   );
@@ -78,7 +115,7 @@ export default SetProfileValueBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.27,
+      height: SCREEN_HEIGHT * 0.3,
       backgroundColor: theme.bottomSheetBackgroundColor,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
@@ -132,5 +169,11 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       color: Colors.primaryColors.dark,
       fontSize: 16,
       fontFamily: 'Nunito-Bold',
+    },
+    errorText: {
+      fontFamily: 'Nunito-Bold',
+      color: Colors.primaryColors.danger,
+      textAlign: 'center',
+      fontSize: 12,
     },
   });
