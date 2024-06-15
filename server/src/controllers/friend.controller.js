@@ -4,7 +4,7 @@ import handleErrors from 'src/utils/error.util';
 export const getFriends = async (req, res) => {
   try {
     const { id } = req.user;
-    const user = await User.findById(id).populate('friends').lean();
+    const user = await User.findById(id).populate('friends');
     const { friends } = user;
     res.json({
       success: true,

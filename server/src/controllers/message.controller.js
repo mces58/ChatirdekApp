@@ -21,6 +21,13 @@ export const getLastMessages = async (req, res) => {
 
     const friendsIds = currentUser.friends.map((friend) => friend._id);
 
+    if (!friendsIds.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'No friends found',
+      });
+    }
+
     const conversations = await Conversation.find({
       participants: { $in: [currentUserId] },
       $or: [{ participants: { $in: friendsIds } }],

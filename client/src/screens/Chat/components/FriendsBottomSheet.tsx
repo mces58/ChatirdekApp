@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   ScrollView,
   StyleSheet,
@@ -8,7 +8,6 @@ import {
   View,
 } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
 
 import BinIcon from 'src/assets/icons/bin';
@@ -16,59 +15,57 @@ import SendMessageIcon from 'src/assets/icons/send-message';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import friendService from 'src/services/friend-service';
 
 interface FriendsBoxBottomSheetProps {
   isVisible: boolean;
   onSwipeDown: () => void;
   navigation: any;
+  friends: User[];
+  setFriends: (friends: User[]) => void;
+  meId: string;
 }
 
 const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
   isVisible,
   onSwipeDown,
   navigation,
+  friends,
+  setFriends,
+  meId,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, SCREEN_HEIGHT), [theme]);
-  const [friends, setFriends] = useState<User[]>([]);
   const { authUser } = useAuthContext();
 
-  const getFriends = async () => {
+  const removeFriend = async (friendId: string) => {
     try {
-      const res = await axios.get(`${BASE_URL}/users/accepted-friends/${authUser?._id}`);
-      setFriends(res.data);
+      if (authUser) {
+        const response: Response = await friendService.removeFriend(
+          authUser?.token,
+          friendId
+        );
+        if (response.success) {
+          setFriends(friends.filter((friend) => friend.id !== friendId));
+        }
+      }
     } catch (error) {
       console.error(error);
     }
   };
-
-  const deleteFriend = async (friendId: string) => {
-    try {
-      await axios.delete(`${BASE_URL}/users/remove-friend/${authUser?._id}/${friendId}`);
-      getFriends();
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    if (authUser) {
-      getFriends();
-    }
-  }, [authUser, friends, setFriends]);
 
   const renderItem = (user: User, index: number) => (
     <TouchableOpacity
       key={index}
       style={[styles.userContainer, styles.shadow]}
       onPress={() => {
-        onSwipeDown();
         navigation.navigate('UserProfile', { user });
+        onSwipeDown();
       }}
     >
       <ProfileContainer
@@ -83,11 +80,11 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
         <TouchableOpacity
           style={[styles.messageButton, styles.shadow]}
           onPress={() => {
-            onSwipeDown();
             navigation.navigate('Chat', {
-              userId: authUser?._id,
-              receiverId: user._id,
+              senderId: meId,
+              receiverId: user.id,
             });
+            onSwipeDown();
           }}
         >
           <SendMessageIcon
@@ -99,9 +96,7 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.deleteButton, styles.shadow]}
-          onPress={() => {
-            deleteFriend(user._id);
-          }}
+          onPress={() => removeFriend(user.id)}
         >
           <BinIcon
             width={20}
@@ -116,14 +111,19 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
 
   const content = (
     <View style={styles.container}>
-      <Text style={styles.headerText}>{i18next.t('chat.friendsBottomSheet.header')}</Text>
-
       {friends.length > 0 ? (
-        friends.map((user, index) => renderItem(user, index))
+        <>
+          <Text style={styles.headerText}>
+            {i18next.t('chat.friendsBottomSheet.header')}
+          </Text>
+          {friends.map((user, index) => renderItem(user, index))}
+        </>
       ) : (
-        <Text style={styles.headerText}>
-          {i18next.t('chat.friendsBottomSheet.noFriends')}
-        </Text>
+        <View style={styles.noFriendContainer}>
+          <Text style={styles.headerText}>
+            {i18next.t('chat.friendsBottomSheet.noFriends')}
+          </Text>
+        </View>
       )}
     </View>
   );
@@ -134,14 +134,7 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
       isTransparent
       isVisible={isVisible}
       onSwipeDown={onSwipeDown}
-      content={
-        <ScrollView
-          style={{ flex: 1, paddingBottom: 40 }}
-          showsVerticalScrollIndicator={false}
-        >
-          {content}
-        </ScrollView>
-      }
+      content={<ScrollView showsVerticalScrollIndicator={false}>{content}</ScrollView>}
       modalStyle={styles.bottomSheet}
     />
   );
@@ -202,6 +195,11 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       paddingHorizontal: 10,
       paddingVertical: 10,
       borderRadius: 20,
+    },
+    noFriendContainer: {
+      height: 200,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     shadow: {
       shadowColor: theme.shadowColor,

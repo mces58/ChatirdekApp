@@ -14,6 +14,7 @@ import {
 
 import { StatusBar } from 'expo-status-bar';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { PencilWriteIcon } from 'src/assets/icons/headers';
@@ -23,11 +24,13 @@ import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
 import { LastMessages } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
+import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useSocketContext } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { HomeProps } from 'src/navigations/RootStackParamList';
 import chatService from 'src/services/chat-service';
+import friendService from 'src/services/friend-service';
 
 import FriendsBottomSheet from './components/FriendsBottomSheet';
 import MessageContainer from './components/MessageContainer';
@@ -45,6 +48,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [isOnline, setIsOnline] = useState<boolean>(false);
   const { authUser } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(false);
+  const [friends, setFriends] = useState<User[]>([]);
+  const [meId, setMeId] = useState<string>('');
 
   useEffect(() => {
     const getUser = async () => {
@@ -61,13 +66,13 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         }
         setLoading(false);
       } catch (error) {
-        console.log(error);
+        return <Text>{i18next.t('chat.home.noMessages')}</Text>;
       } finally {
         setLoading(false);
       }
     };
     getUser();
-  }, [authUser, users, onlineUsers]);
+  }, [authUser, users, onlineUsers, setUsers, setLoading, setFriends]);
 
   useEffect(() => {
     users.every((user) => onlineUsers.includes(user.receiver.id))
@@ -86,6 +91,24 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
 
     return () => backHandler.remove();
   }, []);
+
+  useEffect(() => {
+    const getFriends = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await friendService.getFriends(authUser?.token);
+          if (response.success) {
+            setFriends(response.data);
+          }
+          const decode: { _id: string } = jwtDecode(authUser.toString());
+          setMeId(decode._id);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getFriends();
+  }, [authUser, friends, setFriends]);
 
   const renderItem = (item: LastMessages) => {
     return (
@@ -186,6 +209,9 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           isVisible={friendsBottomSheetVisible}
           onSwipeDown={() => setFriendsBottomSheetVisible(false)}
           navigation={navigation}
+          friends={friends}
+          meId={meId}
+          setFriends={setFriends}
         />
       )}
     </View>
