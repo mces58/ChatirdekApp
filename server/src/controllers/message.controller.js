@@ -10,7 +10,7 @@ export const getLastMessages = async (req, res) => {
   const { id: currentUserId } = req.user;
 
   try {
-    const currentUser = await User.findById(currentUserId);
+    const currentUser = await User.findById(currentUserId).populate('friends');
 
     if (!currentUser) {
       return res.status(404).json({
@@ -19,8 +19,11 @@ export const getLastMessages = async (req, res) => {
       });
     }
 
+    const friendsIds = currentUser.friends.map((friend) => friend._id);
+
     const conversations = await Conversation.find({
-      participants: currentUserId,
+      participants: { $in: [currentUserId] },
+      $or: [{ participants: { $in: friendsIds } }],
     })
       .populate({
         path: 'messages',
@@ -42,7 +45,7 @@ export const getLastMessages = async (req, res) => {
       const { messages, participants } = conversation;
       const lastMessage = messages[messages.length - 1];
       const receiver = participants.find(
-        (participant) => participant.id !== currentUserId
+        (participant) => participant._id.toString() !== currentUserId
       );
       return {
         receiver,

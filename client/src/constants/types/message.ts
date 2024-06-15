@@ -1,12 +1,11 @@
 import { User } from './user';
 
 export interface Message {
-  _id: string;
-  text: string;
+  id: string;
+  message: string;
   createdAt: string;
-  user: {
-    _id: string;
-  };
+  senderId: string;
+  receiverId: string;
 }
 
 export interface LastMessages {

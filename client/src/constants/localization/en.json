@@ -57,6 +57,7 @@
   "alert.alphanum": "It can only contain letters and numbers.",
   "alert.minCharacter": "It must be at least {{length}} characters long.",
   "alert.maxCharacter": "It must be at most {{length}} characters long.",
+  "alert.sendOnlyFriendMessage": "You can only send messages to your friends.",
 
   "toast.enterGroupName": "Please enter group name.",
   "toast.selectMembers": "Please select friends to add to the group.",

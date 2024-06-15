@@ -11,16 +11,20 @@ import { Theme, useTheme } from 'src/context/ThemeContext';
 interface MessageContainerProps {
   user: LastMessages;
   isOnline: boolean;
-  navigation: any;
+  gotoChatRoom: () => void;
 }
 
-const MessageContainer: React.FC<MessageContainerProps> = ({ user, isOnline }) => {
+const MessageContainer: React.FC<MessageContainerProps> = ({
+  user,
+  isOnline,
+  gotoChatRoom,
+}) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={[styles.userContainer]}>
+      <TouchableOpacity style={[styles.userContainer]} onPress={gotoChatRoom}>
         {user.lastMessage && (
           <>
             <View>
@@ -38,7 +42,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({ user, isOnline }) =
               <View style={styles.userInfoContainer}>
                 <Text style={styles.userName}>{user.receiver.fullName}</Text>
                 <Text style={styles.lastSeen}>
-                  {user.lastMessage.receiverId === user.lastMessage.senderId
+                  {user.receiver.id === user.lastMessage.senderId
                     ? user.lastMessage.message ||
                       i18next.t('chat.messageContainer.noMessage')
                     : i18next.t('global.you') + ': ' + user.lastMessage.message}

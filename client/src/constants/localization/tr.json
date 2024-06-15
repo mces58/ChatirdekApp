@@ -57,6 +57,7 @@
   "alert.alphanum": "Yalnızca harf ve rakam içerebilir.",
   "alert.minCharacter": "En az {{length}} karakter olmalıdır.",
   "alert.maxCharacter": "En fazla {{length}} karakter olmalıdır.",
+  "alert.sendOnlyFriendMessage": "Sadece arkadaşlarınıza mesaj gönderebilirsiniz.",
 
   "toast.enterGroupName": "Lütfen grup adını giriniz.",
   "toast.selectMembers": "Lütfen en az bir üye seçiniz.",

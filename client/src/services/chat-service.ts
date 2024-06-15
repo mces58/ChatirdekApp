@@ -11,6 +11,32 @@ class ChatService {
     });
     return response;
   };
+
+  public getMessages = async (token: string, receiverId: string): Promise<any> => {
+    const response: Response = await apiService.get(`/messages/${receiverId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  };
+
+  public sendMessage = async (
+    token: string,
+    receiverId: string,
+    message: string
+  ): Promise<any> => {
+    const response: Response = await apiService.post(
+      `/messages/send/${receiverId}`,
+      { message },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  };
 }
 
 export default new ChatService();

@@ -88,7 +88,18 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   }, []);
 
   const renderItem = (item: LastMessages) => {
-    return <MessageContainer user={item} isOnline={isOnline} navigation={navigation} />;
+    return (
+      <MessageContainer
+        user={item}
+        isOnline={isOnline}
+        gotoChatRoom={() =>
+          navigation.navigate('Chat', {
+            senderId: item.lastMessage.senderId,
+            receiverId: item.receiver.id,
+          })
+        }
+      />
+    );
   };
 
   const renderContent = () => {

@@ -13,7 +13,6 @@ import i18next from 'i18next';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithUsers from 'src/components/headers/BackHeaderWithUsers';
-import SendInput from 'src/components/inputs/SendInput';
 import { Colors } from 'src/constants/color/colors';
 import { GroupMessage } from 'src/constants/types/group-message';
 import { AuthUser, User } from 'src/constants/types/user';
@@ -21,6 +20,7 @@ import { useAuthContext } from 'src/context/AuthContext';
 import { useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper } from 'src/context/WallpaperContext';
+import SendInput from 'src/forms/SendInput';
 import { GroupChatProps } from 'src/navigations/RootStackParamList';
 import { BASE_URL } from 'src/services/baseUrl';
 

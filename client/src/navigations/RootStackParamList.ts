@@ -10,7 +10,7 @@ export type RootStackParamList = {
   Main: { userId: string };
   Home: undefined;
   Chat: {
-    userId: string;
+    senderId: string;
     receiverId: string;
   };
   GroupChat: { groupId: string };
