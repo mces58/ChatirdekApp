@@ -23,17 +23,20 @@ export interface ResetPassword {
 }
 
 export interface User {
-  _id: string;
+  id: string;
   fullName: string;
   userName: string;
   email: string;
-  profilePicture: string;
-  about: string;
-  createdAt: string;
   gender: string;
+  avatar: string;
+  about: string;
+  incomingFriendRequests: string[];
+  outgoingFriendRequests: string[];
   friends: string[];
-  friendRequests: string[];
-  sentRequests: string[];
+  hideOnlineStatus: boolean;
+  hideAvatar: boolean;
+  hideAbout: boolean;
+  createdAt: string;
 }
 
 export interface AuthUser {

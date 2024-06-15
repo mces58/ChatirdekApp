@@ -6,6 +6,59 @@ import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
 import removeLocalImage from 'src/utils/removeLocalImage.util';
 
+export const getLastMessages = async (req, res) => {
+  const { id: currentUserId } = req.user;
+
+  try {
+    const currentUser = await User.findById(currentUserId);
+
+    if (!currentUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    const conversations = await Conversation.find({
+      participants: currentUserId,
+    })
+      .populate({
+        path: 'messages',
+        select: 'senderId receiverId message createdAt',
+      })
+      .populate({
+        path: 'participants',
+        model: 'User',
+      });
+
+    if (!conversations.length) {
+      return res.status(404).json({
+        success: false,
+        message: 'No conversations found',
+      });
+    }
+
+    const lastMessages = conversations.map((conversation) => {
+      const { messages, participants } = conversation;
+      const lastMessage = messages[messages.length - 1];
+      const receiver = participants.find(
+        (participant) => participant.id !== currentUserId
+      );
+      return {
+        receiver,
+        lastMessage,
+      };
+    });
+
+    res.status(200).json({
+      success: true,
+      data: lastMessages,
+    });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
 export const getMessages = async (req, res) => {
   const { id: currentUserId } = req.user;
   const { selectedUserId } = req.params;
@@ -191,44 +244,6 @@ export const sendImageMessage = async (req, res) => {
     });
 
     removeLocalImage(image.path);
-  } catch (error) {
-    handleErrors(res, error);
-  }
-};
-
-export const getLastMessage = async (req, res) => {
-  const { id: currentUserId } = req.user;
-  const { selectedUserId } = req.params;
-
-  try {
-    const currentUser = await User.findById(currentUserId);
-    const selectedUser = await User.findById(selectedUserId);
-
-    if (!selectedUser || !currentUser) {
-      return res.status(404).json({
-        success: false,
-        message: 'User not found',
-      });
-    }
-
-    const conversation = await Conversation.findOne({
-      participants: { $all: [currentUserId, selectedUserId] },
-    }).populate('messages');
-
-    if (!conversation) {
-      return res.status(404).json({
-        success: false,
-        message: 'No messages found',
-      });
-    }
-
-    const { messages } = conversation;
-    const lastMessage = messages[messages.length - 1];
-
-    res.status(200).json({
-      success: true,
-      data: lastMessage,
-    });
   } catch (error) {
     handleErrors(res, error);
   }

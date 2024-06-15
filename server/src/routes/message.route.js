@@ -1,7 +1,7 @@
 import { Router } from 'express';
 
 import {
-  getLastMessage,
+  getLastMessages,
   getMessages,
   sendImageMessage,
   sendMessage,
@@ -12,6 +12,11 @@ import validate from 'src/middlewares/validate.middleware';
 import messageValidation from 'src/validations/message.validation';
 
 const router = Router();
+
+// @route   GET /api/messages/last-messages
+// @desc    Get the last messages of the logged in user
+// @access  Private
+router.route('/last-messages').get(authentication, getLastMessages);
 
 // @route   GET /api/messages/:selectedUserId
 // @desc    Get messages between the logged in user and a specific user
@@ -38,12 +43,5 @@ router
     upload.single('image'),
     sendImageMessage
   );
-
-// @route   GET /api/messages/last-message/:selectedUserId
-// @desc    Get the last message between the logged in user and a specific user
-// @access  Private
-router
-  .route('/last-message/:selectedUserId')
-  .get(validate(messageValidation.messages), authentication, getLastMessage);
 
 export default router;

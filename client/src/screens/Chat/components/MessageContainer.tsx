@@ -5,41 +5,28 @@ import i18next from 'i18next';
 
 import NotificationBubble from 'src/components/bubble/NotificationBubble';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
-import { User } from 'src/constants/types/user';
-import { useAuthContext } from 'src/context/AuthContext';
+import { LastMessages } from 'src/constants/types/message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface MessageContainerProps {
-  user: User;
+  user: LastMessages;
   isOnline: boolean;
   navigation: any;
 }
 
-const MessageContainer: React.FC<MessageContainerProps> = ({
-  user,
-  isOnline,
-  navigation,
-}) => {
+const MessageContainer: React.FC<MessageContainerProps> = ({ user, isOnline }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-  const { authUser } = useAuthContext();
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        onPress={() => {
-          navigation.navigate('Chat', {
-            receiverId: user._id,
-          });
-        }}
-        style={[styles.userContainer]}
-      >
-        {user?.lastMessage && (
+      <TouchableOpacity style={[styles.userContainer]}>
+        {user.lastMessage && (
           <>
             <View>
               {isOnline && <NotificationBubble />}
               <ProfileImage
-                imageUri={user?.profilePicture}
+                imageUri={user.receiver.avatar}
                 componentSize={{
                   height: 50,
                   width: 50,
@@ -49,36 +36,22 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 
             <View style={styles.row}>
               <View style={styles.userInfoContainer}>
-                <Text style={styles.userName}>{user?.fullName}</Text>
+                <Text style={styles.userName}>{user.receiver.fullName}</Text>
                 <Text style={styles.lastSeen}>
-                  {user?.lastMessage.receiverId === authUser?._id
-                    ? user?.lastMessage.message ||
+                  {user.lastMessage.receiverId === user.lastMessage.senderId
+                    ? user.lastMessage.message ||
                       i18next.t('chat.messageContainer.noMessage')
-                    : i18next.t('global.you') + ': ' + user?.lastMessage.message}
+                    : i18next.t('global.you') + ': ' + user.lastMessage.message}
                 </Text>
               </View>
 
               <View style={styles.time}>
                 <Text style={styles.timeText}>
-                  {new Date(user?.lastMessage?.updatedAt).toLocaleTimeString('tr-TR', {
+                  {new Date(user.lastMessage.createdAt).toLocaleTimeString('tr-TR', {
                     hour: '2-digit',
                     minute: '2-digit',
                   })}
                 </Text>
-                <View>
-                  <TouchableOpacity
-                    style={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: 10,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      marginTop: 10,
-                    }}
-                  >
-                    <Text style={styles.messageInQueue}>{user?.messageInQueue}</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           </>

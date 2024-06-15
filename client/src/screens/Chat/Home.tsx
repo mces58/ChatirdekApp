@@ -12,29 +12,29 @@ import {
   View,
 } from 'react-native';
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import { StatusBar } from 'expo-status-bar';
 import i18next from 'i18next';
-import { jwtDecode } from 'jwt-decode';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { PencilWriteIcon } from 'src/assets/icons/headers';
 import SearchIcon from 'src/assets/icons/search';
 import Header from 'src/components/headers/Header';
+import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
-import { User } from 'src/constants/types/user';
+import { LastMessages } from 'src/constants/types/message';
+import { Response } from 'src/constants/types/response';
+import { useAuthContext } from 'src/context/AuthContext';
 import { useSocketContext } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { HomeProps } from 'src/navigations/RootStackParamList';
-import { BASE_URL } from 'src/services/baseUrl';
+import chatService from 'src/services/chat-service';
 
 import FriendsBottomSheet from './components/FriendsBottomSheet';
 import MessageContainer from './components/MessageContainer';
 
 const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [search, setSearch] = useState<string>('');
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<LastMessages[]>([]);
   const [friendsBottomSheetVisible, setFriendsBottomSheetVisible] =
     useState<boolean>(false);
   const { theme } = useTheme();
@@ -43,28 +43,34 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
   const { onlineUsers } = useSocketContext();
   const [isOnline, setIsOnline] = useState<boolean>(false);
+  const { authUser } = useAuthContext();
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const getUser = async () => {
-      const token = await AsyncStorage.getItem('authToken');
-      if (token) {
-        const user: { _id: string } = jwtDecode(token);
+      setLoading(true);
+      try {
+        if (authUser) {
+          const response: Response = await chatService.getLastMessages(
+            authUser.toString()
+          );
 
-        axios
-          .post(`${BASE_URL}/users/last-messages`, { userId: user._id })
-          .then((response) => {
+          if (response.success) {
             setUsers(response.data);
-          })
-          .catch((error) => {
-            console.log('error retrieving users', error);
-          });
+          }
+        }
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     getUser();
-  }, [users, setUsers]);
+  }, [authUser, users, onlineUsers]);
 
   useEffect(() => {
-    users.every((user) => onlineUsers.includes(user._id))
+    users.every((user) => onlineUsers.includes(user.receiver.id))
       ? setIsOnline(true)
       : setIsOnline(false);
   }, [onlineUsers, users]);
@@ -81,16 +87,20 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     return () => backHandler.remove();
   }, []);
 
-  const renderItem = (item: User) => {
+  const renderItem = (item: LastMessages) => {
     return <MessageContainer user={item} isOnline={isOnline} navigation={navigation} />;
   };
 
   const renderContent = () => {
     return (
       <FlatList
-        data={users.filter((item) =>
-          item.fullName.toLowerCase().includes(search.toLowerCase())
-        )}
+        data={
+          search.length > 0
+            ? users.filter((user) =>
+                user.receiver.fullName.toLowerCase().includes(search.toLowerCase())
+              )
+            : users
+        }
         keyExtractor={(item, index) => index.toString()}
         renderItem={({ item }) => renderItem(item)}
         showsVerticalScrollIndicator={false}
@@ -146,19 +156,18 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {users.length === 0 && (
-          <View
-            style={{
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Text style={styles.noMessageText}>{i18next.t('chat.home.noMessages')}</Text>
-          </View>
+        {loading ? (
+          <LoadingIndicator />
+        ) : (
+          (users.length === 0 && (
+            <View style={styles.noMessageContainer}>
+              <Text style={styles.noMessageText}>
+                {i18next.t('chat.home.noMessages')}
+              </Text>
+            </View>
+          )) ||
+          renderContent()
         )}
-
-        {renderContent()}
       </View>
 
       {friendsBottomSheetVisible && (
@@ -210,6 +219,11 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       right: 20,
       top: 16,
       zIndex: 1,
+    },
+    noMessageContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     noMessageText: {
       fontFamily: 'Poppins-Bold',
