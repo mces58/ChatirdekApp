@@ -41,7 +41,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
       <View style={styles.container}>
         <ProfileWithText
           text={route.params.user.fullName}
-          imageUri={route.params.user.profilePicture}
+          imageUri={route.params.user.avatar}
           componentSize={{ width: 150, height: 150 }}
         />
 

@@ -20,6 +20,7 @@
   "global.previous": "Previous",
   "global.accept": "Accept",
   "global.addFriend": "Add Friend",
+  "global.waiting": "Waiting",
   "global.createdAt": "Created At",
   "global.friendCount": "Friend Count",
   "global.member": "Member",
@@ -96,6 +97,7 @@
   "discover.discover.header": "Discover",
   "discover.discover.message": "You can discover new people here and connect with them",
   "discover.requestBoxBottomSheet.noRequest": "You have no friend requests at the moment😊",
+  "discover.discover.noUser": "No user found.",
 
   "group.group.header": "Groups",
   "group.createGroupBottomSheet.header": "New Group",

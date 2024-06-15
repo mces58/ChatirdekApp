@@ -15,6 +15,7 @@ interface UserCardProps {
   index: number;
   onPressCard: () => void;
   onPressAddFriend: (userId: string) => void;
+  isSendingRequest: boolean;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -22,6 +23,7 @@ const UserCard: React.FC<UserCardProps> = ({
   index,
   onPressCard,
   onPressAddFriend,
+  isSendingRequest,
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -46,9 +48,14 @@ const UserCard: React.FC<UserCardProps> = ({
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => onPressAddFriend(user._id)}
+          onPress={() => onPressAddFriend(user.id)}
+          disabled={isSendingRequest}
         >
-          <Text style={styles.buttonText}>{i18next.t('global.addFriend')}</Text>
+          {isSendingRequest ? (
+            <Text style={styles.buttonText}>{i18next.t('global.waiting')}</Text>
+          ) : (
+            <Text style={styles.buttonText}>{i18next.t('global.addFriend')}</Text>
+          )}
         </TouchableOpacity>
       </TouchableOpacity>
     </LinearGradient>

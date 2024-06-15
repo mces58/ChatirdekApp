@@ -8,17 +8,18 @@ import {
   View,
 } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { EarthIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
+import LoadingIndicator from 'src/components/loading/Loading';
 import Pagination from 'src/components/pagination/Pagination';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import friendService from 'src/services/friend-service';
 
 import RequestBoxBottomSheet from './components/RequestBoxBottomSheet';
 import UserCard from './components/UserCard';
@@ -40,19 +41,32 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+  const [isSendingRequest, setIsSendingRequest] = useState<{ [key: string]: boolean }>(
+    {}
+  );
+  const [loading, setLoading] = useState<boolean>(false);
 
   const getUsers = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/users/non-friends/${authUser?._id}`);
-      setUsers(res.data);
+      setLoading(true);
+      if (authUser) {
+        const response: Response = await friendService.getNonFriends(authUser?.token);
+
+        if (response.success) {
+          setUsers(response.data);
+          setLoading(false);
+        }
+      }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     getUsers();
-  }, [authUser, setRequests, requests, users, setUsers]);
+  }, [authUser]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -63,20 +77,22 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
     currentPage * itemsPerPage
   );
 
-  const handleConnect = (userId: string) => {
-    axios
-      .post(`${BASE_URL}/users/friend-request`, {
-        currentUserId: authUser?._id,
-        selectedUserId: userId,
-      })
-      .then((res) => {
-        if (res.status === 200) {
+  const handleConnect = async (userId: string) => {
+    try {
+      if (authUser) {
+        const response: Response = await friendService.sendFriendRequest(
+          authUser.token,
+          userId
+        );
+
+        if (response.success) {
+          setIsSendingRequest({ ...isSendingRequest, [userId]: true });
           getUsers();
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const renderItem = (user: User, index: number) => (
@@ -85,7 +101,8 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
       index={index}
       user={user}
       onPressCard={() => navigation.navigate('UserProfile', { user })}
-      onPressAddFriend={handleConnect}
+      onPressAddFriend={() => handleConnect(user.id)}
+      isSendingRequest={isSendingRequest[user.id] || false}
     />
   );
 
@@ -113,17 +130,32 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
         </View>
 
         <View style={styles.body}>
-          {paginatedData.map((user, index) => renderItem(user, index))}
-
-          {users.length > itemsPerPage && (
-            <View style={styles.paginationContainer}>
-              <Pagination
-                totalItems={users.length}
-                itemsPerPage={itemsPerPage}
-                currentPage={currentPage}
-                onPageChange={handlePageChange}
-              />
-            </View>
+          {loading ? (
+            <LoadingIndicator />
+          ) : (
+            <>
+              {users.length === 0 ? (
+                <View style={styles.noUserContainer}>
+                  <Text style={styles.noUserText}>
+                    {i18next.t('discover.discover.noUser')}
+                  </Text>
+                </View>
+              ) : (
+                <>
+                  {paginatedData.map((user, index) => renderItem(user, index))}
+                  {users.length > itemsPerPage && (
+                    <View style={styles.paginationContainer}>
+                      <Pagination
+                        totalItems={users.length}
+                        itemsPerPage={itemsPerPage}
+                        currentPage={currentPage}
+                        onPageChange={handlePageChange}
+                      />
+                    </View>
+                  )}
+                </>
+              )}
+            </>
           )}
 
           {requestBoxBottomSheetVisible && (
@@ -187,6 +219,16 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       alignSelf: 'center',
       position: 'absolute',
       bottom: 65,
+    },
+    noUserContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noUserText: {
+      fontFamily: 'Nunito-Regular',
+      color: theme.textColor,
+      fontSize: 24,
     },
     shadow: {
       shadowColor: theme.shadowColor,

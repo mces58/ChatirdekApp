@@ -8,16 +8,16 @@ import {
   View,
 } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import friendService from 'src/services/friend-service';
 
 interface RequestBoxBottomSheetProps {
   isVisible: boolean;
@@ -41,8 +41,15 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
 
   const getRequests = async () => {
     try {
-      const res = await axios.get(`${BASE_URL}/users/friend-request/${authUser?._id}`);
-      setRequests(res.data);
+      if (authUser) {
+        const response: Response = await friendService.getIncomingFriendRequests(
+          authUser?.token
+        );
+
+        if (response.success) {
+          setRequests(response.data);
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -55,19 +62,19 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
   }, [authUser]);
 
   const acceptFriendRequest = async (receiverId: string) => {
-    axios
-      .post(`${BASE_URL}/users/friend-request/accept`, {
-        senderId: receiverId,
-        recepientId: authUser?._id,
-      })
-      .then((res) => {
-        if (res.status === 200) {
+    try {
+      if (authUser) {
+        const response: Response = await friendService.acceptFriendRequest(
+          authUser.toString(),
+          receiverId
+        );
+        if (response.success) {
           getRequests();
         }
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const renderItem = (request: User, index: number) => (
@@ -88,7 +95,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
 
       <TouchableOpacity
         onPress={() => {
-          acceptFriendRequest(request._id);
+          acceptFriendRequest(request.id);
         }}
         style={styles.button}
       >

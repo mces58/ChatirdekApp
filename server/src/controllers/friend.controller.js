@@ -61,9 +61,10 @@ export const getIncomingFriendRequests = async (req, res) => {
   try {
     const { id } = req.user;
 
-    const user = await User.findById(id)
-      .populate('incomingFriendRequests', 'userName avatar fullName')
-      .lean();
+    const user = await User.findById(id).populate(
+      'incomingFriendRequests',
+      'userName avatar fullName'
+    );
 
     const { incomingFriendRequests } = user;
 
@@ -80,9 +81,10 @@ export const getOutgoingFriendRequests = async (req, res) => {
   try {
     const { id } = req.user;
 
-    const user = await User.findById(id)
-      .populate('outgoingFriendRequests', 'userName avatar fullName')
-      .lean();
+    const user = await User.findById(id).populate(
+      'outgoingFriendRequests',
+      'userName avatar fullName'
+    );
 
     const { outgoingFriendRequests } = user;
 
@@ -152,7 +154,12 @@ export const getNonFriends = async (req, res) => {
       });
     }
 
-    const excludedUserIds = [...currentUser.friends, currentUserId];
+    const excludedUserIds = [
+      ...currentUser.friends,
+      ...currentUser.incomingFriendRequests,
+      ...currentUser.outgoingFriendRequests,
+      currentUserId,
+    ];
 
     const nonFriends = await User.find({
       _id: { $nin: excludedUserIds },
