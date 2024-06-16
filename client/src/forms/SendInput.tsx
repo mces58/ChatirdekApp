@@ -9,13 +9,15 @@ import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import chatService from 'src/services/chat-service';
+import groupMessageService from 'src/services/group-message-service';
 import { sendMessageValidation } from 'src/validations/sendMessage';
 
 interface SendInputProps {
   receiverId: string;
+  isGroup?: boolean;
 }
 
-const SendInput: React.FC<SendInputProps> = ({ receiverId }) => {
+const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const initialValue = {
@@ -43,12 +45,41 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId }) => {
     }
   };
 
+  const handleFormGroupSubmit = async (
+    value: { message: string },
+    resetForm: () => void
+  ) => {
+    try {
+      console.log(value);
+
+      if (authUser) {
+        const response: Response = await groupMessageService.sendGroupMessage(
+          authUser.toString(),
+          receiverId,
+          value.message
+        );
+
+        if (response.success) {
+          resetForm();
+        }
+      }
+    } catch (error) {
+      Alert.alert(i18next.t('alert.error'), i18next.t('alert.sendOnlyGroupMessage'), [
+        { text: i18next.t('global.ok') },
+      ]);
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValue}
       validationSchema={sendMessageValidation}
       onSubmit={(values, { resetForm }) => {
-        handleFormSubmit(values, resetForm);
+        if (isGroup) {
+          handleFormGroupSubmit(values, resetForm);
+        } else {
+          handleFormSubmit(values, resetForm);
+        }
       }}
     >
       {({ handleChange, handleBlur, handleSubmit, values, isValid }) => (

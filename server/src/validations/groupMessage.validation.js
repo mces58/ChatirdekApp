@@ -17,14 +17,7 @@ const sendGroupMessage = {
   }),
 };
 
-const getGroupLastMessage = {
-  params: Joi.object().keys({
-    groupId: Joi.custom(mongoId).label('Group ID'),
-  }),
-};
-
 export default {
   getGroupMessages,
   sendGroupMessage,
-  getGroupLastMessage,
 };

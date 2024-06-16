@@ -8,29 +8,28 @@ import {
   View,
 } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithUsers from 'src/components/headers/BackHeaderWithUsers';
 import { Colors } from 'src/constants/color/colors';
-import { GroupMessage } from 'src/constants/types/group-message';
-import { AuthUser, User } from 'src/constants/types/user';
+import { Group } from 'src/constants/types/group';
+import { GroupMessage, GroupMessages } from 'src/constants/types/group-message';
+import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper } from 'src/context/WallpaperContext';
 import SendInput from 'src/forms/SendInput';
 import { GroupChatProps } from 'src/navigations/RootStackParamList';
-import { BASE_URL } from 'src/services/baseUrl';
+import groupMessageService from 'src/services/group-message-service';
+import groupService from 'src/services/group-service';
 
 const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   const { authUser } = useAuthContext();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [messages, setMessages] = useState<GroupMessage[]>([]);
-  const [participants, setParticipants] = useState<User[]>([]);
-  const [inputMessage, setInputMessage] = useState('');
-  const [group, setGroup] = useState({} as any);
+  const [groupMessages, setGroupMessages] = useState<GroupMessages>({} as GroupMessages);
   const { theme } = useTheme();
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
@@ -38,97 +37,100 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   const { fontSize } = useFontSize();
   const fontSizeValue = fontSize.value;
   const { wallpaper } = useWallpaper();
-
-  const getGroup = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/groups/${route.params.groupId}`);
-      setGroup(res.data.group);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const getMessages = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/groups/${route.params.groupId}/messages`);
-      setMessages(res.data.groupMessages);
-      setParticipants(res.data.participants);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const sendMessage = async () => {
-    if (inputMessage.trim()) {
-      try {
-        const messageInfo = {
-          senderId: authUser?._id,
-          message: inputMessage,
-        };
-
-        const response = await axios.post(
-          `${BASE_URL}/groups/${group._id}/messages`,
-          messageInfo
-        );
-
-        const newMessage = {
-          _id: response.data._id,
-          message: response.data.message,
-          createdAt: response.data.createdAt,
-          senderId: response.data.senderId,
-        };
-
-        setMessages((prevMessages: GroupMessage[]) => [
-          ...prevMessages,
-          newMessage as GroupMessage,
-        ]);
-
-        setInputMessage('');
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
+  const [meId, setMeId] = useState<string>('');
+  const [group, setGroup] = useState<Group>({} as Group);
 
   useEffect(() => {
+    if (authUser) {
+      const decode: { _id: string } = jwtDecode(authUser.toString());
+      setMeId(decode._id);
+    }
+  }, [authUser]);
+
+  useEffect(() => {
+    const getMessages = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await groupMessageService.getGroupMessages(
+            authUser.toString(),
+            route.params.groupId
+          );
+
+          if (response.success) {
+            setGroupMessages(response.data);
+          }
+        }
+      } catch (error: any) {
+        if (error.message === 'Request failed with status code 404') return;
+      }
+    };
+    getMessages();
+  }, [groupMessages, setGroupMessages]);
+
+  useEffect(() => {
+    const getGroup = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await groupService.getGroup(
+            authUser.toString(),
+            route.params.groupId
+          );
+
+          if (response.success) {
+            setGroup(response.data);
+          }
+        }
+      } catch (error: any) {
+        if (error.message === 'Request failed with status code 404') return;
+      }
+    };
     getGroup();
   }, [group, setGroup]);
 
-  useEffect(() => {
-    getMessages();
-  }, [messages, setMessages]);
-
   const renderItem = (message: GroupMessage, index: number) => {
-    const sender = participants.find(
-      (participant) => participant._id === message.senderId
-    );
-
-    const isCurrentUser = authUser?._id === message.senderId;
-
     return (
       <View
         key={index}
         style={
-          isCurrentUser
+          message.senderId.id === meId
             ? [styles.myMessage, styles.shadow]
             : [styles.theirMessage, styles.shadow]
         }
       >
-        <Text style={[styles.text, { fontSize: fontSizeValue }]}>{message.message}</Text>
         <Text
           style={[
-            styles.timestamp,
-            isCurrentUser ? styles.myTimestamp : styles.theirTimestamp,
+            styles.text,
+            { fontSize: fontSizeValue },
+            meId === message.senderId.id ? { textAlign: 'right' } : { textAlign: 'left' },
           ]}
         >
-          {new Date(message.createdAt).toLocaleTimeString([], {
-            hour: '2-digit',
-            minute: '2-digit',
-          })}
+          {message.message}
         </Text>
-        <Text style={styles.timestamp}>
-          {isCurrentUser ? i18next.t('global.you') : sender?.fullName}
-        </Text>
+        <View
+          style={[
+            message.senderId.id === meId
+              ? { flexDirection: 'row' }
+              : { flexDirection: 'row-reverse' },
+
+            {
+              justifyContent: 'space-between',
+              marginTop: 5,
+              gap: 10,
+            },
+          ]}
+        >
+          <Text style={styles.timestamp}>
+            {new Date(message.createdAt).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </Text>
+          <Text style={styles.timestamp}>
+            {message.senderId.id === meId
+              ? i18next.t('global.you')
+              : message.senderId.userName}
+          </Text>
+        </View>
       </View>
     );
   };
@@ -136,10 +138,12 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   return (
     <View style={[styles.container, { backgroundColor: wallpaper.color }]}>
       <BackHeaderWithUsers
-        authUser={authUser as AuthUser}
+        meId={meId}
         group={group}
         icon={<ArrowIcon width={30} height={30} direction="left" />}
-        onPressHeader={() => navigation.navigate('GroupInfo', { groupId: group._id })}
+        onPressHeader={() =>
+          navigation.navigate('GroupInfo', { groupId: route.params.groupId })
+        }
         onPressIcon={() => navigation.goBack()}
         componentSize={{ height: 100 }}
       />
@@ -151,15 +155,12 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
         contentContainerStyle={{ paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        {messages?.map((message, index) => renderItem(message, index))}
+        {groupMessages.messages?.map((message, index: number) =>
+          renderItem(message, index)
+        )}
       </ScrollView>
 
-      <SendInput
-        inputMessage={inputMessage}
-        handleInputText={setInputMessage}
-        sendMessage={sendMessage}
-        placeholder={i18next.t('global.writeMessage')}
-      />
+      <SendInput receiverId={route.params.groupId} isGroup />
     </View>
   );
 };
@@ -201,12 +202,6 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     timestamp: {
       fontSize: 11,
       color: Colors.primaryColors.dark,
-    },
-    myTimestamp: {
-      textAlign: 'right',
-    },
-    theirTimestamp: {
-      textAlign: 'left',
     },
     shadow: {
       shadowColor: theme.shadowColor,

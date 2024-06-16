@@ -127,7 +127,10 @@ export const getGroup = async (req, res) => {
   const { groupId } = req.params;
 
   try {
-    const group = await Group.findOne({ _id: groupId }).populate('members');
+    const group = await Group.findOne({ _id: groupId })
+      .populate('members')
+      .populate('owner');
+
     if (!group) {
       return res.status(404).json({ error: 'Group not found' });
     }
@@ -282,5 +285,70 @@ export const leaveGroup = async (req, res) => {
     });
   } catch (error) {
     res.status(400).json({ error: error.message });
+  }
+};
+
+export const getFriendsNotInGroup = async (req, res) => {
+  const { id } = req.user;
+  const { groupId } = req.params;
+
+  try {
+    const user = await User.findById(id).populate('friends');
+    const group = await Group.findOne({ _id: groupId });
+    if (!group) {
+      return res.status(404).json({ error: 'Group not found' });
+    }
+
+    const { friends } = user;
+    const groupMembers = group.members;
+
+    const groupMemberIds = new Set(groupMembers.map((member) => member._id.toString()));
+    const friendsNotInGroup = friends.filter(
+      (friend) => !groupMemberIds.has(friend._id.toString())
+    );
+
+    res.status(200).json({
+      success: true,
+      data: friendsNotInGroup,
+    });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
+export const makeOwner = async (req, res) => {
+  const owner = req.user.id;
+  const { groupId, userId } = req.params;
+
+  try {
+    const group = await Group.findOne({ _id: groupId });
+    if (!group) {
+      return res.status(404).json({ error: 'Group not found' });
+    }
+
+    if (group.owner.toString() !== owner) {
+      return res
+        .status(403)
+        .json({ error: 'Only the group owner can make another member the owner' });
+    }
+
+    if (!group.members.includes(userId)) {
+      return res.status(400).json({ error: 'Member not found in the group' });
+    }
+
+    const tempOwner = group.owner;
+    group.owner = userId;
+    group.members.push(tempOwner);
+    group.members = group.members.filter((memberId) => memberId.toString() !== userId);
+
+    await group.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Owner changed successfully',
+      data: group,
+    });
+  } catch (error) {
+    handleErrors(res, error);
   }
 };

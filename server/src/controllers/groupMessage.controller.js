@@ -5,6 +5,48 @@ import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
 import removeLocalImage from 'src/utils/removeLocalImage.util';
 
+export const getGroupLastMessage = async (req, res) => {
+  const { id } = req.user;
+  try {
+    const groups = await Group.find({
+      $or: [{ owner: id }, { members: id }],
+    })
+      .populate({
+        path: 'members',
+        select: '-password',
+      })
+      .populate({
+        path: 'owner',
+        select: '-password',
+      });
+
+    if (!groups) {
+      return res.status(404).json({ error: 'No groups found' });
+    }
+
+    const groupsWithLastMessage = await Promise.all(
+      groups.map(async (group) => {
+        const lastMessage = await GroupMessage.findOne({ groupId: group._id })
+          .sort({ createdAt: -1 })
+          .populate('senderId')
+          .select('message createdAt senderId');
+
+        return {
+          ...group.toObject(),
+          lastMessage,
+        };
+      })
+    );
+
+    res.status(200).json({
+      success: true,
+      data: groupsWithLastMessage,
+    });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
 export const getGroupMessages = async (req, res) => {
   const { groupId } = req.params;
 
@@ -19,8 +61,10 @@ export const getGroupMessages = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      data: groupMessages,
-      participants: group.members,
+      data: {
+        messages: groupMessages,
+        participants: group.members,
+      },
     });
   } catch (error) {
     handleErrors(res, error);
@@ -36,6 +80,14 @@ export const sendGroupMessage = async (req, res) => {
     const group = await Group.findOne({ _id: groupId });
     if (!group) {
       return res.status(404).json({ error: 'Group not found' });
+    }
+
+    const isMemberOrOwner =
+      group.owner._id.toString() === senderId ||
+      group.members.some((memberId) => memberId.toString() === senderId);
+
+    if (!isMemberOrOwner) {
+      return res.status(403).json({ error: 'You are not a member of this group' });
     }
 
     const groupMessage = new GroupMessage({
@@ -93,29 +145,6 @@ export const sendGroupImageMessage = async (req, res) => {
     });
 
     removeLocalImage(image.path);
-  } catch (error) {
-    handleErrors(res, error);
-  }
-};
-
-export const getGroupLastMessage = async (req, res) => {
-  const { groupId } = req.params;
-
-  try {
-    const group = await Group.findOne({ _id: groupId }).populate('members');
-    if (!group) {
-      return res.status(404).json({ error: 'Group not found' });
-    }
-
-    const groupMessage = await GroupMessage.findOne({ groupId })
-      .sort({ createdAt: -1 })
-      .populate('senderId');
-
-    res.status(200).json({
-      success: true,
-      data: groupMessage,
-      participants: group.members,
-    });
   } catch (error) {
     handleErrors(res, error);
   }

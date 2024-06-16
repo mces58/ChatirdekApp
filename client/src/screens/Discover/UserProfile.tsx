@@ -35,47 +35,47 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
   return (
     <View style={styles.screenContainer}>
       <BackHeader
-        title={user.userName}
+        title={user?.userName}
         icon={<ArrowIcon width={25} height={25} direction="left" />}
         onPress={() => navigation.goBack()}
         componentSize={{ height: 80 }}
       />
       <View style={styles.container}>
         <ProfileWithText
-          text={user.fullName}
-          imageUri={user.hideAvatar ? `https://robohash.org/${user.id}` : user.avatar}
+          text={user?.fullName}
+          imageUri={user?.hideAvatar ? `https://robohash.org/${user?.id}` : user?.avatar}
           componentSize={{ width: 150, height: 150 }}
         />
 
         <View style={styles.userContainer}>
           <Card
             title={i18next.t('global.createdAt')}
-            text={user.createdAt?.split('T')[0]}
+            text={user?.createdAt?.split('T')[0]}
             icon={<CalendarIcon width={25} height={25} strokeWidth={1.5} />}
           />
           <Card
             title={i18next.t('global.email')}
-            text={user.email}
+            text={user?.email}
             icon={<InfoIcon width={25} height={25} strokeWidth={1.5} />}
           />
           <Card
             title={i18next.t('global.friendCount')}
-            text={user.friends?.length.toString()}
+            text={user?.friends?.length.toString()}
             icon={<GroupPeopleIcon width={25} height={25} strokeWidth={1.5} />}
           />
           <Card
             title={i18next.t('global.gender')}
             text={
-              user.gender === 'male'
+              user?.gender === 'male'
                 ? i18next.t('global.male')
                 : i18next.t('global.female')
             }
             icon={<GenderIcon width={25} height={25} strokeWidth={0.8} />}
           />
-          {user.hideAbout ? null : (
+          {user?.hideAbout ? null : (
             <Card
               title={i18next.t('global.about')}
-              text={user.about ? user.about : '...'}
+              text={user?.about ? user.about : '...'}
               icon={<GroupPeopleIcon width={25} height={25} strokeWidth={1.5} />}
             />
           )}

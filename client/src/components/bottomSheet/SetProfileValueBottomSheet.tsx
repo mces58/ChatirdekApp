@@ -17,6 +17,7 @@ import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import authService from 'src/services/auth-service';
+import groupService from 'src/services/group-service';
 import { newValueSchema } from 'src/validations/newValue';
 
 import BaseBottomSheet from './BaseBottomSheet';
@@ -29,6 +30,8 @@ interface SetProfileValueBottomSheetProps {
   setValue: (value: string) => void;
   value: string;
   type: string;
+  isGroup?: boolean;
+  groupId?: string;
 }
 
 const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
@@ -39,6 +42,8 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
   setValue,
   value,
   type,
+  isGroup = false,
+  groupId,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
@@ -67,6 +72,26 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
     }
   };
 
+  const handleUpdateGroup = async (value: string, resetForm: () => void) => {
+    try {
+      if (authUser) {
+        if (groupId) {
+          setValue(value);
+          const response: Response = await groupService.updateGroup(
+            authUser.toString(),
+            groupId,
+            { [type]: value }
+          );
+          if (response.success) {
+            resetForm();
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <BaseBottomSheet
       animationType="slide"
@@ -78,7 +103,13 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
           initialValues={{ newValue: value }}
           validationSchema={newValueSchema(type)}
           onSubmit={(values, { resetForm }) => {
-            handleUpdateMe(values.newValue, resetForm);
+            if (isGroup) {
+              handleUpdateGroup(values.newValue, resetForm);
+              onSwipeDown();
+            } else {
+              handleUpdateMe(values.newValue, resetForm);
+              onSwipeDown();
+            }
           }}
         >
           {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (

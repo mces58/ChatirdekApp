@@ -11,16 +11,17 @@ import {
   View,
 } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
+import LoadingIndicator from 'src/components/loading/Loading';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import groupService from 'src/services/group-service';
 
 interface AddMemberGroupBottomSheetProps {
   isVisible: boolean;
@@ -41,22 +42,30 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
   const [friends, setFriends] = useState([] as any[]);
   const [selectedFriends, setSelectedFriends] = useState([] as string[]);
   const { authUser } = useAuthContext();
-
-  const getFriends = async () => {
-    try {
-      const res = await axios.get(
-        `${BASE_URL}/groups/${groupId}/members/${authUser?._id}`
-      );
-      setFriends(res.data.nonGroupFriends);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
-    if (authUser) {
-      getFriends();
-    }
+    const getFriends = async () => {
+      try {
+        setLoading(true);
+        if (authUser) {
+          const response: Response = await groupService.getFriendsNotInGroup(
+            authUser.toString(),
+            groupId
+          );
+
+          if (response.success) {
+            setFriends(response.data);
+          }
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getFriends();
   }, [authUser]);
 
   const handleAddGroup = async () => {
@@ -64,18 +73,28 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
       ToastAndroid.show(i18next.t('toast.selectMembers'), ToastAndroid.SHORT);
       return;
     }
-
     try {
-      await axios.post(`${BASE_URL}/groups/${groupId}/members`, {
-        members: selectedFriends,
-      });
+      if (authUser) {
+        const response: Response = await groupService.addMember(
+          authUser.toString(),
+          groupId,
+          { members: selectedFriends }
+        );
 
-      ToastAndroid.show(
-        i18next.t('toast.memberAdded', { length: selectedFriends.length }),
-        ToastAndroid.SHORT
-      );
-      onSwipeDown();
-      setSelectedFriends([]);
+        if (response.success) {
+          ToastAndroid.show(
+            i18next.t('toast.memberAdded', {
+              length:
+                selectedFriends.length > 1
+                  ? selectedFriends.length + ' members'
+                  : '1 member',
+            }),
+            ToastAndroid.SHORT
+          );
+          onSwipeDown();
+          setSelectedFriends([]);
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -98,11 +117,11 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
         disabled
       />
 
-      {selectedFriends.includes(user._id) ? (
+      {selectedFriends.includes(user.id) ? (
         <TouchableOpacity
           style={[styles.removeButton, styles.shadow]}
           onPress={() => {
-            setSelectedFriends((prev) => prev.filter((id) => id !== user._id));
+            setSelectedFriends((prev) => prev.filter((id) => id !== user.id));
           }}
         >
           <Text style={styles.buttonText}>{i18next.t('global.remove')}</Text>
@@ -111,7 +130,7 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
         <TouchableOpacity
           style={[styles.selectButton, styles.shadow]}
           onPress={() => {
-            setSelectedFriends([...selectedFriends, user._id]);
+            setSelectedFriends([...selectedFriends, user.id]);
           }}
         >
           <Text style={styles.buttonText}>{i18next.t('global.select')}</Text>
@@ -130,19 +149,23 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
           {i18next.t('group.addMembersBottomSheet.header')}
         </Text>
 
-        <ScrollView
-          style={styles.body}
-          contentContainerStyle={styles.scrollViewContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.userContainer}>
-            {friends.length > 0 ? (
-              friends.map((user, index) => renderItem(user, index))
-            ) : (
-              <Text style={styles.text}>No friends found</Text>
-            )}
-          </View>
-        </ScrollView>
+        {loading ? (
+          <LoadingIndicator />
+        ) : (
+          <ScrollView
+            style={styles.body}
+            contentContainerStyle={styles.scrollViewContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <View style={styles.userContainer}>
+              {friends.length > 0 ? (
+                friends.map((user, index) => renderItem(user, index))
+              ) : (
+                <Text style={styles.text}>No friends found</Text>
+              )}
+            </View>
+          </ScrollView>
+        )}
 
         <TouchableOpacity
           style={[styles.button, styles.shadow]}

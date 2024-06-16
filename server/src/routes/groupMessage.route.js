@@ -13,6 +13,11 @@ import groupMessageValidation from 'src/validations/groupMessage.validation';
 
 const router = Router();
 
+// @route   GET /api/group/messages/last-message
+// @desc    Get group last message
+// @access  Private
+router.route('/last-message').get(authentication, getGroupLastMessage);
+
 // @route   GET /api/group/messages/:groupId
 // @desc    Get group messages
 // @access  Private
@@ -46,12 +51,5 @@ router
     upload.single('image'),
     sendGroupImageMessage
   );
-
-// @route   GET /api/group/messages/:groupId/last-message
-// @desc    Get group last message
-// @access  Private
-router
-  .route('/:groupId/last-message')
-  .get(validate(groupMessageValidation.getGroupLastMessage), getGroupLastMessage);
 
 export default router;

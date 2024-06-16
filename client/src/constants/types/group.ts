@@ -1,11 +1,16 @@
 import { User } from './user';
 
 export interface Group {
-  _id: string;
+  id: string;
   name: string;
   description: string;
-  owner: string;
+  owner: User;
   members: User[];
-  deleted: boolean;
   createdAt: string;
+  deleted: boolean;
+}
+
+export interface CreateGroup {
+  name: string;
+  members: string[];
 }

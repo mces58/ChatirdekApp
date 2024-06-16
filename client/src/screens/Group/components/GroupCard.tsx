@@ -5,17 +5,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import i18next from 'i18next';
 
 import { Colors } from 'src/constants/color/colors';
-import { Group } from 'src/constants/types/group';
+import { GroupLastMessages } from 'src/constants/types/group-message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
 interface GroupCardProps {
-  group: Group;
+  group: GroupLastMessages;
   onPressCard: () => void;
   index: number;
+  meId: string;
 }
 
-const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index }) => {
+const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
@@ -31,15 +32,50 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index }) => {
       <TouchableOpacity onPress={onPressCard}>
         <View style={styles.row}>
           <View style={styles.groupContainer}>
-            <Text style={styles.groupNameText}>{group.name}</Text>
-            <Text style={styles.lastMessageText}>{group.createdAt}</Text>
+            <View>
+              <Text style={styles.groupNameText}>{group.name}</Text>
+              {group?.lastMessage?.message ? (
+                <Text style={styles.lastMessageText}>
+                  {group.lastMessage?.senderId.id === meId
+                    ? i18next.t('global.you')
+                    : group.lastMessage?.senderId.fullName}
+                  : {group?.lastMessage?.message}
+                </Text>
+              ) : (
+                <Text style={styles.lastMessageText}>
+                  {i18next.t('group.group.noMessage')}
+                </Text>
+              )}
+              {group?.lastMessage?.message && (
+                <Text style={styles.lastMessageText}>
+                  {new Date(group?.lastMessage?.createdAt).toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                  })}
+                </Text>
+              )}
+            </View>
           </View>
-          <Text style={styles.groupMemberText}>
-            {group.members.length}{' '}
-            {group.members.length > 1
-              ? i18next.t('global.members')
-              : i18next.t('global.member')}
-          </Text>
+          <View
+            style={{
+              alignItems: 'flex-end',
+              gap: 5,
+            }}
+          >
+            <Text style={styles.groupMemberText}>
+              {group.members.length}{' '}
+              {group.members.length > 1
+                ? i18next.t('global.members')
+                : i18next.t('global.member')}
+            </Text>
+            <Text style={styles.groupMemberText}>
+              {new Date(group.createdAt).toLocaleDateString([], {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })}
+            </Text>
+          </View>
         </View>
       </TouchableOpacity>
     </LinearGradient>

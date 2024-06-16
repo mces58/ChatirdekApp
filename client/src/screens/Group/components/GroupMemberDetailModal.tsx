@@ -1,22 +1,25 @@
 import React, { useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, ToastAndroid, TouchableOpacity, View } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
 
 import BaseModal from 'src/components/modal/BaseModal';
 import { ModalAnimation } from 'src/components/modal/modalAnimation';
 import { Colors } from 'src/constants/color/colors';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
+import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import groupService from 'src/services/group-service';
 
 interface GroupMemberDetailModalProps {
   isVisible: boolean;
   onClose: () => void;
   user: User;
-  navigation?: any;
-  groupId?: string;
+  navigation: any;
+  groupId: string;
+  meId: string;
+  ownerId: string;
 }
 
 const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
@@ -25,15 +28,52 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
   user,
   navigation,
   groupId,
+  meId,
+  ownerId,
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const { authUser } = useAuthContext();
 
   const handleRemoveUser = async () => {
     try {
-      const res = await axios.delete(`${BASE_URL}/groups/${groupId}/members/${user._id}`);
-      console.log(res.data);
-      onClose();
+      if (authUser) {
+        const response: Response = await groupService.removeMember(
+          authUser.toString(),
+          groupId,
+          user.id
+        );
+
+        if (response.success) {
+          ToastAndroid.show(
+            i18next.t('toast.memberRemoved', { name: user.fullName }),
+            ToastAndroid.SHORT
+          );
+          onClose();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const makeAdmin = async () => {
+    try {
+      if (authUser) {
+        const response: Response = await groupService.makeAdmin(
+          authUser.toString(),
+          groupId,
+          user.id
+        );
+
+        if (response.success) {
+          ToastAndroid.show(
+            i18next.t('toast.makeAdmin', { name: user.fullName }),
+            ToastAndroid.SHORT
+          );
+          onClose();
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -49,7 +89,8 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
         style={[styles.row, styles.shadow]}
         onPress={() => {
           navigation.navigate('Chat', {
-            receiverId: user._id,
+            senderId: meId,
+            receiverId: user.id,
           });
           onClose();
         }}
@@ -58,13 +99,11 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
           {i18next.t('global.message')}: {user.fullName}
         </Text>
       </TouchableOpacity>
+
       <TouchableOpacity
         style={[styles.row, styles.shadow]}
         onPress={() => {
-          navigation.navigate('UserProfile', {
-            user,
-          });
-
+          navigation.navigate('UserProfile', { user });
           onClose();
         }}
       >
@@ -72,16 +111,25 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
           {i18next.t('global.view')}: {user.fullName}
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity style={[styles.row, styles.shadow]} onPress={handleRemoveUser}>
-        <Text style={styles.text}>
-          {i18next.t('global.remove')}: {user.fullName}
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.row, styles.shadow]}>
-        <Text style={styles.text}>
-          {i18next.t('group.groupMemberDetailModal.makeAdmin')}
-        </Text>
-      </TouchableOpacity>
+
+      {meId === ownerId && (
+        <>
+          <TouchableOpacity
+            style={[styles.row, styles.shadow]}
+            onPress={handleRemoveUser}
+          >
+            <Text style={styles.text}>
+              {i18next.t('global.remove')}: {user.fullName}
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={[styles.row, styles.shadow]} onPress={makeAdmin}>
+            <Text style={styles.text}>
+              {i18next.t('group.groupMemberDetailModal.makeAdmin')}
+            </Text>
+          </TouchableOpacity>
+        </>
+      )}
     </View>
   );
   return (

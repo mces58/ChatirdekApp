@@ -62,6 +62,13 @@ const leaveGroup = {
   }),
 };
 
+const makeOwner = {
+  params: Joi.object().keys({
+    groupId: Joi.custom(mongoId).label('Group ID'),
+    userId: Joi.custom(mongoId).label('User ID'),
+  }),
+};
+
 export default {
   createGroup,
   updateGroup,
@@ -70,4 +77,5 @@ export default {
   addMember,
   removeMember,
   leaveGroup,
+  makeOwner,
 };

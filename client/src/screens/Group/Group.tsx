@@ -1,14 +1,26 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { NativeModules, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import {
+  NativeModules,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import { GroupPeopleIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
+import LoadingIndicator from 'src/components/loading/Loading';
+import { GroupLastMessages } from 'src/constants/types/group-message';
+import { Response } from 'src/constants/types/response';
+import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-import { BASE_URL } from 'src/services/baseUrl';
+import friendService from 'src/services/friend-service';
+import groupMessageService from 'src/services/group-message-service';
 
 import CreateGroupBottomSheet from './components/CreateGroupBottomSheet';
 import GroupCard from './components/GroupCard';
@@ -20,38 +32,61 @@ interface GroupProps {
 const Group: React.FC<GroupProps> = ({ navigation }) => {
   const [createGroupBottomSheetVisible, setCreateGroupBottomSheetVisible] =
     useState<boolean>(false);
-  const [groups, setGroups] = useState([] as any[]);
+  const [groups, setGroups] = useState<GroupLastMessages[]>([]);
   const { authUser } = useAuthContext();
   const { theme } = useTheme();
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
+  const [meId, setMeId] = useState<string>('');
+  const [friends, setFriends] = useState<User[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const getGroups = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/groups`, {
-        headers: {
-          Authorization: `Bearer ${authUser?.token}`,
-        },
-      });
-      setGroups(res.data.groups);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  useEffect(() => {
+    const getGroups = async () => {
+      try {
+        setLoading(true);
+        if (authUser) {
+          const response: Response = await groupMessageService.getGroupLastMessages(
+            authUser.toString()
+          );
+          if (response.success) {
+            setGroups(response.data);
+          }
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getGroups();
+  }, [authUser, groups]);
 
   useEffect(() => {
     if (authUser) {
-      getGroups();
+      const decode: { _id: string } = jwtDecode(authUser.toString());
+      setMeId(decode._id);
     }
-  }, [
-    authUser,
-    createGroupBottomSheetVisible,
-    navigation,
-    groups,
-    groups.map((groups) => groups.members),
-    setGroups,
-  ]);
+  }, [authUser]);
+
+  useEffect(() => {
+    const getFriends = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await friendService.getFriends(authUser.toString());
+
+          if (response.success) {
+            setFriends(response.data);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getFriends();
+  }, [authUser]);
 
   return (
     <ScrollView
@@ -67,23 +102,32 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
         icon={<GroupPeopleIcon width={30} height={30} />}
         onIconPress={() => setCreateGroupBottomSheetVisible(true)}
       />
-
-      <View style={styles.container}>
-        {groups?.map((group, index) => (
-          <GroupCard
-            key={index}
-            group={group}
-            index={index}
-            onPressCard={() => navigation.navigate('GroupChat', { groupId: group._id })}
-          />
-        ))}
-      </View>
+      {loading ? (
+        <LoadingIndicator />
+      ) : groups.length > 0 ? (
+        <View style={styles.container}>
+          {groups?.map((group, index) => (
+            <GroupCard
+              key={index}
+              group={group}
+              index={index}
+              onPressCard={() => navigation.navigate('GroupChat', { groupId: group.id })}
+              meId={meId}
+            />
+          ))}
+        </View>
+      ) : (
+        <View style={styles.noGroupContainer}>
+          <Text style={styles.noGroupText}>{i18next.t('group.group.noGroup')}</Text>
+        </View>
+      )}
 
       {createGroupBottomSheetVisible && (
         <CreateGroupBottomSheet
           isVisible={createGroupBottomSheetVisible}
           onSwipeDown={() => setCreateGroupBottomSheetVisible(false)}
           navigation={navigation}
+          friends={friends}
         />
       )}
     </ScrollView>
@@ -104,5 +148,16 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       paddingVertical: 20,
       gap: 20,
       alignItems: 'center',
+    },
+    noGroupContainer: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    noGroupText: {
+      fontFamily: 'Poppins-Regular',
+      fontSize: 20,
+      color: theme.textColor,
+      textAlign: 'center',
     },
   });

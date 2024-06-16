@@ -50,7 +50,7 @@ const darkTheme: Theme = {
   iconColor: Colors.primaryColors.light,
   headerBackgroundColor: Colors.primaryColors.dark,
   shadowColor: Colors.primaryColors.light,
-  bottomSheetBackgroundColor: Colors.primaryColors.dark,
+  bottomSheetBackgroundColor: Colors.primaryColors.bottomSheetColorDark,
   cardColor: Colors.primaryColors.dark,
   linearGradients: [
     Colors.primaryColors.linearGradient2,

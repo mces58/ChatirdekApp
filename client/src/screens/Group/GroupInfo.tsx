@@ -5,12 +5,13 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
 
-import axios from 'axios';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import CalendarIcon from 'src/assets/icons/calendar';
@@ -24,11 +25,13 @@ import BackHeader from 'src/components/headers/BackHeader';
 import ListInfo from 'src/components/list/ListUserInfo';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
 import { Colors } from 'src/constants/color/colors';
+import { Group } from 'src/constants/types/group';
+import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { GroupInfoProps } from 'src/navigations/RootStackParamList';
-import { BASE_URL } from 'src/services/baseUrl';
+import groupService from 'src/services/group-service';
 
 import AddMemberGroupBottomSheet from './components/AddMemberGroupBottomSheet';
 import GroupMemberDetailModal from './components/GroupMemberDetailModal';
@@ -43,35 +46,58 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
     useState(false);
   const [selectedUser, setSelectedUser] = useState({} as any);
   const [addMemberBottomSheetVisible, setAddMemberBottomSheetVisible] = useState(false);
-  const [group, setGroup] = useState({} as any);
+  const [group, setGroup] = useState<Group>({} as Group);
   const { theme } = useTheme();
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
-
-  const getGroup = async () => {
-    try {
-      const res = await axios.get(`${BASE_URL}/groups/${route.params.groupId}`);
-      setGroupName(res.data.group.name);
-      setGroupDescription(res.data.group.description);
-      setGroup(res.data.group);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const [meId, setMeId] = useState<string>('');
 
   useEffect(() => {
+    const getGroup = async () => {
+      try {
+        if (authUser) {
+          const response: Response = await groupService.getGroup(
+            authUser.toString(),
+            route.params.groupId
+          );
+
+          if (response.success) {
+            setGroup(response?.data);
+            setGroupName(response.data?.name);
+            setGroupDescription(response?.data?.description);
+          }
+        }
+      } catch (error: any) {
+        if (error.message === 'Request failed with status code 404') return;
+      }
+    };
+
     getGroup();
   }, [group, setGroup]);
 
+  useEffect(() => {
+    if (authUser) {
+      const decode: { _id: string } = jwtDecode(authUser.toString());
+      setMeId(decode._id);
+    }
+  }, [authUser]);
+
   const handleLeaveGroup = async () => {
     try {
-      await axios.delete(`${BASE_URL}/groups/${route.params.groupId}/members`, {
-        headers: {
-          Authorization: `Bearer ${authUser?.token}`,
-        },
-      });
-      navigation.goBack();
+      if (authUser) {
+        const response: Response = await groupService.leaveGroup(
+          authUser.toString(),
+          group.id
+        );
+        if (response.success) {
+          ToastAndroid.show(
+            i18next.t('toast.leftGroup', { name: group?.name }),
+            ToastAndroid.SHORT
+          );
+          navigation.navigate('Group');
+        }
+      }
     } catch (error) {
       console.error(error);
     }
@@ -80,7 +106,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
   return (
     <ScrollView style={styles.screenContainer} showsVerticalScrollIndicator={false}>
       <BackHeader
-        title={groupName}
+        title={group?.name}
         icon={<ArrowIcon width={30} height={30} direction="left" />}
         componentSize={{ height: 90 }}
         onPress={() => navigation.goBack()}
@@ -89,28 +115,38 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
       <View style={styles.container}>
         <ListInfo
           title={i18next.t('group.groupInfo.groupName')}
-          text={groupName}
+          text={group?.name}
           icon={<IdIcon width={30} height={30} strokeWidth={3} />}
-          onPress={() => setGroupNameBoxVisible(true)}
+          onPress={
+            meId === group?.owner?.id
+              ? () => setGroupNameBoxVisible(true)
+              : () => console.log('You are not owner')
+          }
+          disabled={meId !== group?.owner?.id}
         />
 
         <ListInfo
           title={i18next.t('group.groupInfo.groupDescription')}
-          text={groupDescription}
+          text={group?.description}
           icon={<QuotationIcon width={30} height={30} />}
-          onPress={() => setGroupDescriptionBoxVisible(true)}
+          onPress={
+            meId === group?.owner?.id
+              ? () => setGroupDescriptionBoxVisible(true)
+              : () => console.log('You are not owner')
+          }
+          disabled={meId !== group?.owner?.id}
         />
 
         <ListInfo
           title={i18next.t('global.createdAt')}
-          text={group.createdAt?.split('T')[0]}
+          text={new Date(group?.createdAt).toLocaleDateString()}
           icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
           disabled
         />
 
         <ListInfo
           title={i18next.t('group.groupInfo.owner')}
-          text={group.owner}
+          text={group?.owner?.fullName}
           icon={<DiamondIcon width={30} height={30} />}
           disabled
         />
@@ -119,25 +155,41 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
           <View style={styles.memberHeaderTextContainer}>
             <Text style={styles.memberHeaderText}>
               {group?.members?.length > 1
-                ? group?.members?.length + ' ' + i18next.t('global.members')
-                : group?.members?.length + ' ' + i18next.t('global.member')}
+                ? group?.members?.length + ' ' + i18next.t('global.members') + ' '
+                : group?.members?.length + ' ' + i18next.t('global.member') + ' '}
+              <Text
+                style={{
+                  color: theme.textColor,
+                  fontFamily: 'Nunito-Regular',
+                  fontSize: 12,
+                }}
+              >
+                ({i18next.t('global.outsideOwner')})
+              </Text>
             </Text>
           </View>
           <View style={styles.memberContainer}>
-            <View style={styles.addMemberContainer}>
-              <TouchableOpacity
-                style={[styles.addMemberButton, styles.shadow]}
-                onPress={() => setAddMemberBottomSheetVisible(true)}
-              >
-                <PlussIcon
-                  width={20}
-                  height={20}
-                  customColor={Colors.primaryColors.dark}
-                />
-                <Text style={styles.addMemberButtonText}>
-                  {i18next.t('group.groupInfo.addMembers')}
-                </Text>
-              </TouchableOpacity>
+            <View
+              style={[
+                styles.addMemberContainer,
+                meId !== group?.owner?.id && { justifyContent: 'flex-end' },
+              ]}
+            >
+              {meId === group?.owner?.id && (
+                <TouchableOpacity
+                  style={[styles.addMemberButton, styles.shadow]}
+                  onPress={() => setAddMemberBottomSheetVisible(true)}
+                >
+                  <PlussIcon
+                    width={20}
+                    height={20}
+                    customColor={Colors.primaryColors.dark}
+                  />
+                  <Text style={styles.addMemberButtonText}>
+                    {i18next.t('group.groupInfo.addMembers')}
+                  </Text>
+                </TouchableOpacity>
+              )}
 
               <TouchableOpacity
                 style={[styles.leaveGroupButton, styles.shadow]}
@@ -154,30 +206,74 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
 
-            {group.members?.map((user: User, index: number) => {
+            <View
+              style={{
+                borderBottomColor: theme.borderColor,
+                borderBottomWidth: 1,
+              }}
+            >
+              <TouchableOpacity
+                style={styles.userContainer}
+                onPress={() => {
+                  if (meId !== group?.owner?.id) {
+                    setGroupMemberDetailModalVisible(true);
+                    setSelectedUser(group?.owner);
+                  }
+                }}
+                disabled={meId === group?.owner?.id}
+              >
+                <ProfileImage
+                  imageUri={group?.owner?.avatar}
+                  componentSize={{ width: 50, height: 50 }}
+                />
+
+                <Text style={styles.userName}>
+                  {meId === group?.owner?.id
+                    ? i18next.t('global.you')
+                    : group?.owner?.fullName}{' '}
+                  <Text
+                    style={{
+                      color: theme.textMutedColor,
+                      fontFamily: 'Nunito-Regular',
+                      fontSize: 12,
+                    }}
+                  >
+                    {i18next.t('global.admin')}
+                  </Text>
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {group?.members?.map((user: User, index: number) => {
               return (
-                <TouchableOpacity
+                <View
                   key={index}
-                  style={[
-                    styles.userContainer,
-                    { borderBottomWidth: index === group.members.length - 1 ? 0 : 1 },
-                  ]}
-                  onPress={() => {
-                    if (authUser?._id !== user._id) {
-                      setGroupMemberDetailModalVisible(true);
-                      setSelectedUser(user);
-                    }
+                  style={{
+                    borderBottomColor: theme.borderColor,
+                    borderBottomWidth: index === group.members.length - 1 ? 0 : 1,
                   }}
                 >
-                  <ProfileImage
-                    imageUri={user.profilePicture}
-                    componentSize={{ width: 50, height: 50 }}
-                  />
-
-                  <Text style={styles.userName}>
-                    {authUser?._id === user._id ? i18next.t('global.you') : user.fullName}
-                  </Text>
-                </TouchableOpacity>
+                  <TouchableOpacity
+                    style={styles.userContainer}
+                    onPress={() => {
+                      if (meId !== user?.id) {
+                        setGroupMemberDetailModalVisible(true);
+                        setSelectedUser(user);
+                      }
+                    }}
+                    disabled={meId === user?.id}
+                  >
+                    <ProfileImage
+                      imageUri={
+                        user.hideAvatar
+                          ? `https://robohash.org/${user?.id}`
+                          : user?.avatar
+                      }
+                      componentSize={{ width: 50, height: 50 }}
+                    />
+                    <Text style={styles.userName}>{user?.fullName}</Text>
+                  </TouchableOpacity>
+                </View>
               );
             })}
           </View>
@@ -194,6 +290,9 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
             setGroupName(value);
           }}
           value={groupName}
+          type="name"
+          isGroup
+          groupId={group?.id}
         />
       )}
 
@@ -207,6 +306,9 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
             setGroupDescription(value);
           }}
           value={groupDescription}
+          type="description"
+          isGroup
+          groupId={group?.id}
         />
       )}
 
@@ -216,7 +318,9 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
           isVisible={groupMemberDetailModalVisible}
           user={selectedUser}
           navigation={navigation}
-          groupId={group?._id}
+          groupId={group?.id}
+          meId={meId}
+          ownerId={group?.owner?.id}
         />
       )}
 
@@ -225,7 +329,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
           isVisible={addMemberBottomSheetVisible}
           onSwipeDown={() => setAddMemberBottomSheetVisible(false)}
           navigation={navigation}
-          groupId={group?._id}
+          groupId={group?.id}
         />
       )}
     </ScrollView>

@@ -11,13 +11,12 @@ import {
 import i18next from 'i18next';
 
 import { Group } from 'src/constants/types/group';
-import { AuthUser } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface BackHeaderWithUsersProps {
   group: Group;
   icon: React.ReactNode;
-  authUser: AuthUser;
+  meId: string;
   onPressIcon: () => void;
   onPressHeader: () => void;
   componentSize?: StyleProp<ViewStyle> & { height: number };
@@ -26,7 +25,7 @@ interface BackHeaderWithUsersProps {
 const BackHeaderWithUsers: React.FC<BackHeaderWithUsersProps> = ({
   group,
   icon,
-  authUser,
+  meId,
   onPressIcon,
   onPressHeader,
   componentSize = { height: 100 },
@@ -39,36 +38,20 @@ const BackHeaderWithUsers: React.FC<BackHeaderWithUsersProps> = ({
       <TouchableOpacity onPress={onPressHeader} style={{ flex: 1 }}>
         <View style={styles.row}>
           <TouchableOpacity onPress={onPressIcon}>{icon}</TouchableOpacity>
-          <Text style={styles.title}>{group.name}</Text>
+          <Text style={styles.title}>{group?.name}</Text>
         </View>
         <View style={styles.membersContainer}>
-          {group.members?.length > 3
-            ? group.members?.slice(0, 3)?.map((user, index: number) =>
-                authUser?._id === user._id ? (
-                  <Text key={index} style={styles.membersText}>
-                    {i18next.t('global.you')}
-                    {index === 2 ? '...' : ','}
-                  </Text>
-                ) : (
-                  <Text key={index} style={styles.membersText}>
-                    {user.fullName}
-                    {index === 2 ? '...' : ','}
-                  </Text>
-                )
-              )
-            : group.members?.map((user, index) =>
-                authUser?._id === user._id ? (
-                  <Text key={index} style={styles.membersText}>
-                    {i18next.t('global.you')}
-                    {index === group.members?.length - 1 ? '' : ','}
-                  </Text>
-                ) : (
-                  <Text key={index} style={styles.membersText}>
-                    {user.fullName}
-                    {index === group.members?.length - 1 ? '' : ','}
-                  </Text>
-                )
-              )}
+          <Text style={styles.membersText}>
+            {meId === group?.owner?.id
+              ? i18next.t('global.you') + ','
+              : group?.owner?.userName + ','}
+          </Text>
+          {group?.members?.slice(0, 3)?.map((member, index) => (
+            <Text key={index} style={styles.membersText}>
+              {member.userName}
+              {index === 2 ? '' : ','}
+            </Text>
+          ))}
         </View>
       </TouchableOpacity>
     </View>

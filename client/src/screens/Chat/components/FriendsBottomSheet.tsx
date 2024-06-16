@@ -135,7 +135,7 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
       isVisible={isVisible}
       onSwipeDown={onSwipeDown}
       content={<ScrollView showsVerticalScrollIndicator={false}>{content}</ScrollView>}
-      modalStyle={styles.bottomSheet}
+      modalStyle={[styles.bottomSheet, styles.shadow]}
     />
   );
 };

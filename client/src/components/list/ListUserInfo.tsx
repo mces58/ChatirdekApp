@@ -12,16 +12,9 @@ interface ListInfoProps {
   disabled?: boolean;
 }
 
-const ListInfo: React.FC<ListInfoProps> = ({
-  title,
-  text,
-  icon,
-  onPress,
-  disabled = false,
-}) => {
+const ListInfo: React.FC<ListInfoProps> = ({ title, text, icon, onPress, disabled }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
-
   return (
     <View style={styles.outline}>
       <TouchableOpacity style={styles.item} onPress={onPress} disabled={disabled}>
