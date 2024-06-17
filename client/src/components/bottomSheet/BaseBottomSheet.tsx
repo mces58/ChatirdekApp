@@ -1,8 +1,8 @@
-import React from 'react';
-import { Modal, StyleProp, View, ViewStyle } from 'react-native';
+import React, { useMemo } from 'react';
+import { Modal, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
-import { useTheme } from 'src/context/ThemeContext';
+import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useSwipeVertical } from 'src/utils/swipe';
 
 type BaseBottomSheetProps = {
@@ -19,9 +19,15 @@ const BaseBottomSheet = (props: BaseBottomSheetProps) => {
     props;
   const { onTouchStart, onTouchEnd } = useSwipeVertical(null, onSwipeDown, 6);
   const { theme } = useTheme();
+  const styles = useMemo(() => createStyles(theme), [theme]);
+
   return (
     <Modal visible={isVisible} animationType={animationType} transparent={isTransparent}>
-      <View style={modalStyle} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+      <View
+        style={[modalStyle, styles.shadow]}
+        onTouchStart={onTouchStart}
+        onTouchEnd={onTouchEnd}
+      >
         <View
           style={{
             alignSelf: 'center',
@@ -40,3 +46,17 @@ const BaseBottomSheet = (props: BaseBottomSheetProps) => {
 };
 
 export default BaseBottomSheet;
+
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    shadow: {
+      shadowColor: theme.shadowColor,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 30,
+    },
+  });

@@ -1,12 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ScrollView, StyleSheet, Text, useWindowDimensions } from 'react-native';
 
 import i18next from 'i18next';
 
+import Logo from 'src/assets/icons/logo';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import { Theme, useTheme } from 'src/context/ThemeContext';
-
-import { AboutUs, aboutUs } from '../../constants/about-us';
 
 interface AboutUsBottomSheetProps {
   isVisible: boolean;
@@ -20,7 +19,6 @@ const AboutUsBottomSheet: React.FC<AboutUsBottomSheetProps> = ({
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, SCREEN_HEIGHT), [theme]);
-  const [aboutUsContent] = useState<AboutUs>(aboutUs);
 
   const content = (
     <ScrollView
@@ -28,8 +26,9 @@ const AboutUsBottomSheet: React.FC<AboutUsBottomSheetProps> = ({
       contentContainerStyle={styles.scrollViewContent}
       showsVerticalScrollIndicator={false}
     >
-      <Text style={styles.headerText}>{aboutUsContent.title}</Text>
-      <Text style={styles.text}>{i18next.t(aboutUs.content)}</Text>
+      <Logo width={2100} height={330} />
+
+      <Text style={styles.text}>{i18next.t('settings.aboutus.message')}</Text>
     </ScrollView>
   );
 
@@ -69,12 +68,7 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       alignItems: 'center',
       paddingHorizontal: 10,
       paddingVertical: 20,
-      gap: 5,
-    },
-    headerText: {
-      fontSize: 20,
-      color: theme.textColor,
-      fontFamily: 'Poppins-Bold',
+      gap: 10,
     },
     text: {
       fontFamily: 'Nunito-Bold',

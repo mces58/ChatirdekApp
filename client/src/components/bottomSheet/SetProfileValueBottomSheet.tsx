@@ -92,50 +92,52 @@ const SetProfileValueBottomSheet: React.FC<SetProfileValueBottomSheetProps> = ({
     }
   };
 
+  const content = (
+    <Formik
+      initialValues={{ newValue: value }}
+      validationSchema={newValueSchema(type)}
+      onSubmit={(values, { resetForm }) => {
+        if (isGroup) {
+          handleUpdateGroup(values.newValue, resetForm);
+          onSwipeDown();
+        } else {
+          handleUpdateMe(values.newValue, resetForm);
+          onSwipeDown();
+        }
+      }}
+    >
+      {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
+        <View style={styles.container}>
+          <Text style={styles.headerText}>{title}</Text>
+          <TextInput
+            style={styles.textInput}
+            placeholder={placeholder}
+            placeholderTextColor={theme.borderColor}
+            onChangeText={handleChange('newValue')}
+            onBlur={handleBlur('newValue')}
+            value={values.newValue}
+          />
+          {touched.newValue && errors.newValue && (
+            <Text style={styles.errorText}>{errors.newValue}</Text>
+          )}
+          <TouchableOpacity
+            style={[styles.button, styles.shadow]}
+            onPress={() => handleSubmit()}
+          >
+            <Text style={styles.buttonText}>{i18next.t('global.save')}</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+    </Formik>
+  );
+
   return (
     <BaseBottomSheet
       animationType="slide"
       isTransparent
       isVisible={isVisible}
       onSwipeDown={onSwipeDown}
-      content={
-        <Formik
-          initialValues={{ newValue: value }}
-          validationSchema={newValueSchema(type)}
-          onSubmit={(values, { resetForm }) => {
-            if (isGroup) {
-              handleUpdateGroup(values.newValue, resetForm);
-              onSwipeDown();
-            } else {
-              handleUpdateMe(values.newValue, resetForm);
-              onSwipeDown();
-            }
-          }}
-        >
-          {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
-            <View style={styles.container}>
-              <Text style={styles.headerText}>{title}</Text>
-              <TextInput
-                style={styles.textInput}
-                placeholder={placeholder}
-                placeholderTextColor={'#ccc'}
-                onChangeText={handleChange('newValue')}
-                onBlur={handleBlur('newValue')}
-                value={values.newValue}
-              />
-              {touched.newValue && errors.newValue && (
-                <Text style={styles.errorText}>{errors.newValue}</Text>
-              )}
-              <TouchableOpacity
-                style={[styles.button, styles.shadow]}
-                onPress={() => handleSubmit()}
-              >
-                <Text style={styles.buttonText}>{i18next.t('global.save')}</Text>
-              </TouchableOpacity>
-            </View>
-          )}
-        </Formik>
-      }
+      content={content}
       modalStyle={styles.bottomSheet}
     />
   );

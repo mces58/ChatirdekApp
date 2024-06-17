@@ -143,7 +143,6 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
       animationType="slide"
       modalStyle={[
         styles.bottomSheet,
-        styles.shadow,
         {
           height: validationBoxVisible
             ? SCREEN_HEIGHT * 0.4

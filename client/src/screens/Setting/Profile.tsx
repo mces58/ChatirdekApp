@@ -178,8 +178,8 @@ const createStyles = (
       position: 'absolute',
       bottom: 10,
       right: -20,
-      width: SCREEN_WIDTH * 0.9,
-      height: SCREEN_HEIGHT * 0.25,
+      width: SCREEN_WIDTH * 0.6,
+      height: SCREEN_HEIGHT * 0.2,
       zIndex: 10,
     },
   });
