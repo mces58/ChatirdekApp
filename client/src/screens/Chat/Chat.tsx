@@ -14,6 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
+import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
 import { Message } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
@@ -96,17 +97,29 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
     }
   }, [authUser]);
 
-  const renderItem = (message: Message) => {
+  const renderItem = (message: Message, index: number) => {
+    const isLastMessage = index === messages.length - 1;
+    const isTheirLastMessage = isLastMessage && message.senderId !== meId;
+    const isMyLastMessage = isLastMessage && message.senderId === meId;
+
     return (
       <View
         key={message.id}
         style={[
           styles.shadow,
           styles.message,
+          isMyLastMessage ? styles.myLastMessage : {},
+          isTheirLastMessage ? styles.theirLastMessage : {},
           message.senderId === meId ? styles.myMessage : styles.theirMessage,
         ]}
       >
-        <Text style={[styles.text, { fontSize: fontSizeValue }]}>{message.message}</Text>
+        {message.image ? (
+          <ImageMessage uri={message.image} />
+        ) : (
+          <Text style={[styles.text, { fontSize: fontSizeValue }]}>
+            {message.message}
+          </Text>
+        )}
         <Text
           style={[
             styles.timestamp,
@@ -146,7 +159,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           style={styles.messageList}
           showsVerticalScrollIndicator={false}
         >
-          {messages.map((message) => renderItem(message))}
+          {messages.map((message, index: number) => renderItem(message, index))}
         </ScrollView>
         <SendInput receiverId={route.params.receiverId} />
       </View>
@@ -179,13 +192,26 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       backgroundColor: Colors.primaryColors.linearGradient2,
       alignSelf: 'flex-end',
     },
+    myLastMessage: {
+      borderRadius: 0,
+      borderBottomLeftRadius: 15,
+      borderTopRightRadius: 15,
+      borderTopLeftRadius: 15,
+    },
     theirMessage: {
       backgroundColor: Colors.primaryColors.linearGradient1,
       alignSelf: 'flex-start',
     },
+    theirLastMessage: {
+      borderRadius: 0,
+      borderBottomRightRadius: 15,
+      borderTopRightRadius: 15,
+      borderTopLeftRadius: 15,
+    },
     text: {
       fontFamily: 'Poppins-Regular',
       color: Colors.primaryColors.dark,
+      textAlign: 'left',
     },
     timestamp: {
       fontSize: 11,

@@ -7,7 +7,6 @@ import {
   sendMessage,
 } from 'src/controllers/message.controller';
 import authentication from 'src/middlewares/authentication.middleware';
-import upload from 'src/middlewares/multer.middleware';
 import validate from 'src/middlewares/validate.middleware';
 import messageValidation from 'src/validations/message.validation';
 
@@ -37,11 +36,6 @@ router
 // @access  Private
 router
   .route('/send/image/:selectedUserId')
-  .post(
-    validate(messageValidation.messages),
-    authentication,
-    upload.single('image'),
-    sendImageMessage
-  );
+  .post(validate(messageValidation.sendImageMessage), authentication, sendImageMessage);
 
 export default router;

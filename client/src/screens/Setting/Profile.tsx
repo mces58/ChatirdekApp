@@ -72,28 +72,28 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
 
       <ListInfo
         title={i18next.t('global.fullName')}
-        text={user.fullName}
+        text={user?.fullName}
         icon={<IdIcon width={30} height={30} />}
         onPress={() => setFullNameBoxVisible(true)}
       />
 
       <ListInfo
         title={i18next.t('global.username')}
-        text={user.userName}
+        text={user?.userName}
         icon={<GhostIcon width={30} height={30} />}
         onPress={() => setUserNameBoxVisible(true)}
       />
 
       <ListInfo
         title={i18next.t('global.about')}
-        text={user.about}
+        text={user?.about}
         icon={<InfoIcon width={30} height={30} strokeWidth={1} />}
         onPress={() => setAboutBoxVisible(true)}
       />
 
       <ListInfo
         title={i18next.t('global.createdAt')}
-        text={user.createdAt.split('T')[0]}
+        text={user?.createdAt.split('T')[0]}
         icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
         disabled
       />

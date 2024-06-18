@@ -40,28 +40,26 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
   const styles = useMemo(() => createStyles(theme, textStyles), [theme]);
 
   return (
-    <View style={styles.border}>
-      <TouchableOpacity
-        style={[styles.container, !showUserNames && { borderBottomWidth: 0 }]}
-        onPress={onPress}
-        disabled={disabled}
-      >
-        <View style={styles.row}>
-          <ProfileImage
-            imageUri={user?.hideAvatar ? `https://robohash.org/${user.id}` : user?.avatar}
-            componentSize={componentSize}
-            disabled
-          />
-          <View style={styles.textContainer}>
-            <Text style={[styles.fullName, { color: textStyles?.color }]}>
-              {user?.fullName}
-            </Text>
-            {showUserNames && <Text style={styles.userName}>{user?.userName}</Text>}
-          </View>
+    <TouchableOpacity
+      style={[styles.container, !showUserNames && { borderBottomWidth: 0 }]}
+      onPress={onPress}
+      disabled={disabled}
+    >
+      <View style={styles.row}>
+        <ProfileImage
+          imageUri={user?.hideAvatar ? `https://robohash.org/${user.id}` : user?.avatar}
+          componentSize={componentSize}
+          disabled
+        />
+        <View style={styles.textContainer}>
+          <Text style={[styles.fullName, { color: textStyles?.color }]}>
+            {user?.fullName}
+          </Text>
+          {showUserNames && <Text style={styles.userName}>{user?.userName}</Text>}
         </View>
-        {icon}
-      </TouchableOpacity>
-    </View>
+      </View>
+      {icon}
+    </TouchableOpacity>
   );
 };
 
@@ -92,9 +90,5 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
       fontSize: 14,
       fontFamily: 'Poppins-Medium',
       color: theme.textMutedColor,
-    },
-    border: {
-      borderBottomWidth: 1,
-      borderBottomColor: theme.borderColor,
     },
   });

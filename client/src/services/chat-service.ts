@@ -37,6 +37,23 @@ class ChatService {
     );
     return response;
   };
+
+  public sendImageMessage = async (
+    token: string,
+    receiverId: string,
+    imageUri: string
+  ): Promise<any> => {
+    const response: Response = await apiService.post(
+      `/messages/send/image/${receiverId}`,
+      { uri: imageUri },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  };
 }
 
 export default new ChatService();

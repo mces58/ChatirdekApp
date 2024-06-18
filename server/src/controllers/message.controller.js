@@ -2,9 +2,7 @@ import Conversation from 'src/models/conversation.model';
 import Message from 'src/models/message.model';
 import User from 'src/models/user.model';
 import { getReceiverSocketId, io } from 'src/socket/socket';
-import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
-import removeLocalImage from 'src/utils/removeLocalImage.util';
 
 export const getLastMessages = async (req, res) => {
   const { id: currentUserId } = req.user;
@@ -34,7 +32,7 @@ export const getLastMessages = async (req, res) => {
     })
       .populate({
         path: 'messages',
-        select: 'senderId receiverId message createdAt',
+        select: 'senderId receiverId message image createdAt',
       })
       .populate({
         path: 'participants',
@@ -56,7 +54,13 @@ export const getLastMessages = async (req, res) => {
       );
       return {
         receiver,
-        lastMessage,
+        lastMessage: {
+          senderId: lastMessage.senderId,
+          receiverId: lastMessage.receiverId,
+          message: lastMessage.message,
+          image: lastMessage.image,
+          createdAt: lastMessage.createdAt,
+        },
       };
     });
 
@@ -180,16 +184,9 @@ export const sendMessage = async (req, res) => {
 export const sendImageMessage = async (req, res) => {
   const { id: currentUserId } = req.user;
   const { selectedUserId } = req.params;
-  const image = req.file;
+  const { uri } = req.body;
 
   try {
-    if (!image) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please upload an image',
-      });
-    }
-
     if (currentUserId === selectedUserId) {
       return res.status(400).json({
         success: false,
@@ -228,12 +225,10 @@ export const sendImageMessage = async (req, res) => {
       });
     }
 
-    const url = await uploadImage(image);
-
     const newMessage = new Message({
       senderId: currentUserId,
       receiverId: selectedUserId,
-      image: url,
+      image: uri,
     });
 
     if (newMessage) {
@@ -252,8 +247,6 @@ export const sendImageMessage = async (req, res) => {
       success: true,
       data: newMessage,
     });
-
-    removeLocalImage(image.path);
   } catch (error) {
     handleErrors(res, error);
   }

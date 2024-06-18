@@ -3,6 +3,7 @@ import { User } from './user';
 export interface Message {
   id: string;
   message: string;
+  image: string;
   createdAt: string;
   senderId: string;
   receiverId: string;
@@ -15,6 +16,7 @@ export interface LastMessages {
     senderId: string;
     receiverId: string;
     message: string;
+    image: string;
     createdAt: string;
   };
 }

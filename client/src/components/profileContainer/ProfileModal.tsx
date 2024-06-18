@@ -39,7 +39,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   modalCloseText: {
-    color: 'white',
+    color: Colors.primaryColors.beige,
     fontSize: 20,
   },
   fullScreenImage: {

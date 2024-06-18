@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import i18next from 'i18next';
 
+import GalleryIcon from 'src/assets/icons/gallery';
 import NotificationBubble from 'src/components/bubble/NotificationBubble';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
 import { LastMessages } from 'src/constants/types/message';
@@ -21,6 +22,35 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+
+  const getMessagePreview = (message: string, isSender: boolean) => {
+    const previewMessage = message.length > 30 ? message.slice(0, 30) + '...' : message;
+    return isSender ? i18next.t('global.you') + ': ' + previewMessage : previewMessage;
+  };
+
+  const renderLastMessage = (
+    lastMessage: { image: string; message: string },
+    isReceiver: boolean
+  ) => {
+    if (!lastMessage) {
+      return i18next.t('chat.messageContainer.noMessage');
+    }
+
+    if (lastMessage.image) {
+      return (
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {!isReceiver && (
+            <Text style={styles.lastSeen}>{i18next.t('global.you') + ': '}</Text>
+          )}
+          <GalleryIcon width={15} height={15} />
+        </View>
+      );
+    }
+
+    return getMessagePreview(lastMessage.message, !isReceiver);
+  };
 
   return (
     <View style={styles.container}>
@@ -46,10 +76,10 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
               <View style={styles.userInfoContainer}>
                 <Text style={styles.userName}>{user.receiver.fullName}</Text>
                 <Text style={styles.lastSeen}>
-                  {user.receiver.id === user.lastMessage.senderId
-                    ? user.lastMessage.message ||
-                      i18next.t('chat.messageContainer.noMessage')
-                    : i18next.t('global.you') + ': ' + user.lastMessage.message}
+                  {renderLastMessage(
+                    user.lastMessage,
+                    user.receiver.id === user.lastMessage.senderId
+                  )}
                 </Text>
               </View>
 

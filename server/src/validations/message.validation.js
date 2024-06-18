@@ -17,7 +17,17 @@ const sendMessage = {
   }),
 };
 
+const sendImageMessage = {
+  params: Joi.object().keys({
+    selectedUserId: Joi.string().custom(mongoId),
+  }),
+  body: Joi.object().keys({
+    uri: Joi.string().trim().required().label('Image'),
+  }),
+};
+
 export default {
   messages,
   sendMessage,
+  sendImageMessage,
 };
