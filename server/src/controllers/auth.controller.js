@@ -1,9 +1,7 @@
 import User from 'src/models/user.model';
 import { decode, encode } from 'src/utils/bcryptjs.util';
-import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
 import generateTokenAndSetCookie from 'src/utils/generateToken.util';
-import removeLocalImage from 'src/utils/removeLocalImage.util';
 import sendMail from 'src/utils/sendMail.util';
 
 export const register = async (req, res) => {
@@ -18,9 +16,7 @@ export const register = async (req, res) => {
         .json({ errors: [{ msg: 'User already exists. Change email or userName' }] });
     }
 
-    const avatar = `https://avatar.iran.liara.run/public/${
-      gender === 'male' ? 'boy' : 'girl'
-    }?username=${userName}`;
+    const avatar = `https://avatar.iran.liara.run/username?username=${`${fullName.split(' ')[0]}+${fullName.split(' ')[1]}`}}`;
 
     const hashedPassword = await encode(password);
 
@@ -200,32 +196,21 @@ export const meUpdate = async (req, res) => {
 
 export const meUpdateAvatar = async (req, res) => {
   const { id } = req.user;
-  const image = req.file;
-
+  const { uri } = req.body;
   try {
-    if (!image) {
-      return res.status(400).json({
-        success: false,
-        message: 'Please upload an image',
-      });
-    }
-
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
 
-    const url = await uploadImage(image);
-    user.avatar = url;
+    user.avatar = uri;
     await user.save();
 
     res.status(200).json({
       success: true,
-      message: 'Avatar updated',
+      message: 'User avatar updated',
       data: user,
     });
-
-    removeLocalImage(image.path);
   } catch (error) {
     handleErrors(res, error);
   }

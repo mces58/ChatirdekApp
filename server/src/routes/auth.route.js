@@ -11,7 +11,6 @@ import {
   resetPassword,
 } from 'src/controllers/auth.controller';
 import authentication from 'src/middlewares/authentication.middleware';
-import upload from 'src/middlewares/multer.middleware';
 import validate from 'src/middlewares/validate.middleware';
 import authValidation from 'src/validations/auth.validation';
 
@@ -59,6 +58,8 @@ router.route('/me').put(validate(authValidation.updateProfile), authentication, 
 // @route   PUT /api/auth/me/avatar
 // @desc    Update current user avatar
 // @access  Private
-router.route('/me/avatar').put(authentication, upload.single('image'), meUpdateAvatar);
+router
+  .route('/me/avatar')
+  .put(validate(authValidation.updateAvatar), authentication, meUpdateAvatar);
 
 export default router;

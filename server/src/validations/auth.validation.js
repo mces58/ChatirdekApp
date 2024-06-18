@@ -53,10 +53,17 @@ const updateProfile = {
   }),
 };
 
+const updateAvatar = {
+  body: Joi.object().keys({
+    uri: Joi.string().required().label('Avatar'),
+  }),
+};
+
 export default {
   register,
   login,
   forgotPassword,
   resetPassword,
   updateProfile,
+  updateAvatar,
 };

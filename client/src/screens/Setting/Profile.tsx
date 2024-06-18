@@ -111,6 +111,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
           setAvatar={(image: string) => {
             setImage(image);
           }}
+          fullName={user.fullName}
         />
       )}
 

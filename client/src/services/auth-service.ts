@@ -41,6 +41,19 @@ class AuthService {
     });
     return response;
   };
+
+  public updateMeAvatar = async (token: string, uri: string): Promise<any> => {
+    const response: Response = await apiService.put(
+      '/auth/me/avatar',
+      { uri },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  };
 }
 
 export default new AuthService();

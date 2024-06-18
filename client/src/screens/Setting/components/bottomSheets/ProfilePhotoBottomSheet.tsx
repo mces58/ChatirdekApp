@@ -7,89 +7,91 @@ import {
   View,
 } from 'react-native';
 
-import * as ImagePicker from 'expo-image-picker';
 import i18next from 'i18next';
 
 import BinIcon from 'src/assets/icons/bin';
 import CameraIcon from 'src/assets/icons/camera';
 import GalleryIcon from 'src/assets/icons/gallery';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
+import { Response } from 'src/constants/types/response';
+import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import authService from 'src/services/auth-service';
+import openCamera from 'src/utils/open-camera';
+import openGallery from 'src/utils/open-galllery';
 
 interface ProfilePhotoBottomSheetProps {
   isVisible: boolean;
   onSwipeDown: () => void;
-  setAvatar: (image: string) => void;
+  setAvatar: (imageUri: string) => void;
+  fullName: string;
 }
 
 const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
   isVisible,
   onSwipeDown,
   setAvatar,
+  fullName,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, SCREEN_HEIGHT), [theme]);
+  const { authUser } = useAuthContext();
 
-  const openCamera = async () => {
-    try {
-      let result = {};
-
-      await ImagePicker.requestCameraPermissionsAsync();
-
-      result = await ImagePicker.launchCameraAsync({
-        cameraType: ImagePicker.CameraType.front,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        setAvatar(result.assets[0].uri);
-
-        onSwipeDown();
-      }
-    } catch (error) {
-      console.log(error);
+  const camera = async () => {
+    const uri = await openCamera();
+    if (uri) {
+      setAvatar(uri);
+      onSwipeDown();
+      await sendToServer(uri);
     }
   };
 
-  const openGallery = async () => {
-    try {
-      let result = {};
-
-      result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images,
-        allowsEditing: true,
-        aspect: [1, 1],
-        quality: 1,
-      });
-
-      if (!result.cancelled) {
-        setAvatar(result.assets[0].uri);
-
-        onSwipeDown();
-      }
-    } catch (error) {
-      console.log(error);
+  const gallery = async () => {
+    const uri = await openGallery();
+    if (uri) {
+      setAvatar(uri);
+      onSwipeDown();
+      await sendToServer(uri);
     }
   };
 
   const removePhoto = () => {
-    setAvatar('');
+    setAvatar(
+      `https://avatar.iran.liara.run/username?username=${`${fullName.split(' ')[0]}+${fullName.split(' ')[1]}`}}`
+    );
     onSwipeDown();
+    sendToServer(
+      `https://avatar.iran.liara.run/username?username=${`${fullName.split(' ')[0]}+${fullName.split(' ')[1]}`}}`
+    );
+  };
+
+  const sendToServer = async (uri: string) => {
+    try {
+      if (authUser) {
+        const response: Response = await authService.updateMeAvatar(
+          authUser.toString(),
+          uri
+        );
+        if (response.success) {
+          console.log('Avatar updated');
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const items = [
     {
       title: i18next.t('global.camera'),
       icon: <CameraIcon width={30} height={30} strokeWidth={3} />,
-      onPress: openCamera,
+      onPress: camera,
     },
     {
       title: i18next.t('global.gallery'),
       icon: <GalleryIcon width={30} height={30} strokeWidth={3} />,
-      onPress: openGallery,
+      onPress: gallery,
     },
     {
       title: i18next.t('global.remove'),
