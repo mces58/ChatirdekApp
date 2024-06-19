@@ -72,7 +72,16 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       }
     };
     getUser();
-  }, [authUser, users, onlineUsers, setUsers, setLoading, setFriends]);
+  }, [
+    authUser,
+    users,
+    onlineUsers,
+    setUsers,
+    setLoading,
+    setFriends,
+    navigation,
+    users.length,
+  ]);
 
   useEffect(() => {
     users.every((user) => onlineUsers.includes(user.receiver.id))

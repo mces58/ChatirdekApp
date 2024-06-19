@@ -7,9 +7,11 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  ToastAndroid,
   View,
 } from 'react-native';
 
+import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
@@ -59,7 +61,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       }
     };
     getUser();
-  }, [receiver, setReceiver]);
+  }, [receiver, setReceiver, messages, setMessages, authUser, route.params.receiverId]);
 
   useEffect(() => {
     const getMessages = async () => {
@@ -74,7 +76,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           }
         }
       } catch (error) {
-        console.error(error);
+        ToastAndroid.show(i18next.t('toast.noMessageYet'), ToastAndroid.SHORT);
       }
     };
     getMessages();

@@ -1,3 +1,4 @@
+import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import path from 'path';
@@ -16,6 +17,8 @@ import logger from 'src/utils/logger.util';
 
 const __dirname = path.resolve();
 
+app.use(bodyParser.json({ limit: '30mb' }));
+app.use(bodyParser.urlencoded({ limit: '30mb', extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 

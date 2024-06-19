@@ -38,11 +38,6 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
       if (response.success) {
         setRegisterModalVisible(true);
         resetForm();
-
-        setTimeout(() => {
-          setRegisterModalVisible(false);
-          gotoLogin();
-        }, 3000);
       }
     } catch (error) {
       Alert.alert('Error', i18next.t('error.register'), [

@@ -9,10 +9,12 @@ const openCamera = async (): Promise<string | undefined> => {
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
+      base64: true,
     });
 
     if (!result.canceled && result.assets && result.assets.length > 0) {
-      return result.assets[0].uri;
+      const base64: string = `data:image/jpg;base64,${result.assets[0].base64}`;
+      return base64;
     }
   } catch (error) {
     console.log(error);

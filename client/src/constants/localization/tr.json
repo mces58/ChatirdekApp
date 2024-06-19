@@ -76,6 +76,7 @@
   "toast.invalidGroupName": "Grup adında yalnızca harflere ve sayılara izin verilir.",
   "toast.groupDeleted": "Grup başarıyla silindi.",
   "toast.makeAdmin": "{{name}} yönetici yapıldı.",
+  "toast.noMessageYet": "Henüz mesaj yok.",
 
   "error.register": "Aynı e-posta adresi veya kullanıcı adı ile kayıtlı bir hesap bulunmaktadır.",
   "error.forgotPassword": "Bu e-posta adresi ile kayıtlı bir hesap bulunamadı. Lütfen e-posta adresinizi kontrol edin.",

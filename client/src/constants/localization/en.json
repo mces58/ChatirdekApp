@@ -76,6 +76,7 @@
   "toast.invalidGroupName": "Only letters and numbers are allowed in the group name.",
   "toast.groupDeleted": "Group deleted successfully.",
   "toast.makeAdmin": "{{name}} is now an admin.",
+  "toast.noMessageYet": "No messages yet.",
 
   "error.register": "There is an account registered with the same email address or username.",
   "error.forgotPassword": "No registered account was found with this email address. Please check your email address.",

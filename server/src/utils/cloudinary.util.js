@@ -8,15 +8,13 @@ cloudinary.config({
   api_secret: dotEnvConfig.CLOUDINARY.APISECRET,
 });
 
-const uploadImage = async (image) => {
+const uploadImage = async (imagePath) => {
   try {
-    const { path } = image;
-    const newPath = await cloudinary.uploader.upload(path, {
+    const result = await cloudinary.uploader.upload(imagePath, {
       folder: 'CHATIRDEK',
-      transformation: [{ width: 150, height: 150, crop: 'fill' }],
+      resource_type: 'image',
     });
-
-    return newPath.secure_url;
+    return result.secure_url;
   } catch (error) {
     throw new Error('Error uploading image');
   }
