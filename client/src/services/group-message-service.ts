@@ -12,23 +12,14 @@ class GroupMessageService {
     return response;
   };
 
-  public getGroupMessages = async (token: string, groupId: string): Promise<any> => {
-    const response: Response = await apiService.get(`/group/messages/${groupId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response;
-  };
-
-  public sendGroupMessage = async (
+  public sendImageMessage = async (
     token: string,
     groupId: string,
-    message: string
+    imageUri: string
   ): Promise<any> => {
     const response: Response = await apiService.post(
-      `/group/messages/send/${groupId}`,
-      { message },
+      `/group/messages/send/image/${groupId}`,
+      { uri: imageUri },
       {
         headers: {
           Authorization: `Bearer ${token}`,

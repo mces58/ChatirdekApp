@@ -5,6 +5,7 @@ export interface GroupMessage {
   groupId: string;
   senderId: User;
   message: string;
+  image: string;
   createdAt: string;
 }
 
@@ -24,6 +25,7 @@ export interface GroupLastMessages {
   lastMessage: {
     senderId: User;
     message: string;
+    image: string;
     createdAt: string;
   };
 }

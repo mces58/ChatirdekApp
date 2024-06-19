@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import i18next from 'i18next';
 
+import GalleryIcon from 'src/assets/icons/gallery';
 import { Colors } from 'src/constants/color/colors';
 import { GroupLastMessages } from 'src/constants/types/group-message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -20,6 +21,45 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
+  const getMessagePreview = (message: string, isSender: boolean, name: string) => {
+    const previewMessage = message?.length > 25 ? message.slice(0, 25) + '...' : message;
+    return isSender
+      ? i18next.t('global.you') + ': ' + previewMessage
+      : name + ': ' + previewMessage;
+  };
+
+  const renderLastMessage = (
+    lastMessage: { image: string; message: string; senderId: { fullName: string } },
+    isReceiver: boolean
+  ) => {
+    if (!lastMessage) {
+      return i18next.t('chat.messageContainer.noMessage');
+    }
+
+    if (lastMessage.image) {
+      return (
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {isReceiver ? (
+            <Text style={styles.lastMessageText}>{i18next.t('global.you') + ': '}</Text>
+          ) : (
+            <Text style={styles.lastMessageText}>
+              {group?.lastMessage?.senderId.fullName + ': '}
+            </Text>
+          )}
+          <GalleryIcon width={15} height={15} />
+        </View>
+      );
+    }
+
+    return getMessagePreview(
+      lastMessage.message,
+      isReceiver,
+      lastMessage.senderId.fullName
+    );
+  };
+
   return (
     <LinearGradient
       colors={[
@@ -34,18 +74,13 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }
           <View style={styles.groupContainer}>
             <View>
               <Text style={styles.groupNameText}>{group.name}</Text>
-              {group?.lastMessage?.message ? (
-                <Text style={styles.lastMessageText}>
-                  {group.lastMessage?.senderId.id === meId
-                    ? i18next.t('global.you')
-                    : group.lastMessage?.senderId.fullName}
-                  : {group?.lastMessage?.message}
-                </Text>
-              ) : (
-                <Text style={styles.lastMessageText}>
-                  {i18next.t('group.group.noMessage')}
-                </Text>
-              )}
+              <Text style={styles.lastMessageText}>
+                {renderLastMessage(
+                  group?.lastMessage,
+                  group?.lastMessage?.senderId.id === meId
+                )}
+              </Text>
+
               {group?.lastMessage?.message && (
                 <Text style={styles.lastMessageText}>
                   {new Date(group?.lastMessage?.createdAt).toLocaleTimeString([], {

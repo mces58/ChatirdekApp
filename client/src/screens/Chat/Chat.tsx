@@ -7,11 +7,9 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  ToastAndroid,
   View,
 } from 'react-native';
 
-import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
@@ -22,15 +20,15 @@ import { Message } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useFontSize } from 'src/context/FontSizeContext';
+import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper } from 'src/context/WallpaperContext';
 import SendInput from 'src/forms/SendInput';
 import { ChatProps } from 'src/navigations/RootStackParamList';
-import chatService from 'src/services/chat-service';
 import userService from 'src/services/user-service';
 
 const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { messages, getMessages } = useSocket();
   const scrollViewRef = useRef<ScrollView>(null);
   const [receiver, setReceiver] = useState({} as any);
   const { theme } = useTheme();
@@ -61,26 +59,13 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       }
     };
     getUser();
-  }, [receiver, setReceiver, messages, setMessages, authUser, route.params.receiverId]);
+  }, [receiver, setReceiver, messages, authUser, route.params.receiverId]);
 
   useEffect(() => {
-    const getMessages = async () => {
-      try {
-        if (authUser) {
-          const response: Response = await chatService.getMessages(
-            authUser.toString(),
-            route.params.receiverId
-          );
-          if (response.success) {
-            setMessages(response.data);
-          }
-        }
-      } catch (error) {
-        ToastAndroid.show(i18next.t('toast.noMessageYet'), ToastAndroid.SHORT);
-      }
-    };
-    getMessages();
-  }, [messages, setMessages]);
+    if (meId) {
+      getMessages(meId, route.params.receiverId);
+    }
+  }, [meId, route.params.receiverId, getMessages]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -161,7 +146,9 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           style={styles.messageList}
           showsVerticalScrollIndicator={false}
         >
-          {messages.map((message, index: number) => renderItem(message, index))}
+          {messages && messages.length > 0
+            ? messages.map((message, index) => renderItem(message, index))
+            : null}
         </ScrollView>
         <SendInput receiverId={route.params.receiverId} />
       </View>

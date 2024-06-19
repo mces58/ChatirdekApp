@@ -8,15 +8,6 @@ const messages = {
   }),
 };
 
-const sendMessage = {
-  params: Joi.object().keys({
-    selectedUserId: Joi.string().custom(mongoId),
-  }),
-  body: Joi.object().keys({
-    message: Joi.string().trim().required().label('Message'),
-  }),
-};
-
 const sendImageMessage = {
   params: Joi.object().keys({
     selectedUserId: Joi.string().custom(mongoId),
@@ -28,6 +19,5 @@ const sendImageMessage = {
 
 export default {
   messages,
-  sendMessage,
   sendImageMessage,
 };

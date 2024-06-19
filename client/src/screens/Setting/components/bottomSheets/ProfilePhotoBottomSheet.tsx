@@ -57,13 +57,14 @@ const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
   };
 
   const removePhoto = () => {
-    setAvatar(
-      `https://avatar.iran.liara.run/username?username=${`${fullName.split(' ')[0]}+${fullName.split(' ')[1]}`}}`
-    );
+    const name = fullName.split(' ')[0];
+    const lastName = fullName.split(' ')[1]
+      ? fullName.split(' ')[1]
+      : fullName.split(' ')[0];
+
+    setAvatar(`https://avatar.iran.liara.run/username?username=${name}+${lastName}`);
     onSwipeDown();
-    sendToServer(
-      `https://avatar.iran.liara.run/username?username=${`${fullName.split(' ')[0]}+${fullName.split(' ')[1]}`}}`
-    );
+    sendToServer('');
   };
 
   const sendToServer = async (uri: string) => {

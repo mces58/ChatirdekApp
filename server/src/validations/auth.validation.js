@@ -55,7 +55,7 @@ const updateProfile = {
 
 const updateAvatar = {
   body: Joi.object().keys({
-    uri: Joi.string().required().label('Avatar'),
+    uri: Joi.string().allow('', null).label('Avatar'),
   }),
 };
 

@@ -1,93 +1,163 @@
-import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { AppState, AppStateStatus } from 'react-native';
+import React from 'react';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import io from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
-import { useAuthContext } from './AuthContext';
+import { GroupMessages } from 'src/constants/types/group-message';
+import { Message } from 'src/constants/types/message';
 
 interface SocketContextType {
-  socket: any;
-  onlineUsers: any[];
+  socket: Socket | null;
+  messages: Message[];
+  getMessages: (senderId: string, receiverId: string) => void;
+  sendMessage: (senderId: string, receiverId: string, message: string) => void;
+  groupMessages: GroupMessages;
+  getGroupMessages: (senderId: string, groupId: string) => void;
+  sendGroupMessage: (senderId: string, groupId: string, message: string) => void;
+  isTyping: boolean;
+  startTyping: (senderId: string, receiverId: string) => void;
+  stopTyping: (senderId: string, receiverId: string) => void;
 }
 
-const SocketContext = createContext<SocketContextType>({
-  socket: null,
-  onlineUsers: [],
-});
+const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-export const useSocketContext = () => {
-  return useContext(SocketContext);
+export const useSocket = (): SocketContextType => {
+  const context = useContext(SocketContext);
+  if (!context) {
+    throw new Error('useSocket must be used within a SocketProvider');
+  }
+  return context;
 };
 
-interface SocketContextProviderProps {
+interface SocketProviderProps {
   children: ReactNode;
 }
 
-export const SocketContextProvider: React.FC<SocketContextProviderProps> = ({
-  children,
-}) => {
-  const [socket, setSocket] = useState(null);
-  const [onlineUsers, setOnlineUsers] = useState<any[]>([]);
-  const { authUser } = useAuthContext();
+export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children }) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [groupMessages, setGroupMessages] = useState<GroupMessages>({} as GroupMessages);
+  const [isTyping, setIsTyping] = useState<boolean>(false);
 
   useEffect(() => {
-    if (authUser) {
-      const newSocket = io('http://172.16.24.239:5000', {
-        query: {
-          userId: authUser._id,
-        },
-      });
-
-      setSocket(newSocket);
-
-      // console.log(socket);
-
-      newSocket.on('getOnlineUsers', (users: any[]) => {
-        setOnlineUsers(users);
-        console.log(users);
-      });
-
-      return () => newSocket.close();
-    } else {
-      if (socket) {
-        socket.close();
-        setSocket(null);
-      }
-    }
-    console.log(onlineUsers);
-  }, [authUser]);
-
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      if (nextAppState === 'active' && authUser) {
-        // Reconnect socket when app comes to foreground
-        const newSocket = io('http://172.16.24.239:5000', {
-          query: {
-            userId: authUser._id,
-          },
-        });
-
-        setSocket(newSocket);
-
-        newSocket.on('getOnlineUsers', (users: any[]) => {
-          setOnlineUsers(users);
-          console.log(users);
-        });
-      } else if (nextAppState.match(/inactive|background/) && socket) {
-        socket.close();
-        setSocket(null);
-      }
-    };
-
-    const subscription = AppState.addEventListener('change', handleAppStateChange);
-
+    const newSocket = io('http://192.168.3.1:5000', {
+      transports: ['websocket'],
+    });
+    setSocket(newSocket);
     return () => {
-      subscription.remove();
+      newSocket.disconnect();
     };
-  }, [authUser, socket]);
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      const handleMessages = ({
+        data,
+        success,
+      }: {
+        data: Message[];
+        success: boolean;
+      }) => {
+        if (success) {
+          setMessages(data);
+        }
+      };
+
+      socket.on('messages', handleMessages);
+      return () => {
+        socket.off('messages', handleMessages);
+      };
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket) {
+      const handleGroupMessages = ({
+        data,
+        success,
+      }: {
+        data: GroupMessages;
+        success: boolean;
+      }) => {
+        if (success) {
+          setGroupMessages(data);
+        }
+      };
+
+      socket.on('groupMessages', handleGroupMessages);
+      return () => {
+        socket.off('groupMessages', handleGroupMessages);
+      };
+    }
+  }, [socket]);
+
+  useEffect(() => {
+    if (socket) {
+      const handleTyping = ({ isTyping }: { isTyping: boolean }) => {
+        setIsTyping(isTyping);
+      };
+
+      socket.on('startTyping', handleTyping);
+      socket.on('stopTyping', handleTyping);
+
+      return () => {
+        socket.off('startTyping', handleTyping);
+        socket.off('stopTyping', handleTyping);
+      };
+    }
+  }, [socket]);
+
+  const getMessages = (senderId: string, receiverId: string) => {
+    if (socket) {
+      socket.emit('getMessages', { senderId, receiverId });
+    }
+  };
+
+  const sendMessage = (senderId: string, receiverId: string, message: string) => {
+    if (socket) {
+      socket.emit('sendMessage', { senderId, receiverId, message });
+    }
+  };
+
+  const getGroupMessages = (senderId: string, groupId: string) => {
+    if (socket) {
+      socket.emit('getGroupMessages', { senderId, groupId });
+    }
+  };
+
+  const sendGroupMessage = (senderId: string, groupId: string, message: string) => {
+    if (socket) {
+      socket.emit('sendGroupMessage', { senderId, groupId, message });
+    }
+  };
+
+  const startTyping = (senderId: string, receiverId: string) => {
+    if (socket) {
+      socket.emit('startTyping', { senderId, receiverId, isTyping: true });
+    }
+  };
+
+  const stopTyping = (senderId: string, receiverId: string) => {
+    if (socket) {
+      socket.emit('stopTyping', { senderId, receiverId, isTyping: false });
+    }
+  };
 
   return (
-    <SocketContext.Provider value={{ socket, onlineUsers }}>
+    <SocketContext.Provider
+      value={{
+        socket,
+        messages,
+        getMessages,
+        sendMessage,
+        groupMessages,
+        getGroupMessages,
+        sendGroupMessage,
+        isTyping,
+        startTyping,
+        stopTyping,
+      }}
+    >
       {children}
     </SocketContext.Provider>
   );

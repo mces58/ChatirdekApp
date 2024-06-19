@@ -13,23 +13,23 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithUsers from 'src/components/headers/BackHeaderWithUsers';
+import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
 import { Group } from 'src/constants/types/group';
-import { GroupMessage, GroupMessages } from 'src/constants/types/group-message';
+import { GroupMessage } from 'src/constants/types/group-message';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useFontSize } from 'src/context/FontSizeContext';
+import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper } from 'src/context/WallpaperContext';
 import SendInput from 'src/forms/SendInput';
 import { GroupChatProps } from 'src/navigations/RootStackParamList';
-import groupMessageService from 'src/services/group-message-service';
 import groupService from 'src/services/group-service';
 
 const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   const { authUser } = useAuthContext();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [groupMessages, setGroupMessages] = useState<GroupMessages>({} as GroupMessages);
   const { theme } = useTheme();
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
@@ -39,6 +39,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   const { wallpaper } = useWallpaper();
   const [meId, setMeId] = useState<string>('');
   const [group, setGroup] = useState<Group>({} as Group);
+  const { getGroupMessages, groupMessages } = useSocket();
 
   useEffect(() => {
     if (authUser) {
@@ -48,24 +49,8 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
   }, [authUser]);
 
   useEffect(() => {
-    const getMessages = async () => {
-      try {
-        if (authUser) {
-          const response: Response = await groupMessageService.getGroupMessages(
-            authUser.toString(),
-            route.params.groupId
-          );
-
-          if (response.success) {
-            setGroupMessages(response.data);
-          }
-        }
-      } catch (error: any) {
-        if (error.message === 'Request failed with status code 404') return;
-      }
-    };
-    getMessages();
-  }, [groupMessages, setGroupMessages]);
+    getGroupMessages(meId, route.params.groupId);
+  }, [meId, route.params.groupId, getGroupMessages]);
 
   useEffect(() => {
     const getGroup = async () => {
@@ -97,15 +82,21 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
             : [styles.theirMessage, styles.shadow]
         }
       >
-        <Text
-          style={[
-            styles.text,
-            { fontSize: fontSizeValue },
-            meId === message.senderId.id ? { textAlign: 'right' } : { textAlign: 'left' },
-          ]}
-        >
-          {message.message}
-        </Text>
+        {message.image ? (
+          <ImageMessage uri={message.image} />
+        ) : (
+          <Text
+            style={[
+              styles.text,
+              { fontSize: fontSizeValue },
+              meId === message.senderId.id
+                ? { textAlign: 'right' }
+                : { textAlign: 'left' },
+            ]}
+          >
+            {message.message}
+          </Text>
+        )}
         <View
           style={[
             message.senderId.id === meId
@@ -155,7 +146,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
         contentContainerStyle={{ paddingBottom: 20 }}
         showsVerticalScrollIndicator={false}
       >
-        {groupMessages.messages?.map((message, index: number) =>
+        {groupMessages.messages?.map((message: GroupMessage, index: number) =>
           renderItem(message, index)
         )}
       </ScrollView>

@@ -1,7 +1,12 @@
+import path from 'path';
+
 import User from 'src/models/user.model';
+import base64ToImage from 'src/utils/base64ToImage.util';
 import { decode, encode } from 'src/utils/bcryptjs.util';
+import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
 import generateTokenAndSetCookie from 'src/utils/generateToken.util';
+import removeLocalImage from 'src/utils/removeLocalImage.util';
 import sendMail from 'src/utils/sendMail.util';
 
 export const register = async (req, res) => {
@@ -16,7 +21,12 @@ export const register = async (req, res) => {
         .json({ errors: [{ msg: 'User already exists. Change email or userName' }] });
     }
 
-    const avatar = `https://avatar.iran.liara.run/username?username=${`${fullName.split(' ')[0]}+${fullName.split(' ')[1]}`}}`;
+    const name = req.user.fullName.split(' ')[0];
+    const lastName = req.user.fullName.split(' ')[1]
+      ? req.user.fullName.split(' ')[1]
+      : req.user.fullName.split(' ')[0];
+
+    const avatar = `https://avatar.iran.liara.run/username?username=${name}+${lastName}`;
 
     const hashedPassword = await encode(password);
 
@@ -197,13 +207,26 @@ export const meUpdate = async (req, res) => {
 export const meUpdateAvatar = async (req, res) => {
   const { id } = req.user;
   const { uri } = req.body;
+  let secureUri = '';
+
+  if (uri === '') {
+    const name = req.user.fullName.split(' ')[0];
+    const lastName = req.user.fullName.split(' ')[1]
+      ? req.user.fullName.split(' ')[1]
+      : req.user.fullName.split(' ')[0];
+    secureUri = `https://avatar.iran.liara.run/username?username=${name}+${lastName}`;
+  } else {
+    const filePath = path.join(__dirname, `../assets/${Date.now()}.png`);
+    const convertedImagePath = base64ToImage(uri, filePath);
+    secureUri = await uploadImage(convertedImagePath);
+    removeLocalImage(convertedImagePath);
+  }
   try {
     const user = await User.findById(id);
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
     }
-
-    user.avatar = uri;
+    user.avatar = secureUri;
     await user.save();
 
     res.status(200).json({

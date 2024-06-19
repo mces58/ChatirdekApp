@@ -26,7 +26,6 @@ import { LastMessages } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
-import { useSocketContext } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { HomeProps } from 'src/navigations/RootStackParamList';
 import chatService from 'src/services/chat-service';
@@ -44,8 +43,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
-  const { onlineUsers } = useSocketContext();
-  const [isOnline, setIsOnline] = useState<boolean>(false);
   const { authUser } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(false);
   const [friends, setFriends] = useState<User[]>([]);
@@ -72,22 +69,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       }
     };
     getUser();
-  }, [
-    authUser,
-    users,
-    onlineUsers,
-    setUsers,
-    setLoading,
-    setFriends,
-    navigation,
-    users.length,
-  ]);
-
-  useEffect(() => {
-    users.every((user) => onlineUsers.includes(user.receiver.id))
-      ? setIsOnline(true)
-      : setIsOnline(false);
-  }, [onlineUsers, users]);
+  }, [authUser, users, setUsers, setLoading, setFriends, navigation, users.length]);
 
   useEffect(() => {
     const backAction = () => {
@@ -123,7 +105,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     return (
       <MessageContainer
         user={item}
-        isOnline={isOnline}
+        isOnline={false}
         gotoChatRoom={() =>
           navigation.navigate('Chat', {
             senderId: item.lastMessage.senderId,

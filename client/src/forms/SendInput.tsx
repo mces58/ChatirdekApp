@@ -1,14 +1,16 @@
-import React, { useMemo } from 'react';
-import { Alert, StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { StyleSheet, TextInput, TouchableOpacity, View } from 'react-native';
 
 import { Formik } from 'formik';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import CameraIcon from 'src/assets/icons/camera';
 import GalleryIcon from 'src/assets/icons/gallery';
 import SendIcon from 'src/assets/icons/send';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
+import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import chatService from 'src/services/chat-service';
 import groupMessageService from 'src/services/group-message-service';
@@ -28,49 +30,16 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
     message: '',
   };
   const { authUser } = useAuthContext();
+  const [meId, setMeId] = React.useState<string>('');
+  const { sendMessage, sendGroupMessage, isTyping, startTyping, stopTyping } =
+    useSocket();
 
-  const handleFormSubmit = async (value: { message: string }, resetForm: () => void) => {
-    try {
-      if (authUser) {
-        const response: Response = await chatService.sendMessage(
-          authUser.toString(),
-          receiverId,
-          value.message
-        );
-
-        if (response.success) {
-          resetForm();
-        }
-      }
-    } catch (error) {
-      Alert.alert(i18next.t('alert.error'), i18next.t('alert.sendOnlyFriendMessage'), [
-        { text: i18next.t('global.ok') },
-      ]);
+  useEffect(() => {
+    if (authUser) {
+      const decode: { _id: string } = jwtDecode(authUser.toString());
+      setMeId(decode._id);
     }
-  };
-
-  const handleFormGroupSubmit = async (
-    value: { message: string },
-    resetForm: () => void
-  ) => {
-    try {
-      if (authUser) {
-        const response: Response = await groupMessageService.sendGroupMessage(
-          authUser.toString(),
-          receiverId,
-          value.message
-        );
-
-        if (response.success) {
-          resetForm();
-        }
-      }
-    } catch (error) {
-      Alert.alert(i18next.t('alert.error'), i18next.t('alert.sendOnlyGroupMessage'), [
-        { text: i18next.t('global.ok') },
-      ]);
-    }
-  };
+  }, [authUser]);
 
   const camera = async () => {
     const uri = await openCamera();
@@ -89,18 +58,46 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
   const sendToServer = async (imageUri: string) => {
     try {
       if (authUser) {
-        const response: Response = await chatService.sendImageMessage(
-          authUser.toString(),
-          receiverId,
-          imageUri
-        );
+        if (isGroup) {
+          const response: Response = await groupMessageService.sendImageMessage(
+            authUser.toString(),
+            receiverId,
+            imageUri
+          );
 
-        if (response.success) {
-          console.log('Image sent');
+          if (response.success) {
+            console.log('Image sent');
+          }
+        } else {
+          const response: Response = await chatService.sendImageMessage(
+            authUser.toString(),
+            receiverId,
+            imageUri
+          );
+
+          if (response.success) {
+            console.log('Image sent');
+          }
         }
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      stopTyping(meId, receiverId);
+    };
+  }, []);
+
+  const handleInputChange = (text: string) => {
+    if (text.trim() === '') {
+      stopTyping(meId, receiverId);
+    } else {
+      if (!isTyping) {
+        startTyping(meId, receiverId);
+      }
     }
   };
 
@@ -110,13 +107,15 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
       validationSchema={sendMessageValidation}
       onSubmit={(values, { resetForm }) => {
         if (isGroup) {
-          handleFormGroupSubmit(values, resetForm);
+          sendGroupMessage(meId, receiverId, values.message);
         } else {
-          handleFormSubmit(values, resetForm);
+          sendMessage(meId, receiverId, values.message);
         }
+        stopTyping(meId, receiverId);
+        resetForm();
       }}
     >
-      {({ handleChange, handleBlur, handleSubmit, values, isValid }) => (
+      {({ handleChange, handleBlur, handleSubmit, values, isValid, resetForm }) => (
         <View style={styles.container}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -124,8 +123,17 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
               value={values.message}
               onChangeText={(text) => {
                 handleChange('message')(text);
+                handleInputChange(text);
               }}
-              onBlur={handleBlur('message')}
+              onBlur={() => {
+                stopTyping(meId, receiverId);
+                resetForm();
+                handleBlur('message');
+              }}
+              onEndEditing={() => {
+                resetForm();
+                stopTyping(meId, receiverId);
+              }}
               placeholder={i18next.t('global.writeMessage')}
               multiline={true}
               numberOfLines={1}

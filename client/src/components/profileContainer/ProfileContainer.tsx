@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import { User } from 'src/constants/types/user';
+import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import ProfileImage from './ProfileImage';
@@ -38,6 +39,7 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, textStyles), [theme]);
+  const { isTyping } = useSocket();
 
   return (
     <TouchableOpacity
@@ -56,6 +58,8 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
             {user?.fullName}
           </Text>
           {showUserNames && <Text style={styles.userName}>{user?.userName}</Text>}
+
+          {isTyping && <Text style={styles.typing}>Typing...</Text>}
         </View>
       </View>
       {icon}
@@ -89,6 +93,11 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
     userName: {
       fontSize: 14,
       fontFamily: 'Poppins-Medium',
+      color: theme.textMutedColor,
+    },
+    typing: {
+      fontSize: 10,
+      fontFamily: 'Poppins-Regular',
       color: theme.textMutedColor,
     },
   });
