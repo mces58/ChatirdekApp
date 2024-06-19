@@ -3,6 +3,7 @@ import { Alert, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'reac
 
 import { Formik } from 'formik';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import Button from 'src/components/button/Button';
 import LoadingIndicator from 'src/components/loading/Loading';
@@ -16,13 +17,13 @@ import { loginValidation } from 'src/validations/login';
 interface LoginFormProps {
   setForgotPasswordBottomSheetVisible: (value: boolean) => void;
   gotoRegister: () => void;
-  gotoMain: () => void;
+  onLoginSuccess: (userId: string) => void;
 }
 
 const LoginForm: React.FC<LoginFormProps> = ({
   setForgotPasswordBottomSheetVisible,
   gotoRegister,
-  gotoMain,
+  onLoginSuccess,
 }) => {
   const { setAuthUser } = useAuthContext();
   const [loading, setLoading] = useState<boolean>(false);
@@ -39,7 +40,8 @@ const LoginForm: React.FC<LoginFormProps> = ({
       if (response.success) {
         const { token } = response.data;
         setAuthUser(token);
-        gotoMain();
+        const decode: { _id: string } = jwtDecode(token.toString());
+        onLoginSuccess(decode._id);
         resetForm();
       }
     } catch (error) {

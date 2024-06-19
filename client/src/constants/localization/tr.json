@@ -47,6 +47,8 @@
   "global.writeAbout": "Hakkında yaz...",
   "global.outsideOwner": "Yönetici Dışında",
   "global.admin": "yönetici",
+  "global.typing": "Yazıyor...",
+  "global.online": "Çevrimiçi",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",

@@ -10,6 +10,7 @@ import {
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import i18next from 'i18next';
+import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import { SettingLeafIcon } from 'src/assets/icons/headers';
@@ -18,6 +19,7 @@ import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
+import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import authService from 'src/services/auth-service';
 
@@ -45,6 +47,8 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
   const { authUser } = useAuthContext();
+  const [meId, setMeId] = useState<string>('');
+  const { userLogout } = useSocket();
 
   const bottomSheets = {
     Language: LanguageBottomSheet,
@@ -69,6 +73,8 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
 
           if (response.success) {
             setUser(response.data);
+            const decode: { _id: string } = jwtDecode(authUser.toString());
+            setMeId(decode._id);
           }
         }
       } catch (error) {
@@ -82,6 +88,7 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
     try {
       await AsyncStorage.removeItem('authToken');
       navigation.navigate('Login');
+      userLogout(meId);
     } catch (error) {
       console.log('error logging out', error);
     }

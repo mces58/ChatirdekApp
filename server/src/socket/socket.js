@@ -2,24 +2,30 @@ import express from 'express';
 import http from 'http';
 import { Server } from 'socket.io';
 
+import dotEnvConfig from 'src/configs/dotEnv.config';
 import Conversation from 'src/models/conversation.model';
 import Group from 'src/models/group.model';
 import GroupMessage from 'src/models/groupMessage.model';
 import Message from 'src/models/message.model';
 import User from 'src/models/user.model';
+import logger from 'src/utils/logger.util';
 
 const app = express();
 
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: ['http://localhost:5000'],
+    origin: [`http://${dotEnvConfig.HOST}:${dotEnvConfig.PORT}`],
     methods: ['GET', 'POST'],
   },
 });
 
+const onlineUsers = {};
+const socketToUser = {};
+
 io.on('connection', (socket) => {
-  console.log('User connected');
+  onlineUsers[socket.id] = socket.id;
+  logger.info(`User connected${socket.id}`);
 
   socket.on('sendMessage', async ({ senderId, receiverId, message }) => {
     try {
@@ -154,17 +160,39 @@ io.on('connection', (socket) => {
   });
 
   socket.on('startTyping', ({ senderId, receiverId, isTyping }) => {
-    console.log(senderId, receiverId, isTyping);
     socket.broadcast.emit('startTyping', { senderId, receiverId, isTyping });
   });
 
   socket.on('stopTyping', ({ senderId, receiverId, isTyping }) => {
-    console.log(senderId, receiverId, isTyping);
     socket.broadcast.emit('stopTyping', { senderId, receiverId, isTyping });
   });
 
+  socket.on('userLogin', async ({ userId }) => {
+    onlineUsers[userId] = socket.id;
+    socketToUser[socket.id] = userId;
+    io.emit('onlineUsers', Object.keys(onlineUsers));
+  });
+
+  socket.on('userLogout', async ({ userId }) => {
+    const socketId = onlineUsers[userId];
+    if (socketId) {
+      delete onlineUsers[userId];
+      delete socketToUser[socketId];
+    }
+    io.emit('onlineUsers', Object.keys(onlineUsers));
+  });
+
+  socket.on('getOnlineUsers', () => {
+    socket.emit('onlineUsers', Object.keys(onlineUsers));
+  });
+
   socket.on('disconnect', () => {
-    console.log('User disconnected');
+    const userId = socketToUser[socket.id];
+    if (userId) {
+      delete onlineUsers[userId];
+      delete socketToUser[socket.id];
+    }
+    io.emit('onlineUsers', Object.keys(onlineUsers));
   });
 });
 

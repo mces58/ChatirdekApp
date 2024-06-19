@@ -4,7 +4,7 @@ import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-n
 import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
-import SwitchButton from 'src/components/SwitchButton';
+import SwitchButton from 'src/components/button/SwitchButton';
 import { Colors } from 'src/constants/color/colors';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';

@@ -21,6 +21,7 @@ import LottieView from 'lottie-react-native';
 
 import loginAnimation from 'src/assets/animatons/login.json';
 import { Colors } from 'src/constants/color/colors';
+import { useSocket } from 'src/context/SocketContext';
 import LoginForm from 'src/forms/LoginForm';
 import { GetGradientStartEnd } from 'src/utils/rotate';
 
@@ -36,6 +37,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
   const translateY = useSharedValue(0);
   const [forgotPasswordBottomSheetVisible, setForgotPasswordBottomSheetVisible] =
     useState<boolean>(false);
+  const { userLogin } = useSocket();
 
   useEffect(() => {
     scale.value = withRepeat(
@@ -62,6 +64,11 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
       transform: [{ scale: scale.value }, { translateY: translateY.value }],
     };
   });
+
+  const onLoginSuccess = (userId: string) => {
+    userLogin(userId);
+    navigation.replace('Main');
+  };
 
   return (
     <KeyboardAvoidingView
@@ -115,7 +122,7 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
           <LoginForm
             setForgotPasswordBottomSheetVisible={setForgotPasswordBottomSheetVisible}
             gotoRegister={() => navigation.navigate('Register')}
-            gotoMain={() => navigation.replace('Main')}
+            onLoginSuccess={onLoginSuccess}
           />
 
           {forgotPasswordBottomSheetVisible && (

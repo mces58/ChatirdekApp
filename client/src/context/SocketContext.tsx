@@ -17,6 +17,9 @@ interface SocketContextType {
   isTyping: boolean;
   startTyping: (senderId: string, receiverId: string) => void;
   stopTyping: (senderId: string, receiverId: string) => void;
+  onlineUsers: string[];
+  userLogin: (userId: string) => void;
+  userLogout: (userId: string) => void;
 }
 
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
@@ -38,6 +41,7 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
   const [messages, setMessages] = useState<Message[]>([]);
   const [groupMessages, setGroupMessages] = useState<GroupMessages>({} as GroupMessages);
   const [isTyping, setIsTyping] = useState<boolean>(false);
+  const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
     const newSocket = io('http://192.168.3.1:5000', {
@@ -107,6 +111,23 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
     }
   }, [socket]);
 
+  useEffect(() => {
+    if (socket) {
+      const getOnlineUsers = () => {
+        socket.emit('getOnlineUsers');
+
+        socket.on('onlineUsers', (data: string[]) => {
+          setOnlineUsers(data);
+        });
+      };
+
+      socket.on('onlineUsers', getOnlineUsers);
+      return () => {
+        socket.off('onlineUsers', getOnlineUsers);
+      };
+    }
+  }, [socket]);
+
   const getMessages = (senderId: string, receiverId: string) => {
     if (socket) {
       socket.emit('getMessages', { senderId, receiverId });
@@ -143,6 +164,18 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
     }
   };
 
+  const userLogin = (userId: string) => {
+    if (socket) {
+      socket.emit('userLogin', { userId });
+    }
+  };
+
+  const userLogout = (userId: string) => {
+    if (socket) {
+      socket.emit('userLogout', { userId });
+    }
+  };
+
   return (
     <SocketContext.Provider
       value={{
@@ -156,6 +189,9 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
         isTyping,
         startTyping,
         stopTyping,
+        onlineUsers,
+        userLogin,
+        userLogout,
       }}
     >
       {children}

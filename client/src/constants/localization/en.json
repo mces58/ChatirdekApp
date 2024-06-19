@@ -47,6 +47,8 @@
   "global.writeAbout": "Write about yourself",
   "global.outsideOwner": "Outside Admin",
   "global.admin": "admin",
+  "global.typing": "Typing...",
+  "global.online": "Online",
 
   "alert.success": "Success",
   "alert.error": "Error",

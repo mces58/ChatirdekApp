@@ -26,6 +26,7 @@ import { LastMessages } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
+import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { HomeProps } from 'src/navigations/RootStackParamList';
 import chatService from 'src/services/chat-service';
@@ -47,6 +48,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [friends, setFriends] = useState<User[]>([]);
   const [meId, setMeId] = useState<string>('');
+  const { onlineUsers } = useSocket();
+  const [isOnline, setIsOnline] = useState<boolean>(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -101,11 +104,17 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     getFriends();
   }, [authUser, friends, setFriends]);
 
+  useEffect(() => {
+    users.every((user) => onlineUsers.includes(user.receiver.id))
+      ? setIsOnline(true)
+      : setIsOnline(false);
+  }, [onlineUsers, users]);
+
   const renderItem = (item: LastMessages) => {
     return (
       <MessageContainer
         user={item}
-        isOnline={false}
+        isOnline={isOnline}
         gotoChatRoom={() =>
           navigation.navigate('Chat', {
             senderId: item.lastMessage.senderId,

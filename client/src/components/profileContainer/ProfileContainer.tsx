@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   StyleProp,
   StyleSheet,
@@ -8,6 +8,8 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
+
+import i18next from 'i18next';
 
 import { User } from 'src/constants/types/user';
 import { useSocket } from 'src/context/SocketContext';
@@ -39,7 +41,16 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme, textStyles), [theme]);
-  const { isTyping } = useSocket();
+  const { isTyping, onlineUsers } = useSocket();
+  const [isOnline, setIsOnline] = useState<boolean>(false);
+
+  useEffect(() => {
+    if (onlineUsers.includes(user.id)) {
+      setIsOnline(true);
+    } else {
+      setIsOnline(false);
+    }
+  }, [onlineUsers, user.id]);
 
   return (
     <TouchableOpacity
@@ -59,7 +70,11 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
           </Text>
           {showUserNames && <Text style={styles.userName}>{user?.userName}</Text>}
 
-          {isTyping && <Text style={styles.typing}>Typing...</Text>}
+          {isTyping ? (
+            <Text style={styles.typing}>{i18next.t('global.typing')}</Text>
+          ) : isOnline ? (
+            <Text style={styles.typing}>{i18next.t('global.online')}</Text>
+          ) : null}
         </View>
       </View>
       {icon}
@@ -96,7 +111,7 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
       color: theme.textMutedColor,
     },
     typing: {
-      fontSize: 10,
+      fontSize: 12,
       fontFamily: 'Poppins-Regular',
       color: theme.textMutedColor,
     },
