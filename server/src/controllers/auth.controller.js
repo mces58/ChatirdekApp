@@ -39,8 +39,6 @@ export const register = async (req, res) => {
       gender,
     });
 
-    console.log(user);
-
     if (user) {
       await user.save();
       generateTokenAndSetCookie(res, user);

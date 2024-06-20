@@ -56,6 +56,8 @@
   "alert.success": "Success",
   "alert.error": "Error",
   "alert.fillAllFields": "Please fill all fields.",
+  "alert.invalidFullName": "Invalid full name.",
+  "alert.invalidUsername": "Invalid username.",
   "alert.passwordsDoNotMatch": "Passwords do not match.",
   "alert.invalidEmail": "Invalid email address.",
   "alert.passwordLength": "Password must be at least {{length}} characters long.",
@@ -115,6 +117,9 @@
 
   "discover.discover.header": "Discover",
   "discover.discover.message": "You can discover new people here and connect with them",
+  "discover.discover.searchPlaceholder": "Search for users",
+  "discover.discover.incomingRequest": "Incoming Requests",
+  "discover.discover.outgoingRequest": "Outgoing Requests",
   "discover.requestBoxBottomSheet.noIncomingRequest": "You have no friend requests at the moment.",
   "discover.requestBoxBottomSheet.noOutgoingRequest": "You haven't sent a friend request yet.",
   "discover.discover.noUser": "No user found.",

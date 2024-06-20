@@ -165,7 +165,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
             value={search}
             onChangeText={(text) => setSearch(text)}
           />
-          <TouchableOpacity style={styles.searchIcon}>
+          <View style={styles.searchIcon}>
             <SearchIcon
               width={20}
               height={20}
@@ -175,7 +175,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
                   : Colors.primaryColors.textMuted
               }
             />
-          </TouchableOpacity>
+          </View>
           <TouchableOpacity
             style={[
               styles.crossIcon,

@@ -4,6 +4,7 @@ import {
   Platform,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -12,8 +13,10 @@ import i18next from 'i18next';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { EarthIcon } from 'src/assets/icons/headers';
+import SearchIcon from 'src/assets/icons/search';
 import Header from 'src/components/headers/Header';
 import Pagination from 'src/components/pagination/Pagination';
+import { Colors } from 'src/constants/color/colors';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -45,6 +48,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   const [notificationCount, setNotificationCount] = useState<number>(
     incomingRequests.length
   );
+  const [search, setSearch] = useState<string>('');
 
   const getUsers = async () => {
     try {
@@ -143,7 +147,32 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
                   </TouchableOpacity>
                 </View>
 
-                {paginatedData.map((user, index) => renderItem(user, index))}
+                <View style={[styles.textInputContainer, styles.shadow]}>
+                  <SearchIcon
+                    width={20}
+                    height={20}
+                    customColor={
+                      search.length > 0
+                        ? Colors.primaryColors.dark
+                        : Colors.primaryColors.textMuted
+                    }
+                  />
+                  <TextInput
+                    style={styles.textInput}
+                    placeholder={i18next.t('discover.discover.searchPlaceholder')}
+                    placeholderTextColor={theme.textMutedColor}
+                    value={search}
+                    onChangeText={(text) => setSearch(text)}
+                  />
+                </View>
+
+                {search.length > 0
+                  ? users
+                      .filter((user) =>
+                        user.fullName.toLowerCase().includes(search.toLowerCase())
+                      )
+                      .map((user, index) => renderItem(user, index))
+                  : paginatedData.map((user, index) => renderItem(user, index))}
                 {users.length > itemsPerPage && (
                   <View style={styles.paginationContainer}>
                     <Pagination
@@ -231,6 +260,23 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       fontFamily: 'Nunito-Regular',
       color: theme.textColor,
       fontSize: 24,
+    },
+    textInputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      paddingHorizontal: 10,
+      paddingVertical: 5,
+      borderWidth: 1,
+      borderColor: theme.borderColor,
+      backgroundColor: theme.cardColor,
+      borderRadius: 20,
+    },
+    textInput: {
+      width: '90%',
+      fontFamily: 'Nunito-Regular',
+      color: theme.textColor,
+      fontSize: 16,
+      marginLeft: 10,
     },
     shadow: {
       shadowColor: theme.shadowColor,

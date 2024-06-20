@@ -1,6 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 
+import i18next from 'i18next';
+
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import Tab from 'src/components/tab/Tab';
 import { Response } from 'src/constants/types/response';
@@ -111,7 +113,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
     <Tab
       tabs={[
         {
-          title: 'Incoming Requests',
+          title: i18next.t('discover.discover.incomingRequest'),
           content: (
             <IncomingRequests
               requests={incomingRequests}
@@ -122,7 +124,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
           ),
         },
         {
-          title: 'Outgoing Requests',
+          title: i18next.t('discover.discover.outgoingRequest'),
           content: (
             <OutgoingRequests
               requests={outgoingRequests}
