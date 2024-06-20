@@ -150,8 +150,6 @@
   "settings.chatsBottomSheet.Medium": "Medium",
   "settings.chatsBottomSheet.Large": "Large",
   "settings.chatsBottomSheet.WallpaperColor": "Wallpaper Color",
-  "settings.chatsBottomSheet.ClearChatHistory": "Clear Chat History",
-  "settings.chatsBottomSheet.ClearChatHistoryModal.header": "Clear chat history",
   "settings.privacyBottomSheet.header": "Privacy Settings",
   "settings.privacyBottomSheet.content1": "Online Status Hide",
   "settings.privacyBottomSheet.content2": "Profile Picture Hide",

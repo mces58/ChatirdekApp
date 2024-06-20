@@ -150,8 +150,6 @@
   "settings.chatsBottomSheet.Medium": "Orta",
   "settings.chatsBottomSheet.Large": "Büyük",
   "settings.chatsBottomSheet.WallpaperColor": "Duvar Kağıdı Rengi",
-  "settings.chatsBottomSheet.ClearChatHistory": "Sohbet Geçmişini Temizle",
-  "settings.chatsBottomSheet.ClearChatHistoryModal.header": "Sohbet geçmişini temizle",
   "settings.privacyBottomSheet.header": "Gizlilik Ayarları",
   "settings.privacyBottomSheet.content1": "Çevrimiçi Durumu Gizle",
   "settings.privacyBottomSheet.content2": "Profil Resmini Gizle",

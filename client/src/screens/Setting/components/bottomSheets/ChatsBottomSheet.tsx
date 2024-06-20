@@ -14,7 +14,6 @@ import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import chatSettingModals, { ChatSettingModals } from '../../constants/chat-setting-modal';
 import { ModalNames } from '../../constants/modal-names';
-import ClearChatHistoryModal from '../modals/ClearChatHistoryModal';
 import FontSizeModal from '../modals/FontSizeModal';
 import WallpaperModal from '../modals/WallpaperModal';
 
@@ -38,7 +37,6 @@ const ChatsBottomSheet: React.FC<ChatsBottomSheetProps> = ({
   const modalNames = {
     FontSize: FontSizeModal,
     WallpaperColor: WallpaperModal,
-    ClearChatHistory: ClearChatHistoryModal,
   };
 
   const handleToggleSheet = (modalName: ModalNames): void => {
@@ -99,7 +97,7 @@ export default ChatsBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.35,
+      height: SCREEN_HEIGHT * 0.3,
       backgroundColor: theme.bottomSheetBackgroundColor,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,

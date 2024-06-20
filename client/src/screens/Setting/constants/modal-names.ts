@@ -1,1 +1,1 @@
-export type ModalNames = 'FontSize' | 'WallpaperColor' | 'ClearChatHistory' | null;
+export type ModalNames = 'FontSize' | 'WallpaperColor' | null;

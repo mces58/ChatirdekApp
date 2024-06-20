@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 
-import { BroomIcon, FontSizeIcon, PaintBucketIcon } from 'src/assets/icons/chat-settings';
+import { FontSizeIcon, PaintBucketIcon } from 'src/assets/icons/chat-settings';
 
 export interface ChatSettingModals {
   name: string;
@@ -9,16 +9,15 @@ export interface ChatSettingModals {
 }
 
 const chatSettingModals: ChatSettingModals[] = [
-  { name: 'FontSize', label: 'Font Size', icon: <FontSizeIcon width={22} height={22} /> },
+  {
+    name: 'FontSize',
+    label: 'Font Size',
+    icon: <FontSizeIcon width={22} height={22} />,
+  },
   {
     name: 'WallpaperColor',
     label: 'Wallpaper Color',
     icon: <PaintBucketIcon width={22} height={22} />,
-  },
-  {
-    name: 'ClearChatHistory',
-    label: 'Clear Chat History',
-    icon: <BroomIcon width={22} height={22} />,
   },
 ];
 
