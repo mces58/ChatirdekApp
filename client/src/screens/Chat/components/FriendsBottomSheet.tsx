@@ -83,6 +83,7 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
             navigation.navigate('Chat', {
               senderId: meId,
               receiverId: user.id,
+              receiver: user,
             });
             onSwipeDown();
           }}

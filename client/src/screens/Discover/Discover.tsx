@@ -13,7 +13,6 @@ import i18next from 'i18next';
 import CrossIcon from 'src/assets/icons/cross';
 import { EarthIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
-import LoadingIndicator from 'src/components/loading/Loading';
 import Pagination from 'src/components/pagination/Pagination';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
@@ -49,19 +48,14 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
 
   const getUsers = async () => {
     try {
-      setLoading(true);
       if (authUser) {
         const response: Response = await friendService.getNonFriends(authUser?.token);
-
         if (response.success) {
           setUsers(response.data);
-          setLoading(false);
         }
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -125,48 +119,44 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
 
       <View style={styles.container}>
         <View style={styles.body}>
-          {loading ? (
-            <LoadingIndicator />
-          ) : (
-            <>
-              {users.length === 0 ? (
-                <View style={styles.noUserContainer}>
-                  <Text style={styles.noUserText}>
-                    {i18next.t('discover.discover.noUser')}
+          <>
+            {users.length === 0 ? (
+              <View style={styles.noUserContainer}>
+                <Text style={styles.noUserText}>
+                  {i18next.t('discover.discover.noUser')}
+                </Text>
+              </View>
+            ) : (
+              <>
+                <View
+                  style={[
+                    styles.headerContainer,
+                    styles.shadow,
+                    cardDisplay && { display: 'none' },
+                  ]}
+                >
+                  <Text style={styles.headerText}>
+                    {i18next.t('discover.discover.message')}
                   </Text>
+                  <TouchableOpacity onPress={() => setCardDisplay(true)}>
+                    <CrossIcon width={15} height={15} />
+                  </TouchableOpacity>
                 </View>
-              ) : (
-                <>
-                  <View
-                    style={[
-                      styles.headerContainer,
-                      styles.shadow,
-                      cardDisplay && { display: 'none' },
-                    ]}
-                  >
-                    <Text style={styles.headerText}>
-                      {i18next.t('discover.discover.message')}
-                    </Text>
-                    <TouchableOpacity onPress={() => setCardDisplay(true)}>
-                      <CrossIcon width={15} height={15} />
-                    </TouchableOpacity>
-                  </View>
 
-                  {paginatedData.map((user, index) => renderItem(user, index))}
-                  {users.length > itemsPerPage && (
-                    <View style={styles.paginationContainer}>
-                      <Pagination
-                        totalItems={users.length}
-                        itemsPerPage={itemsPerPage}
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                      />
-                    </View>
-                  )}
-                </>
-              )}
-            </>
-          )}
+                {paginatedData.map((user, index) => renderItem(user, index))}
+                {users.length > itemsPerPage && (
+                  <View style={styles.paginationContainer}>
+                    <Pagination
+                      totalItems={users.length}
+                      itemsPerPage={itemsPerPage}
+                      currentPage={currentPage}
+                      onPageChange={handlePageChange}
+                    />
+                  </View>
+                )}
+              </>
+            )}
+          </>
 
           {requestBoxBottomSheetVisible && (
             <RequestBoxBottomSheet

@@ -58,7 +58,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         {user.lastMessage && (
           <>
             <View>
-              {isOnline && <NotificationBubble />}
+              {isOnline && !user.receiver.hideOnlineStatus && <NotificationBubble />}
               <ProfileImage
                 imageUri={
                   user.receiver.hideAvatar

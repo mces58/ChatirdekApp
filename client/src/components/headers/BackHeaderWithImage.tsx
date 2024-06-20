@@ -4,7 +4,7 @@ import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
-import ProfileContainer from '../profileContainer/ProfileContainer';
+import ProfileContainerWithOnline from '../profileContainer/ProfileContainerWithOnline';
 
 interface BackHeaderWithImageProps {
   icon?: React.ReactNode;
@@ -30,7 +30,7 @@ const BackHeaderWithImage: React.FC<BackHeaderWithImageProps> = ({
     <View style={[styles.container, componentSize]}>
       <TouchableOpacity onPress={onPressIcon}>{icon}</TouchableOpacity>
       <TouchableOpacity onPress={onPressHeader} style={{ flex: 1 }}>
-        <ProfileContainer
+        <ProfileContainerWithOnline
           user={user!}
           showUserNames={false}
           componentSize={imageComponentSize}

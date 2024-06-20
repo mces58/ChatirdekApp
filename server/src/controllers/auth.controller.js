@@ -21,10 +21,10 @@ export const register = async (req, res) => {
         .json({ errors: [{ msg: 'User already exists. Change email or userName' }] });
     }
 
-    const name = req.user.fullName.split(' ')[0];
-    const lastName = req.user.fullName.split(' ')[1]
-      ? req.user.fullName.split(' ')[1]
-      : req.user.fullName.split(' ')[0];
+    const name = fullName.split(' ')[0];
+    const lastName = fullName.split(' ')[1]
+      ? fullName.split(' ')[1]
+      : fullName.split(' ')[0];
 
     const avatar = `https://avatar.iran.liara.run/username?username=${name}+${lastName}`;
 
@@ -38,6 +38,8 @@ export const register = async (req, res) => {
       avatar,
       gender,
     });
+
+    console.log(user);
 
     if (user) {
       await user.save();

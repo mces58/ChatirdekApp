@@ -107,13 +107,15 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
     >
       <View style={[styles.container, { backgroundColor: wallpaper.color }]}>
         <BackHeaderWithImage
-          user={messages?.receiver}
+          user={messages?.receiver || route.params.receiver}
           componentSize={{ height: 95 }}
           icon={<ArrowIcon width={30} height={30} direction="left" />}
           onPressIcon={() => navigation.goBack()}
           imageComponentSize={{ height: 50, width: 50 }}
           onPressHeader={() =>
-            navigation.navigate('UserProfile', { user: messages?.receiver })
+            navigation.navigate('UserProfile', {
+              user: messages?.receiver || route.params.receiver,
+            })
           }
         />
 

@@ -25,6 +25,7 @@ const socketToUser = {};
 
 io.on('connection', (socket) => {
   onlineUsers[socket.id] = socket.id;
+  socketToUser[socket.id] = socket.id;
   logger.info(`User connected${socket.id}`);
 
   socket.on('sendMessage', async ({ senderId, receiverId, message }) => {
@@ -197,6 +198,7 @@ io.on('connection', (socket) => {
       delete socketToUser[socket.id];
     }
     io.emit('onlineUsers', Object.keys(onlineUsers));
+    logger.info(`User disconnected${socket.id}`);
   });
 });
 

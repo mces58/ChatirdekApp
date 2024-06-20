@@ -12,6 +12,7 @@ export type RootStackParamList = {
   Chat: {
     senderId: string;
     receiverId: string;
+    receiver: User;
   };
   Group: undefined;
   GroupChat: { groupId: string };

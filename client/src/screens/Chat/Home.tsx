@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BackHandler,
   FlatList,
@@ -12,6 +12,7 @@ import {
   View,
 } from 'react-native';
 
+import { useFocusEffect } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
 import i18next from 'i18next';
 import { jwtDecode } from 'jwt-decode';
@@ -20,7 +21,6 @@ import CrossIcon from 'src/assets/icons/cross';
 import { PencilWriteIcon } from 'src/assets/icons/headers';
 import SearchIcon from 'src/assets/icons/search';
 import Header from 'src/components/headers/Header';
-import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
 import { LastMessages } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
@@ -45,34 +45,28 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
   const { authUser } = useAuthContext();
-  const [loading, setLoading] = useState<boolean>(false);
   const [friends, setFriends] = useState<User[]>([]);
   const [meId, setMeId] = useState<string>('');
   const { onlineUsers } = useSocket();
   const [isOnline, setIsOnline] = useState<boolean>(false);
 
-  useEffect(() => {
-    const getUser = async () => {
-      setLoading(true);
-      try {
-        if (authUser) {
-          const response: Response = await chatService.getLastMessages(
-            authUser.toString()
-          );
+  const getUsers = async () => {
+    try {
+      if (authUser) {
+        const response: Response = await chatService.getLastMessages(authUser.toString());
 
-          if (response.success) {
-            setUsers(response.data);
-          }
+        if (response.success) {
+          setUsers(response.data);
         }
-        setLoading(false);
-      } catch (error) {
-        return <Text>{i18next.t('chat.home.noMessages')}</Text>;
-      } finally {
-        setLoading(false);
       }
-    };
-    getUser();
-  }, [authUser, users, setUsers, setLoading, setFriends, navigation, users.length]);
+    } catch (error) {
+      return <Text>{i18next.t('chat.home.noMessages')}</Text>;
+    }
+  };
+
+  useEffect(() => {
+    getUsers();
+  }, [authUser, users, setUsers, setFriends, navigation, users.length]);
 
   useEffect(() => {
     const backAction = () => {
@@ -110,6 +104,12 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       : setIsOnline(false);
   }, [onlineUsers, users]);
 
+  useFocusEffect(
+    useCallback(() => {
+      getUsers();
+    }, [authUser])
+  );
+
   const renderItem = (item: LastMessages) => {
     return (
       <MessageContainer
@@ -119,6 +119,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           navigation.navigate('Chat', {
             senderId: item.lastMessage.senderId,
             receiverId: item.receiver.id,
+            receiver: item.receiver,
           })
         }
       />
@@ -190,17 +191,12 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           </TouchableOpacity>
         </View>
 
-        {loading ? (
-          <LoadingIndicator />
-        ) : (
-          (users.length === 0 && (
-            <View style={styles.noMessageContainer}>
-              <Text style={styles.noMessageText}>
-                {i18next.t('chat.home.noMessages')}
-              </Text>
-            </View>
-          )) ||
+        {users.length > 0 ? (
           renderContent()
+        ) : (
+          <View style={styles.noMessageContainer}>
+            <Text style={styles.noMessageText}>{i18next.t('chat.home.noMessages')}</Text>
+          </View>
         )}
       </View>
 
