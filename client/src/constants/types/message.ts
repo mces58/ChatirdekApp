@@ -9,6 +9,11 @@ export interface Message {
   receiverId: string;
 }
 
+export interface MessagesWithReceiver {
+  receiver: User;
+  messages: Message[];
+}
+
 export interface LastMessages {
   receiver: User;
   lastMessage: {

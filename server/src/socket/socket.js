@@ -87,8 +87,12 @@ io.on('connection', (socket) => {
           message: 'Conversation not found',
         });
       }
+      const receiver = await User.findById(receiverId);
 
-      socket.emit('messages', { success: true, data: conversation.messages });
+      socket.emit('messages', {
+        success: true,
+        data: { messages: conversation.messages, receiver },
+      });
     } catch (error) {
       socket.emit('getMessagesError', { success: false, message: error.message });
     }

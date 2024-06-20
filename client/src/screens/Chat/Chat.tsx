@@ -17,7 +17,6 @@ import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
 import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
 import { Message } from 'src/constants/types/message';
-import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useFontSize } from 'src/context/FontSizeContext';
 import { useSocket } from 'src/context/SocketContext';
@@ -25,12 +24,10 @@ import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper } from 'src/context/WallpaperContext';
 import SendInput from 'src/forms/SendInput';
 import { ChatProps } from 'src/navigations/RootStackParamList';
-import userService from 'src/services/user-service';
 
 const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const { messages, getMessages } = useSocket();
   const scrollViewRef = useRef<ScrollView>(null);
-  const [receiver, setReceiver] = useState({} as any);
   const { theme } = useTheme();
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
@@ -40,26 +37,6 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const { wallpaper } = useWallpaper();
   const { authUser } = useAuthContext();
   const [meId, setMeId] = useState<string>('');
-
-  useEffect(() => {
-    const getUser = async () => {
-      try {
-        if (authUser) {
-          const response: Response = await userService.getUser(
-            authUser.toString(),
-            route.params.receiverId
-          );
-
-          if (response.success) {
-            setReceiver(response.data);
-          }
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    getUser();
-  }, [receiver, setReceiver, messages, authUser, route.params.receiverId]);
 
   useEffect(() => {
     if (meId) {
@@ -85,7 +62,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   }, [authUser]);
 
   const renderItem = (message: Message, index: number) => {
-    const isLastMessage = index === messages.length - 1;
+    const isLastMessage = index === messages.messages?.length - 1;
     const isTheirLastMessage = isLastMessage && message.senderId !== meId;
     const isMyLastMessage = isLastMessage && message.senderId === meId;
 
@@ -130,12 +107,14 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
     >
       <View style={[styles.container, { backgroundColor: wallpaper.color }]}>
         <BackHeaderWithImage
-          user={receiver}
+          user={messages?.receiver}
           componentSize={{ height: 95 }}
           icon={<ArrowIcon width={30} height={30} direction="left" />}
           onPressIcon={() => navigation.goBack()}
           imageComponentSize={{ height: 50, width: 50 }}
-          onPressHeader={() => navigation.navigate('UserProfile', { user: receiver })}
+          onPressHeader={() =>
+            navigation.navigate('UserProfile', { user: messages?.receiver })
+          }
         />
 
         <ScrollView
@@ -146,8 +125,8 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           style={styles.messageList}
           showsVerticalScrollIndicator={false}
         >
-          {messages && messages.length > 0
-            ? messages.map((message, index) => renderItem(message, index))
+          {messages && messages.messages?.length > 0
+            ? messages.messages.map((message, index) => renderItem(message, index))
             : null}
         </ScrollView>
         <SendInput receiverId={route.params.receiverId} />

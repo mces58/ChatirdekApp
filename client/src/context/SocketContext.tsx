@@ -4,11 +4,11 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 import { io, Socket } from 'socket.io-client';
 
 import { GroupMessages } from 'src/constants/types/group-message';
-import { Message } from 'src/constants/types/message';
+import { MessagesWithReceiver } from 'src/constants/types/message';
 
 interface SocketContextType {
   socket: Socket | null;
-  messages: Message[];
+  messages: MessagesWithReceiver;
   getMessages: (senderId: string, receiverId: string) => void;
   sendMessage: (senderId: string, receiverId: string, message: string) => void;
   groupMessages: GroupMessages;
@@ -38,7 +38,9 @@ interface SocketProviderProps {
 
 export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<MessagesWithReceiver>(
+    {} as MessagesWithReceiver
+  );
   const [groupMessages, setGroupMessages] = useState<GroupMessages>({} as GroupMessages);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
@@ -59,7 +61,7 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
         data,
         success,
       }: {
-        data: Message[];
+        data: MessagesWithReceiver;
         success: boolean;
       }) => {
         if (success) {
