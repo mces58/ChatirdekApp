@@ -141,6 +141,48 @@ export const acceptFriendRequest = async (req, res) => {
   }
 };
 
+export const undoFriendRequest = async (req, res) => {
+  try {
+    const { id: currentUserId } = req.user;
+    const { selectedUserId } = req.params;
+
+    const currentUser = await User.findById(currentUserId);
+    const selectedUser = await User.findById(selectedUserId);
+
+    if (!currentUser || !selectedUser) {
+      return res.status(404).json({
+        success: false,
+        message: 'User not found',
+      });
+    }
+
+    if (
+      !currentUser.outgoingFriendRequests.includes(selectedUserId) ||
+      !selectedUser.incomingFriendRequests.includes(currentUserId)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: 'Friend request not found',
+      });
+    }
+
+    await User.findByIdAndUpdate(currentUserId, {
+      $pull: { outgoingFriendRequests: selectedUserId },
+    });
+
+    await User.findByIdAndUpdate(selectedUserId, {
+      $pull: { incomingFriendRequests: currentUserId },
+    });
+
+    res.status(200).json({
+      success: true,
+      message: 'Friend request undone successfully',
+    });
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
 export const getNonFriends = async (req, res) => {
   try {
     const { id: currentUserId } = req.user;

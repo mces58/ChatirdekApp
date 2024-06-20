@@ -19,6 +19,7 @@
   "global.next": "İleri",
   "global.previous": "Geri",
   "global.accept": "Kabul Et",
+  "global.undo": "Geri Al",
   "global.addFriend": "Arkadaş Ekle",
   "global.waiting": "Beklemede",
   "global.createdAt": "Oluşturulma Tarihi",
@@ -112,7 +113,8 @@
 
   "discover.discover.header": "Keşfet",
   "discover.discover.message": "Burada yeni insanlar keşfedebilir ve onlarla bağlantı kurabilirsiniz",
-  "discover.requestBoxBottomSheet.noRequest": "Şu anda hiç arkadaşlık isteğin yok 😊",
+  "discover.requestBoxBottomSheet.noIncomingRequest": "Şu anda hiç arkadaşlık isteğin yok.",
+  "discover.requestBoxBottomSheet.noOutgoingRequest": "Şu anda hiç arkadaşlık isteği göndermedin.",
   "discover.discover.noUser": "Henüz kullanıcı yok.",
 
   "group.group.header": "Gruplar",

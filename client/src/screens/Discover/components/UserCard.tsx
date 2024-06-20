@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import i18next from 'i18next';
 
+import LoadingIndicator from 'src/components/loading/Loading';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
 import { User } from 'src/constants/types/user';
@@ -15,7 +16,7 @@ interface UserCardProps {
   index: number;
   onPressCard: () => void;
   onPressAddFriend: (userId: string) => void;
-  isSendingRequest: boolean;
+  loading?: boolean;
 }
 
 const UserCard: React.FC<UserCardProps> = ({
@@ -23,42 +24,43 @@ const UserCard: React.FC<UserCardProps> = ({
   index,
   onPressCard,
   onPressAddFriend,
-  isSendingRequest,
+  loading,
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
-    <LinearGradient
-      colors={[
-        Colors.primaryColors.linearGradient1,
-        Colors.primaryColors.linearGradient2,
-      ]}
-      style={[styles.linearGradient, styles.shadow]}
-      {...GetGradientStartEnd(index)}
-    >
-      <TouchableOpacity style={styles.userContainer} onPress={onPressCard}>
-        <ProfileContainer
-          user={user}
-          componentSize={{ width: 55, height: 55 }}
-          textStyles={{ fontSize: 14 }}
-          showUserNames={false}
-          disabled
-        />
-
-        <TouchableOpacity
-          style={styles.button}
-          onPress={() => onPressAddFriend(user.id)}
-          disabled={isSendingRequest}
+    <>
+      {loading ? (
+        <LoadingIndicator />
+      ) : (
+        <LinearGradient
+          colors={[
+            Colors.primaryColors.linearGradient1,
+            Colors.primaryColors.linearGradient2,
+          ]}
+          style={[styles.linearGradient, styles.shadow]}
+          {...GetGradientStartEnd(index)}
         >
-          {isSendingRequest ? (
-            <Text style={styles.buttonText}>{i18next.t('global.waiting')}</Text>
-          ) : (
-            <Text style={styles.buttonText}>{i18next.t('global.addFriend')}</Text>
-          )}
-        </TouchableOpacity>
-      </TouchableOpacity>
-    </LinearGradient>
+          <TouchableOpacity style={styles.userContainer} onPress={onPressCard}>
+            <ProfileContainer
+              user={user}
+              componentSize={{ width: 55, height: 55 }}
+              textStyles={{ fontSize: 14 }}
+              showUserNames={false}
+              disabled
+            />
+
+            <TouchableOpacity
+              style={styles.button}
+              onPress={() => onPressAddFriend(user.id)}
+            >
+              <Text style={styles.buttonText}>{i18next.t('global.addFriend')}</Text>
+            </TouchableOpacity>
+          </TouchableOpacity>
+        </LinearGradient>
+      )}
+    </>
   );
 };
 

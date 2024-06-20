@@ -36,15 +36,16 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   const { authUser } = useAuthContext();
   const [requestBoxBottomSheetVisible, setRequestBoxBottomSheetVisible] =
     useState<boolean>(false);
-  const [requests, setRequests] = useState<User[]>([]);
+  const [incomingRequests, setIncomingRequests] = useState<User[]>([]);
+  const [outgoingRequests, setOutgoingRequests] = useState<User[]>([]);
   const { theme } = useTheme();
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
-  const [isSendingRequest, setIsSendingRequest] = useState<{ [key: string]: boolean }>(
-    {}
-  );
   const [loading, setLoading] = useState<boolean>(false);
+  const [notificationCount, setNotificationCount] = useState<number>(
+    incomingRequests.length
+  );
 
   const getUsers = async () => {
     try {
@@ -66,7 +67,11 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
 
   useEffect(() => {
     getUsers();
-  }, [authUser]);
+  }, [authUser, incomingRequests, outgoingRequests]);
+
+  useEffect(() => {
+    setNotificationCount(incomingRequests.length);
+  }, [incomingRequests]);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
@@ -79,6 +84,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
 
   const handleConnect = async (userId: string) => {
     try {
+      setLoading(true);
       if (authUser) {
         const response: Response = await friendService.sendFriendRequest(
           authUser.token,
@@ -86,12 +92,14 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
         );
 
         if (response.success) {
-          setIsSendingRequest({ ...isSendingRequest, [userId]: true });
           getUsers();
         }
+        setLoading(false);
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,7 +110,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
       user={user}
       onPressCard={() => navigation.navigate('UserProfile', { user })}
       onPressAddFriend={() => handleConnect(user.id)}
-      isSendingRequest={isSendingRequest[user.id] || false}
+      loading={loading}
     />
   );
 
@@ -112,7 +120,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
         title={i18next.t('discover.discover.header')}
         icon={<EarthIcon width={30} height={30} />}
         onIconPress={() => setRequestBoxBottomSheetVisible(true)}
-        notificationCount={requests.length}
+        notificationCount={notificationCount}
       />
 
       <View style={styles.container}>
@@ -164,8 +172,10 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
             <RequestBoxBottomSheet
               isVisible={requestBoxBottomSheetVisible}
               onSwipeDown={() => setRequestBoxBottomSheetVisible(false)}
-              requests={requests}
-              setRequests={setRequests}
+              incomingRequests={incomingRequests}
+              setIncomingRequests={setIncomingRequests}
+              outgoingRequests={outgoingRequests}
+              setOutgoingRequests={setOutgoingRequests}
               navigation={navigation}
             />
           )}

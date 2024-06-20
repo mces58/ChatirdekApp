@@ -1,37 +1,34 @@
 import React, { useEffect, useMemo } from 'react';
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  useWindowDimensions,
-  View,
-} from 'react-native';
-
-import i18next from 'i18next';
+import { ScrollView, StyleSheet, useWindowDimensions } from 'react-native';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
-import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
-import { Colors } from 'src/constants/color/colors';
+import Tab from 'src/components/tab/Tab';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import friendService from 'src/services/friend-service';
 
+import IncomingRequests from './IncomingRequests';
+import OutgoingRequests from './OutgoingRequests';
+
 interface RequestBoxBottomSheetProps {
   isVisible: boolean;
   onSwipeDown: () => void;
-  requests: User[];
-  setRequests: (requests: User[]) => void;
+  incomingRequests: User[];
+  setIncomingRequests: (requests: User[]) => void;
+  outgoingRequests: User[];
+  setOutgoingRequests: (requests: User[]) => void;
   navigation: any;
 }
 
 const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
   isVisible,
   onSwipeDown,
-  requests,
-  setRequests,
+  incomingRequests,
+  setIncomingRequests,
+  outgoingRequests,
+  setOutgoingRequests,
   navigation,
 }) => {
   const { height: SCREEN_HEIGHT } = useWindowDimensions();
@@ -39,7 +36,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
   const styles = useMemo(() => createStyles(theme, SCREEN_HEIGHT), [theme]);
   const { authUser } = useAuthContext();
 
-  const getRequests = async () => {
+  const getIncomingRequests = async () => {
     try {
       if (authUser) {
         const response: Response = await friendService.getIncomingFriendRequests(
@@ -47,7 +44,23 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
         );
 
         if (response.success) {
-          setRequests(response.data);
+          setIncomingRequests(response.data);
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const getOutgoingRequests = async () => {
+    try {
+      if (authUser) {
+        const response: Response = await friendService.getOutgoingFriendRequests(
+          authUser?.token
+        );
+
+        if (response.success) {
+          setOutgoingRequests(response.data);
         }
       }
     } catch (error) {
@@ -57,7 +70,8 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
 
   useEffect(() => {
     if (authUser) {
-      getRequests();
+      getIncomingRequests();
+      getOutgoingRequests();
     }
   }, [authUser]);
 
@@ -69,7 +83,7 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
           receiverId
         );
         if (response.success) {
-          getRequests();
+          getIncomingRequests();
         }
       }
     } catch (error) {
@@ -77,43 +91,49 @@ const RequestBoxBottomSheet: React.FC<RequestBoxBottomSheetProps> = ({
     }
   };
 
-  const renderItem = (request: User, index: number) => (
-    <TouchableOpacity
-      key={index}
-      style={[styles.userContainer, styles.shadow]}
-      onPress={() => {
-        navigation.navigate('UserProfile', { user: request });
-      }}
-    >
-      <ProfileContainer
-        user={request}
-        componentSize={{ width: 50, height: 50 }}
-        showUserNames={false}
-        disabled
-        textStyles={{ fontSize: 14, color: Colors.primaryColors.dark }}
-      />
-
-      <TouchableOpacity
-        onPress={() => {
-          acceptFriendRequest(request.id);
-        }}
-        style={styles.button}
-      >
-        <Text style={styles.buttonText}>{i18next.t('global.accept')}</Text>
-      </TouchableOpacity>
-    </TouchableOpacity>
-  );
+  const undoFriendRequest = async (receiverId: string) => {
+    try {
+      if (authUser) {
+        const response: Response = await friendService.undoFriendRequest(
+          authUser.toString(),
+          receiverId
+        );
+        if (response.success) {
+          getOutgoingRequests();
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const content = (
-    <View style={styles.container}>
-      {requests.length > 0 ? (
-        requests.map((request, index) => renderItem(request, index))
-      ) : (
-        <Text style={styles.noRequestsText}>
-          {i18next.t('discover.requestBoxBottomSheet.noRequest')}
-        </Text>
-      )}
-    </View>
+    <Tab
+      tabs={[
+        {
+          title: 'Incoming Requests',
+          content: (
+            <IncomingRequests
+              requests={incomingRequests}
+              onAcceptRequest={acceptFriendRequest}
+              navigation={navigation}
+              onSwipeDown={onSwipeDown}
+            />
+          ),
+        },
+        {
+          title: 'Outgoing Requests',
+          content: (
+            <OutgoingRequests
+              requests={outgoingRequests}
+              navigation={navigation}
+              onUndoRequest={undoFriendRequest}
+              onSwipeDown={onSwipeDown}
+            />
+          ),
+        },
+      ]}
+    />
   );
 
   return (
@@ -133,7 +153,7 @@ export default RequestBoxBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.6,
+      height: SCREEN_HEIGHT * 0.85,
       backgroundColor: theme.bottomSheetBackgroundColor,
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
@@ -143,46 +163,5 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       right: 0,
       paddingHorizontal: 20,
       paddingVertical: 10,
-    },
-    container: {
-      flex: 1,
-      marginTop: 30,
-    },
-    userContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      backgroundColor: theme.borderColor,
-      width: '100%',
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      borderRadius: 20,
-      marginBottom: 20,
-    },
-    button: {
-      backgroundColor: theme.backgroundColor,
-      padding: 10,
-      borderRadius: 10,
-    },
-    buttonText: {
-      fontFamily: 'Nunito-SemiBold',
-      color: theme.textColor,
-      fontSize: 14,
-    },
-    noRequestsText: {
-      fontFamily: 'Poppins-SemiBold',
-      color: theme.textColor,
-      fontSize: 20,
-      textAlign: 'center',
-    },
-    shadow: {
-      shadowColor: theme.shadowColor,
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
     },
   });

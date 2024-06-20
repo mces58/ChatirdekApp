@@ -45,12 +45,12 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
   const [isOnline, setIsOnline] = useState<boolean>(false);
 
   useEffect(() => {
-    if (onlineUsers.includes(user.id)) {
+    if (onlineUsers.includes(user?.id)) {
       setIsOnline(true);
     } else {
       setIsOnline(false);
     }
-  }, [onlineUsers, user.id]);
+  }, [onlineUsers, user?.id]);
 
   return (
     <TouchableOpacity
@@ -60,7 +60,7 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
     >
       <View style={styles.row}>
         <ProfileImage
-          imageUri={user?.hideAvatar ? `https://robohash.org/${user.id}` : user?.avatar}
+          imageUri={user?.hideAvatar ? `https://robohash.org/${user?.id}` : user?.avatar}
           componentSize={componentSize}
           disabled
         />

@@ -8,6 +8,7 @@ import {
   getOutgoingFriendRequests,
   removeFriend,
   sendFriendRequest,
+  undoFriendRequest,
 } from 'src/controllers/friend.controller';
 import authentication from 'src/middlewares/authentication.middleware';
 import validate from 'src/middlewares/validate.middleware';
@@ -43,6 +44,13 @@ router.route('/outgoing-requests').get(authentication, getOutgoingFriendRequests
 router
   .route('/accept/:selectedUserId')
   .get(validate(friendValidation.friends), authentication, acceptFriendRequest);
+
+// @route   DELETE /api/friendship/undo/:selectedUserId
+// @desc    Withdraw Friend Request
+// @access  Private
+router
+  .route('/undo/:selectedUserId')
+  .delete(validate(friendValidation.friends), authentication, undoFriendRequest);
 
 // @route   GET /api/friendship/non-friends
 // @desc    Get non-friends

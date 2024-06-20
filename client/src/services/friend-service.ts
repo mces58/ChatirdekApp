@@ -48,11 +48,29 @@ class FriendService {
     return response;
   };
 
+  public getOutgoingFriendRequests = async (token: string): Promise<any> => {
+    const response: Response = await apiService.get('/friendship/outgoing-requests', {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  };
+
   public acceptFriendRequest = async (
     token: string,
     receiverId: string
   ): Promise<any> => {
     const response: Response = await apiService.get(`/friendship/accept/${receiverId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response;
+  };
+
+  public undoFriendRequest = async (token: string, receiverId: string): Promise<any> => {
+    const response: Response = await apiService.delete(`/friendship/undo/${receiverId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
