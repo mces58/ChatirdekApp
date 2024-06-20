@@ -50,6 +50,8 @@
   "global.admin": "yönetici",
   "global.typing": "Yazıyor...",
   "global.online": "Çevrimiçi",
+  "global.offline": "Çevrimdışı",
+  "global.clear": "Temizle",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",
@@ -149,7 +151,7 @@
   "settings.chatsBottomSheet.Large": "Büyük",
   "settings.chatsBottomSheet.WallpaperColor": "Duvar Kağıdı Rengi",
   "settings.chatsBottomSheet.ClearChatHistory": "Sohbet Geçmişini Temizle",
-  "settings.chatsBottomSheet.ClearChatHistoryModal.header": "Sohbet geçmişini temizlemek istediğinizden emin misiniz?",
+  "settings.chatsBottomSheet.ClearChatHistoryModal.header": "Sohbet geçmişini temizle",
   "settings.privacyBottomSheet.header": "Gizlilik Ayarları",
   "settings.privacyBottomSheet.content1": "Çevrimiçi Durumu Gizle",
   "settings.privacyBottomSheet.content2": "Profil Resmini Gizle",

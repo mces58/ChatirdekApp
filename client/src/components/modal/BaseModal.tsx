@@ -22,7 +22,7 @@ const BaseModal: React.FC<BaseModalProps> = ({
   return (
     <Modal
       isVisible={isVisible}
-      onBackdropPress={onClose}
+      onBackButtonPress={onClose}
       animationIn={animation ?? ModalAnimation.SlideInUp}
       animationInTiming={animationTiming ?? 500}
       animationOutTiming={animationTiming ?? 500}
