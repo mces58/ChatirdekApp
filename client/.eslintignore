@@ -4,3 +4,5 @@ build
 package-lock.json
 README.md
 .env
+src/assets/animations
+src/assets/fonts

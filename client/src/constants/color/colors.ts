@@ -16,6 +16,8 @@ const primaryColors = {
   bottomSheetColorDark: '#4a4f54',
   linearGradient1: 'rgba(255, 195, 113, 0.9)',
   linearGradient2: 'rgba(255, 95, 109, 0.9)',
+  darkBlue: '#1e2169',
+  orange: '#F15937',
 };
 
 const secondaryColors = {

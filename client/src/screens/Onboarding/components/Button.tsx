@@ -15,27 +15,28 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import i18next from 'i18next';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import { Colors } from 'src/constants/color/colors';
 
 import { OnboardingData } from '../data';
 
-type Props = {
+interface CustomButtonProps {
   dataLength: number;
   flatListIndex: SharedValue<number>;
   flatListRef: AnimatedRef<FlatList<OnboardingData>>;
   x: SharedValue<number>;
   navigation: NativeStackNavigationProp<any>;
-};
+}
 
-const CustomButton = ({
+const CustomButton: React.FC<CustomButtonProps> = ({
   flatListRef,
   flatListIndex,
   dataLength,
   x,
   navigation,
-}: Props) => {
+}) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
 
   const buttonAnimationStyle = useAnimatedStyle(() => {
@@ -74,7 +75,11 @@ const CustomButton = ({
     const backgroundColor = interpolateColor(
       x.value,
       [0, SCREEN_WIDTH, 2 * SCREEN_WIDTH],
-      ['#005b4f', '#1e2169', '#F15937']
+      [
+        Colors.primaryColors.dark,
+        Colors.primaryColors.darkBlue,
+        Colors.primaryColors.orange,
+      ]
     );
 
     return {
@@ -94,7 +99,7 @@ const CustomButton = ({
     >
       <Animated.View style={[styles.container, buttonAnimationStyle, animatedColor]}>
         <Animated.Text style={[styles.textButton, textAnimationStyle]}>
-          Get Started
+          {i18next.t('onboarding.button')}
         </Animated.Text>
         <Animated.View style={[styles.arrow, arrowAnimationStyle]}>
           <ArrowIcon
@@ -113,7 +118,7 @@ export default CustomButton;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1e2169',
+    backgroundColor: Colors.primaryColors.orange,
     padding: 10,
     borderRadius: 100,
     justifyContent: 'center',
@@ -123,5 +128,10 @@ const styles = StyleSheet.create({
   arrow: {
     position: 'absolute',
   },
-  textButton: { color: 'white', fontSize: 16, position: 'absolute' },
+  textButton: {
+    fontFamily: 'Poppins-SemiBold',
+    color: Colors.primaryColors.light,
+    fontSize: 16,
+    position: 'absolute',
+  },
 });

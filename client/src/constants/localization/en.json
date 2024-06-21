@@ -177,5 +177,10 @@
   "navigation.chats": "Messages",
   "navigation.groups": "Groups",
   "navigation.discover": "Discover",
-  "navigation.settings": "Settings"
+  "navigation.settings": "Settings",
+
+  "onboarding.page1": "Welcome to Chatirdek",
+  "onboarding.page2": "Chatirdek is a social media platform that allows users to communicate with each other.",
+  "onboarding.page3": "Chatirdek allows users to message each other, send friend requests and create groups.",
+  "onboarding.button": "Get Started"
 }

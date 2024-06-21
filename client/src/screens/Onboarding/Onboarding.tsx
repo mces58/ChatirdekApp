@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, View, ViewToken } from 'react-native';
 import Animated, {
   useAnimatedRef,
@@ -14,7 +14,7 @@ import RenderItem from './components/RenderItem';
 
 import data, { OnboardingData } from './data';
 
-const Onboarding: FC<OnboardingProps> = ({ navigation }) => {
+const Onboarding: React.FC<OnboardingProps> = ({ navigation }) => {
   const flatListRef = useAnimatedRef<FlatList<OnboardingData>>();
   const x = useSharedValue<number>(0);
   const flatListIndex = useSharedValue<number>(0);

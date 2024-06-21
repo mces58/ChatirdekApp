@@ -177,5 +177,10 @@
   "navigation.chats": "Mesajlar",
   "navigation.groups": "Gruplar",
   "navigation.discover": "Keşfet",
-  "navigation.settings": "Ayarlar"
+  "navigation.settings": "Ayarlar",
+
+  "onboarding.page1": "Chatirdek'e Hoşgeldiniz",
+  "onboarding.page2": "Chatirdek, arkadaşlarınızla ve ailenizle iletişim kurmanızı sağlayan bir sosyal medya platformudur.",
+  "onboarding.page3": "Chatirdek ile mesajlaşabilir, arkadaşlık isteği gönderebilir ve gruplar oluşturabilirsiniz.",
+  "onboarding.button": "Hadi Başlayalım"
 }

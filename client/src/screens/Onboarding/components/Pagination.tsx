@@ -5,11 +5,11 @@ import { SharedValue } from 'react-native-reanimated';
 import { OnboardingData } from '../data';
 import Dot from './Dot';
 
-type Props = {
+interface PaginationProps {
   data: OnboardingData[];
   x: SharedValue<number>;
-};
-const Pagination = ({ data, x }: Props) => {
+}
+const Pagination: React.FC<PaginationProps> = ({ data, x }) => {
   return (
     <View style={styles.paginationContainer}>
       {data.map((_, index) => {

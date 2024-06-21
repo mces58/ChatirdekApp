@@ -8,12 +8,14 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 
-type Props = {
+import { Colors } from 'src/constants/color/colors';
+
+interface DotProps {
   index: number;
   x: SharedValue<number>;
-};
+}
 
-const Dot = ({ index, x }: Props) => {
+const Dot: React.FC<DotProps> = ({ index, x }) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
 
   const animatedDotStyle = useAnimatedStyle(() => {
@@ -40,7 +42,11 @@ const Dot = ({ index, x }: Props) => {
     const backgroundColor = interpolateColor(
       x.value,
       [0, SCREEN_WIDTH, 2 * SCREEN_WIDTH],
-      ['#005b4f', '#1e2169', '#F15937']
+      [
+        Colors.primaryColors.dark,
+        Colors.primaryColors.darkBlue,
+        Colors.primaryColors.orange,
+      ]
     );
 
     return {
@@ -55,8 +61,9 @@ export default Dot;
 
 const styles = StyleSheet.create({
   dots: {
-    height: 10,
+    width: 15,
+    height: 15,
     marginHorizontal: 10,
-    borderRadius: 5,
+    borderRadius: 50,
   },
 });

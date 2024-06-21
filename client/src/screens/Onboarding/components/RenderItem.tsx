@@ -11,13 +11,13 @@ import LottieView from 'lottie-react-native';
 
 import { OnboardingData } from '../data';
 
-type Props = {
+interface RenderItemProps {
   index: number;
   x: SharedValue<number>;
   item: OnboardingData;
-};
+}
 
-const RenderItem = ({ index, x, item }: Props) => {
+const RenderItem: React.FC<RenderItemProps> = ({ index, x, item }) => {
   const { width: SCREEN_WIDTH } = useWindowDimensions();
 
   const lottieAnimationStyle = useAnimatedStyle(() => {
@@ -65,8 +65,8 @@ const RenderItem = ({ index, x, item }: Props) => {
         <LottieView
           source={item.animation}
           style={{
-            width: SCREEN_WIDTH * 0.9,
-            height: SCREEN_WIDTH * 0.9,
+            width: SCREEN_WIDTH * 0.7,
+            height: SCREEN_WIDTH * 0.7,
             marginTop: 50,
           }}
           autoPlay
@@ -88,9 +88,9 @@ const styles = StyleSheet.create({
     marginBottom: 120,
   },
   itemText: {
+    fontFamily: 'Poppins-Bold',
     textAlign: 'center',
-    fontSize: 44,
-    fontWeight: 'bold',
+    fontSize: 20,
     marginBottom: 10,
     marginHorizontal: 20,
   },
