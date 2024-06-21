@@ -4,6 +4,7 @@ import Group from 'src/models/group.model';
 import GroupMessage from 'src/models/groupMessage.model';
 import { base64ToImage, base64ToSound } from 'src/utils/base64ToImage.util';
 import { uploadImage, uploadSound } from 'src/utils/cloudinary.util';
+import { decrypt, encrypt } from 'src/utils/crypto.util';
 import handleErrors from 'src/utils/error.util';
 import removeLocalImage from 'src/utils/removeLocalImage.util';
 
@@ -33,6 +34,12 @@ export const getGroupLastMessage = async (req, res) => {
           .populate('senderId')
           .select('message createdAt senderId image audio');
 
+        if (lastMessage) {
+          lastMessage.message = lastMessage.message ? decrypt(lastMessage.message) : null;
+          lastMessage.image = lastMessage.image ? decrypt(lastMessage.image) : null;
+          lastMessage.audio = lastMessage.audio ? decrypt(lastMessage.audio) : null;
+        }
+
         return {
           ...group.toObject(),
           lastMessage,
@@ -57,6 +64,7 @@ export const sendGroupImageMessage = async (req, res) => {
   const filePath = path.join(__dirname, `../assets/${Date.now()}.png`);
   const convertedImagePath = base64ToImage(uri, filePath);
   const secureUri = await uploadImage(convertedImagePath);
+  const encryptedUri = encrypt(secureUri);
   try {
     const group = await Group.findOne({ _id: groupId });
     if (!group) {
@@ -66,7 +74,7 @@ export const sendGroupImageMessage = async (req, res) => {
     const groupMessage = new GroupMessage({
       groupId,
       senderId,
-      image: secureUri,
+      image: encryptedUri,
     });
 
     await groupMessage.save();
@@ -90,7 +98,7 @@ export const sendGroupAudioMessage = async (req, res) => {
   const filePath = path.join(__dirname, `../assets/${Date.now()}.mp4`);
   const convertedSoundPath = base64ToSound(uri, filePath);
   const secureUri = await uploadSound(convertedSoundPath);
-
+  const encryptedUri = encrypt(secureUri);
   try {
     const group = await Group.findOne({ _id: groupId });
     if (!group) {
@@ -100,7 +108,7 @@ export const sendGroupAudioMessage = async (req, res) => {
     const groupMessage = new GroupMessage({
       groupId,
       senderId,
-      audio: secureUri,
+      audio: encryptedUri,
     });
 
     await groupMessage.save();

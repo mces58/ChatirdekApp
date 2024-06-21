@@ -8,6 +8,7 @@ import Group from 'src/models/group.model';
 import GroupMessage from 'src/models/groupMessage.model';
 import Message from 'src/models/message.model';
 import User from 'src/models/user.model';
+import { decrypt, encrypt } from 'src/utils/crypto.util';
 import logger from 'src/utils/logger.util';
 
 const app = express();
@@ -29,6 +30,7 @@ io.on('connection', (socket) => {
   logger.info(`User connected${socket.id}`);
 
   socket.on('sendMessage', async ({ senderId, receiverId, message }) => {
+    const encryptedMessage = encrypt(message);
     try {
       if (senderId === receiverId) {
         throw new Error('You cannot send a message to yourself');
@@ -48,7 +50,12 @@ io.on('connection', (socket) => {
         currentUser.friends.includes(receiverId);
 
       if (!areFriends) {
-        throw new Error('You are not friends with this user');
+        socket.emit('messageError', {
+          success: false,
+          message: 'You are not friends with this user',
+        });
+
+        return;
       }
 
       let conversation = await Conversation.findOne({
@@ -64,7 +71,7 @@ io.on('connection', (socket) => {
       const newMessage = new Message({
         senderId,
         receiverId,
-        message,
+        message: encryptedMessage,
       });
 
       conversation.messages.push(newMessage._id);
@@ -83,16 +90,25 @@ io.on('connection', (socket) => {
       }).populate('messages');
 
       if (!conversation) {
-        return socket.emit('getMessagesError', {
+        socket.emit('getMessagesError', {
           success: false,
           message: 'Conversation not found',
         });
+        return;
       }
+
+      const decryptedMessages = conversation.messages.map((msg) => ({
+        ...msg.toObject(),
+        message: msg.message ? decrypt(msg.message) : null,
+        image: msg.image ? decrypt(msg.image) : null,
+        audio: msg.audio ? decrypt(msg.audio) : null,
+      }));
+
       const receiver = await User.findById(receiverId);
 
       socket.emit('messages', {
         success: true,
-        data: { messages: conversation.messages, receiver },
+        data: { messages: decryptedMessages, receiver },
       });
     } catch (error) {
       socket.emit('getMessagesError', { success: false, message: error.message });
@@ -112,10 +128,17 @@ io.on('connection', (socket) => {
 
       const groupMessages = await GroupMessage.find({ groupId }).populate('senderId');
 
+      const decryptedMessages = groupMessages.map((msg) => ({
+        ...msg.toObject(),
+        message: msg.message ? decrypt(msg.message) : null,
+        image: msg.image ? decrypt(msg.image) : null,
+        audio: msg.audio ? decrypt(msg.audio) : null,
+      }));
+
       socket.emit('groupMessages', {
         success: true,
         data: {
-          messages: groupMessages,
+          messages: decryptedMessages,
           participants: group.members,
         },
       });
@@ -125,6 +148,7 @@ io.on('connection', (socket) => {
   });
 
   socket.on('sendGroupMessage', async ({ senderId, groupId, message }) => {
+    const encryptedMessage = encrypt(message);
     try {
       const group = await Group.findOne({ _id: groupId });
       if (!group) {
@@ -148,7 +172,7 @@ io.on('connection', (socket) => {
       const groupMessage = new GroupMessage({
         groupId,
         senderId,
-        message,
+        message: encryptedMessage,
       });
 
       await groupMessage.save();

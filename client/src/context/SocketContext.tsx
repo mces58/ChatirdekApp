@@ -1,5 +1,6 @@
 import React from 'react';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 
 import { io, Socket } from 'socket.io-client';
 
@@ -46,7 +47,7 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
-    const newSocket = io('http://192.168.121.1:5000', {
+    const newSocket = io('http://192.168.236.1:5000', {
       transports: ['websocket'],
     });
     setSocket(newSocket);
@@ -177,6 +178,12 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
       socket.emit('userLogout', { userId });
     }
   };
+
+  if (socket) {
+    socket.on('messageError', (error: any) => {
+      Alert.alert('Error', error.message, [{ text: 'OK' }]);
+    });
+  }
 
   return (
     <SocketContext.Provider

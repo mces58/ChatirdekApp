@@ -55,7 +55,11 @@ const CreateGroupBottomSheet: React.FC<CreateGroupBottomSheetProps> = ({
 
     if (
       Yup.string()
-        .matches(/^[a-zA-Z0-9_]*$/, 'Invalid characters')
+        .required()
+        .trim()
+        .min(3)
+        .max(20)
+        .matches(/^[a-zA-Z0-9_ ]*$/, i18next.t('toast.invalidGroupName'))
         .isValidSync(groupName) === false
     ) {
       ToastAndroid.show(i18next.t('toast.invalidGroupName'), ToastAndroid.SHORT);

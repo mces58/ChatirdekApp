@@ -53,6 +53,8 @@
   "global.offline": "Offline",
   "global.clear": "Clear",
   "global.recording": "Recording...",
+  "global.play": "Play",
+  "global.delete": "Delete",
 
   "alert.success": "Success",
   "alert.error": "Error",

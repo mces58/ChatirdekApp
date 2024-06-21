@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   BackHandler,
-  FlatList,
   NativeModules,
   Platform,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -110,9 +110,10 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     }, [authUser])
   );
 
-  const renderItem = (item: LastMessages) => {
+  const renderItem = (item: LastMessages, index: number) => {
     return (
       <MessageContainer
+        key={index}
         user={item}
         isOnline={isOnline}
         gotoChatRoom={() =>
@@ -126,25 +127,12 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     );
   };
 
-  const renderContent = () => {
-    return (
-      <FlatList
-        data={
-          search.length > 0
-            ? users.filter((user) =>
-                user.receiver.fullName.toLowerCase().includes(search.toLowerCase())
-              )
-            : users
-        }
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => renderItem(item)}
-        showsVerticalScrollIndicator={false}
-      />
-    );
-  };
-
   return (
-    <View style={styles.screenContainer}>
+    <ScrollView
+      style={styles.screenContainer}
+      contentContainerStyle={styles.scrollContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <StatusBar
         style={theme.backgroundColor === Colors.primaryColors.light ? 'dark' : 'light'}
         animated
@@ -192,7 +180,13 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
         </View>
 
         {users.length > 0 ? (
-          renderContent()
+          <View>
+            {users
+              .filter((user) =>
+                user.receiver.userName.toLowerCase().includes(search.toLowerCase())
+              )
+              .map((user, index) => renderItem(user, index))}
+          </View>
         ) : (
           <View style={styles.noMessageContainer}>
             <Text style={styles.noMessageText}>{i18next.t('chat.home.noMessages')}</Text>
@@ -210,7 +204,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           setFriends={setFriends}
         />
       )}
-    </View>
+    </ScrollView>
   );
 };
 
@@ -221,8 +215,11 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     screenContainer: {
       flex: 1,
       backgroundColor: theme.backgroundColor,
+    },
+    scrollContainer: {
       paddingTop: STATUSBAR_HEIGHT,
-      gap: 20,
+      paddingBottom: 100,
+      gap: 10,
     },
     container: {
       flex: 1,

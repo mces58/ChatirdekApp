@@ -42,14 +42,11 @@ const BackHeaderWithUsers: React.FC<BackHeaderWithUsersProps> = ({
         </View>
         <View style={styles.membersContainer}>
           <Text style={styles.membersText}>
-            {meId === group?.owner?.id
-              ? i18next.t('global.you') + ','
-              : group?.owner?.userName + ','}
+            {meId === group?.owner?.id ? i18next.t('global.you') : group?.owner?.userName}
           </Text>
           {group?.members?.slice(0, 3)?.map((member, index) => (
             <Text key={index} style={styles.membersText}>
-              {member.userName}
-              {index === 2 ? '' : ','}
+              {member.id === meId ? i18next.t('global.you') : member.userName}
             </Text>
           ))}
         </View>

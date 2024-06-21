@@ -174,7 +174,7 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
   const fetchMessagesWithDelay = async () => {
     setTimeout(() => {
       getMessages(meId, receiverId);
-    }, 200);
+    }, 500);
   };
 
   return (
@@ -197,17 +197,17 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
           {recordingUri ? (
             <View style={styles.recordingContainer}>
               <Button
-                title="Play"
+                title={i18next.t('global.play')}
                 onPress={playRecording}
                 customStyle={[styles.button, styles.buttonPlay]}
               />
               <Button
-                title="Delete"
+                title={i18next.t('global.delete')}
                 onPress={() => setRecordingUri(null)}
                 customStyle={[styles.button, styles.buttonDelete]}
               />
               <Button
-                title="Send"
+                title={i18next.t('global.send')}
                 onPress={() => {
                   setRecordingUri(null);
                   sendRecordingToServer();

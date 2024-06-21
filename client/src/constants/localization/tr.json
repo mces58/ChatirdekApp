@@ -53,6 +53,8 @@
   "global.offline": "Çevrimdışı",
   "global.clear": "Temizle",
   "global.recording": "Kayıt...",
+  "global.play": "Oynat",
+  "global.delete": "Sil",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",

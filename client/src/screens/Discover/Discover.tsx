@@ -44,7 +44,6 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
   const { StatusBarManager } = NativeModules;
   const STATUSBAR_HEIGHT = Platform.OS === 'ios' ? 20 : StatusBarManager.HEIGHT;
   const styles = useMemo(() => createStyles(theme, STATUSBAR_HEIGHT), [theme]);
-  const [loading, setLoading] = useState<boolean>(false);
   const [notificationCount, setNotificationCount] = useState<number>(
     incomingRequests.length
   );
@@ -82,7 +81,6 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
 
   const handleConnect = async (userId: string) => {
     try {
-      setLoading(true);
       if (authUser) {
         const response: Response = await friendService.sendFriendRequest(
           authUser.token,
@@ -92,12 +90,9 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
         if (response.success) {
           getUsers();
         }
-        setLoading(false);
       }
     } catch (error) {
       console.error(error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -108,7 +103,6 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
       user={user}
       onPressCard={() => navigation.navigate('UserProfile', { user })}
       onPressAddFriend={() => handleConnect(user.id)}
-      loading={loading}
     />
   );
 

@@ -137,7 +137,7 @@ const GroupMemberDetailModal: React.FC<GroupMemberDetailModalProps> = ({
       isVisible={isVisible}
       onClose={onClose}
       content={content}
-      animation={ModalAnimation.RubberBand}
+      animation={ModalAnimation.SlideInUp}
     />
   );
 };

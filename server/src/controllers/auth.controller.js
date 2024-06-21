@@ -1,7 +1,7 @@
 import path from 'path';
 
 import User from 'src/models/user.model';
-import base64ToImage from 'src/utils/base64ToImage.util';
+import { base64ToImage } from 'src/utils/base64ToImage.util';
 import { decode, encode } from 'src/utils/bcryptjs.util';
 import { uploadImage } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
