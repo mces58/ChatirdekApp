@@ -2,8 +2,8 @@ import path from 'path';
 
 import Group from 'src/models/group.model';
 import GroupMessage from 'src/models/groupMessage.model';
-import base64ToImage from 'src/utils/base64ToImage.util';
-import { uploadImage } from 'src/utils/cloudinary.util';
+import { base64ToImage, base64ToSound } from 'src/utils/base64ToImage.util';
+import { uploadImage, uploadSound } from 'src/utils/cloudinary.util';
 import handleErrors from 'src/utils/error.util';
 import removeLocalImage from 'src/utils/removeLocalImage.util';
 
@@ -31,7 +31,7 @@ export const getGroupLastMessage = async (req, res) => {
         const lastMessage = await GroupMessage.findOne({ groupId: group._id })
           .sort({ createdAt: -1 })
           .populate('senderId')
-          .select('message createdAt senderId image');
+          .select('message createdAt senderId image audio');
 
         return {
           ...group.toObject(),
@@ -77,6 +77,40 @@ export const sendGroupImageMessage = async (req, res) => {
     });
 
     removeLocalImage(convertedImagePath);
+  } catch (error) {
+    handleErrors(res, error);
+  }
+};
+
+export const sendGroupAudioMessage = async (req, res) => {
+  const senderId = req.user.id;
+  const { groupId } = req.params;
+  const { uri } = req.body;
+
+  const filePath = path.join(__dirname, `../assets/${Date.now()}.mp4`);
+  const convertedSoundPath = base64ToSound(uri, filePath);
+  const secureUri = await uploadSound(convertedSoundPath);
+
+  try {
+    const group = await Group.findOne({ _id: groupId });
+    if (!group) {
+      return res.status(404).json({ error: 'Group not found' });
+    }
+
+    const groupMessage = new GroupMessage({
+      groupId,
+      senderId,
+      audio: secureUri,
+    });
+
+    await groupMessage.save();
+
+    res.status(201).json({
+      success: true,
+      data: groupMessage,
+    });
+
+    removeLocalImage(convertedSoundPath);
   } catch (error) {
     handleErrors(res, error);
   }

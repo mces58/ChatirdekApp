@@ -6,6 +6,7 @@ export interface GroupMessage {
   senderId: User;
   message: string;
   image: string;
+  audio: string;
   createdAt: string;
 }
 
@@ -26,6 +27,7 @@ export interface GroupLastMessages {
     senderId: User;
     message: string;
     image: string;
+    audio: string;
     createdAt: string;
   };
 }

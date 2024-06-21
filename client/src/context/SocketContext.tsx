@@ -46,7 +46,7 @@ export const SocketContextProvider: React.FC<SocketProviderProps> = ({ children 
   const [onlineUsers, setOnlineUsers] = useState<string[]>([]);
 
   useEffect(() => {
-    const newSocket = io('http://192.168.3.1:5000', {
+    const newSocket = io('http://192.168.121.1:5000', {
       transports: ['websocket'],
     });
     setSocket(newSocket);

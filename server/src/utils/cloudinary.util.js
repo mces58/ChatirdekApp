@@ -11,7 +11,7 @@ cloudinary.config({
 const uploadImage = async (imagePath) => {
   try {
     const result = await cloudinary.uploader.upload(imagePath, {
-      folder: 'CHATIRDEK',
+      folder: 'CHATIRDEK/images',
       resource_type: 'image',
     });
     return result.secure_url;
@@ -20,13 +20,16 @@ const uploadImage = async (imagePath) => {
   }
 };
 
-const deleteImage = async (publicId) => {
+const uploadSound = async (soundPath) => {
   try {
-    const result = await cloudinary.uploader.destroy(publicId);
-    return result;
+    const result = await cloudinary.uploader.upload(soundPath, {
+      folder: 'CHATIRDEK/sounds',
+      resource_type: 'video',
+    });
+    return result.secure_url;
   } catch (error) {
-    throw new Error('Error deleting image');
+    throw new Error('Error uploading sound');
   }
 };
 
-export { uploadImage, deleteImage };
+export { uploadImage, uploadSound };

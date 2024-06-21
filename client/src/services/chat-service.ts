@@ -28,6 +28,23 @@ class ChatService {
     );
     return response;
   };
+
+  public sendAudioMessage = async (
+    token: string,
+    receiverId: string,
+    audioUri: string
+  ): Promise<any> => {
+    const response: Response = await apiService.post(
+      `/messages/send/audio/${receiverId}`,
+      { uri: audioUri },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  };
 }
 
 export default new ChatService();

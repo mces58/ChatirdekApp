@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   getGroupLastMessage,
+  sendGroupAudioMessage,
   sendGroupImageMessage,
 } from 'src/controllers/groupMessage.controller';
 import authentication from 'src/middlewares/authentication.middleware';
@@ -24,6 +25,17 @@ router
     validate(groupMessageValidation.sendGroupImageMessage),
     authentication,
     sendGroupImageMessage
+  );
+
+// @route   POST /api/group/messages/send/audio/:groupId
+// @desc    Send group audio message
+// @access  Private
+router
+  .route('/send/audio/:groupId')
+  .post(
+    validate(groupMessageValidation.sendGroupAudioMessage),
+    authentication,
+    sendGroupAudioMessage
   );
 
 export default router;

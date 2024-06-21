@@ -52,6 +52,7 @@
   "global.online": "Çevrimiçi",
   "global.offline": "Çevrimdışı",
   "global.clear": "Temizle",
+  "global.recording": "Kayıt...",
 
   "alert.success": "Başarılı",
   "alert.error": "Hata",

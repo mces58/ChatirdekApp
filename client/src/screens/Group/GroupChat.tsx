@@ -13,6 +13,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithUsers from 'src/components/headers/BackHeaderWithUsers';
+import AudioPlayer from 'src/components/message/AudioPlayer';
 import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
 import { Group } from 'src/constants/types/group';
@@ -76,14 +77,17 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
     return (
       <View
         key={index}
-        style={
+        style={[
+          message.audio ? { width: '70%' } : {},
           message.senderId.id === meId
             ? [styles.myMessage, styles.shadow]
-            : [styles.theirMessage, styles.shadow]
-        }
+            : [styles.theirMessage, styles.shadow],
+        ]}
       >
         {message.image ? (
           <ImageMessage uri={message.image} />
+        ) : message.audio ? (
+          <AudioPlayer audioUrl={message.audio} />
         ) : (
           <Text
             style={[

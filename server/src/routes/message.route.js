@@ -1,6 +1,10 @@
 import { Router } from 'express';
 
-import { getLastMessages, sendImageMessage } from 'src/controllers/message.controller';
+import {
+  getLastMessages,
+  sendAudioMessage,
+  sendImageMessage,
+} from 'src/controllers/message.controller';
 import authentication from 'src/middlewares/authentication.middleware';
 import validate from 'src/middlewares/validate.middleware';
 import messageValidation from 'src/validations/message.validation';
@@ -18,5 +22,12 @@ router.route('/last-messages').get(authentication, getLastMessages);
 router
   .route('/send/image/:selectedUserId')
   .post(validate(messageValidation.sendImageMessage), authentication, sendImageMessage);
+
+// @route   POST /api/messages/send/audio/:selectedUserId
+// @desc    Send an audio to a specific user
+// @access  Private
+router
+  .route('/send/audio/:selectedUserId')
+  .post(validate(messageValidation.sendImageMessage), authentication, sendAudioMessage);
 
 export default router;

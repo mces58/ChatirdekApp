@@ -52,6 +52,7 @@
   "global.online": "Online",
   "global.offline": "Offline",
   "global.clear": "Clear",
+  "global.recording": "Recording...",
 
   "alert.success": "Success",
   "alert.error": "Error",

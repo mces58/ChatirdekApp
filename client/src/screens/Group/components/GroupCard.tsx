@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import i18next from 'i18next';
 
 import GalleryIcon from 'src/assets/icons/gallery';
+import NoteIcon from 'src/assets/icons/note';
 import { Colors } from 'src/constants/color/colors';
 import { GroupLastMessages } from 'src/constants/types/group-message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -29,7 +30,12 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }
   };
 
   const renderLastMessage = (
-    lastMessage: { image: string; message: string; senderId: { fullName: string } },
+    lastMessage: {
+      image: string;
+      message: string;
+      audio: string;
+      senderId: { fullName: string };
+    },
     isReceiver: boolean
   ) => {
     if (!lastMessage) {
@@ -49,6 +55,23 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }
             </Text>
           )}
           <GalleryIcon width={15} height={15} />
+        </View>
+      );
+    }
+
+    if (lastMessage.audio) {
+      return (
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {isReceiver ? (
+            <Text style={styles.lastMessageText}>{i18next.t('global.you') + ': '}</Text>
+          ) : (
+            <Text style={styles.lastMessageText}>
+              {group?.lastMessage?.senderId.fullName + ': '}
+            </Text>
+          )}
+          <NoteIcon width={15} height={15} />
         </View>
       );
     }

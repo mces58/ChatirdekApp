@@ -4,6 +4,7 @@ export interface Message {
   id: string;
   message: string;
   image: string;
+  audio: string;
   createdAt: string;
   senderId: string;
   receiverId: string;
@@ -22,6 +23,7 @@ export interface LastMessages {
     receiverId: string;
     message: string;
     image: string;
+    audio: string;
     createdAt: string;
   };
 }

@@ -7,4 +7,11 @@ const base64ToImage = (base64String, path) => {
   return path;
 };
 
-export default base64ToImage;
+const base64ToSound = (base64String, path) => {
+  const base64Data = base64String.replace(/^data:audio\/\w+;base64,/, '');
+  const buffer = Buffer.from(base64Data, 'base64');
+  fs.writeFileSync(path, buffer);
+  return path;
+};
+
+export { base64ToImage, base64ToSound };

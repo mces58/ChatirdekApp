@@ -4,6 +4,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import i18next from 'i18next';
 
 import GalleryIcon from 'src/assets/icons/gallery';
+import NoteIcon from 'src/assets/icons/note';
 import NotificationBubble from 'src/components/bubble/NotificationBubble';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
 import { LastMessages } from 'src/constants/types/message';
@@ -24,12 +25,12 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
   const styles = useMemo(() => createStyles(theme), [theme]);
 
   const getMessagePreview = (message: string, isSender: boolean) => {
-    const previewMessage = message.length > 30 ? message.slice(0, 30) + '...' : message;
+    const previewMessage = message?.length > 30 ? message.slice(0, 30) + '...' : message;
     return isSender ? i18next.t('global.you') + ': ' + previewMessage : previewMessage;
   };
 
   const renderLastMessage = (
-    lastMessage: { image: string; message: string },
+    lastMessage: { image: string; audio: string; message: string },
     isReceiver: boolean
   ) => {
     if (!lastMessage) {
@@ -45,6 +46,19 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
             <Text style={styles.lastSeen}>{i18next.t('global.you') + ': '}</Text>
           )}
           <GalleryIcon width={15} height={15} />
+        </View>
+      );
+    }
+
+    if (lastMessage.audio) {
+      return (
+        <View
+          style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+        >
+          {!isReceiver && (
+            <Text style={styles.lastSeen}>{i18next.t('global.you') + ': '}</Text>
+          )}
+          <NoteIcon width={15} height={15} />
         </View>
       );
     }

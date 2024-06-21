@@ -28,6 +28,23 @@ class GroupMessageService {
     );
     return response;
   };
+
+  public sendAudioMessage = async (
+    token: string,
+    groupId: string,
+    audioUri: string
+  ): Promise<any> => {
+    const response: Response = await apiService.post(
+      `/group/messages/send/audio/${groupId}`,
+      { uri: audioUri },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return response;
+  };
 }
 
 export default new GroupMessageService();

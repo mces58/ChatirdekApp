@@ -14,6 +14,7 @@ import { jwtDecode } from 'jwt-decode';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
+import AudioPlayer from 'src/components/message/AudioPlayer';
 import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
 import { Message } from 'src/constants/types/message';
@@ -39,10 +40,8 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const [meId, setMeId] = useState<string>('');
 
   useEffect(() => {
-    if (meId) {
-      getMessages(meId, route.params.receiverId);
-    }
-  }, [meId, route.params.receiverId, getMessages]);
+    getMessages(meId, route.params.receiverId);
+  }, [meId, route.params.receiverId]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -72,6 +71,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
         style={[
           styles.shadow,
           styles.message,
+          message.audio ? { width: '70%' } : {},
           isMyLastMessage ? styles.myLastMessage : {},
           isTheirLastMessage ? styles.theirLastMessage : {},
           message.senderId === meId ? styles.myMessage : styles.theirMessage,
@@ -79,6 +79,8 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       >
         {message.image ? (
           <ImageMessage uri={message.image} />
+        ) : message.audio ? (
+          <AudioPlayer audioUrl={message.audio} />
         ) : (
           <Text style={[styles.text, { fontSize: fontSizeValue }]}>
             {message.message}

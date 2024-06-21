@@ -17,7 +17,17 @@ const sendImageMessage = {
   }),
 };
 
+const sendAudioMessage = {
+  params: Joi.object().keys({
+    selectedUserId: Joi.string().custom(mongoId),
+  }),
+  body: Joi.object().keys({
+    uri: Joi.string().trim().required().label('Audio'),
+  }),
+};
+
 export default {
   messages,
   sendImageMessage,
+  sendAudioMessage,
 };

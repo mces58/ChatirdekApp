@@ -20,6 +20,9 @@ const groupMessageSchema = new mongoose.Schema(
     image: {
       type: String,
     },
+    audio: {
+      type: String,
+    },
   },
   {
     timestamps: true,
