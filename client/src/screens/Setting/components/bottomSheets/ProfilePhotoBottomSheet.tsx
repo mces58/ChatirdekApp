@@ -13,6 +13,11 @@ import BinIcon from 'src/assets/icons/bin';
 import CameraIcon from 'src/assets/icons/camera';
 import GalleryIcon from 'src/assets/icons/gallery';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -86,17 +91,31 @@ const ProfilePhotoBottomSheet: React.FC<ProfilePhotoBottomSheetProps> = ({
   const items = [
     {
       title: i18next.t('global.camera'),
-      icon: <CameraIcon width={30} height={30} strokeWidth={3} />,
+      icon: (
+        <CameraIcon
+          width={ScaleHorizontal(27)}
+          height={ScaleVertical(27)}
+          strokeWidth={3}
+        />
+      ),
       onPress: camera,
     },
     {
       title: i18next.t('global.gallery'),
-      icon: <GalleryIcon width={30} height={30} strokeWidth={3} />,
+      icon: (
+        <GalleryIcon
+          width={ScaleHorizontal(27)}
+          height={ScaleVertical(27)}
+          strokeWidth={3}
+        />
+      ),
       onPress: gallery,
     },
     {
       title: i18next.t('global.remove'),
-      icon: <BinIcon width={30} height={30} strokeWidth={3} />,
+      icon: (
+        <BinIcon width={ScaleHorizontal(27)} height={ScaleVertical(27)} strokeWidth={3} />
+      ),
       onPress: removePhoto,
     },
   ];
@@ -136,16 +155,16 @@ export default ProfilePhotoBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.25,
+      height: SCREEN_HEIGHT * ScaleVertical(0.22),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
       gap: 15,
     },
     container: {
@@ -154,7 +173,7 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       gap: 10,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(17),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
     },
@@ -162,7 +181,7 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       width: '100%',
       flexDirection: 'row',
       justifyContent: 'space-around',
-      marginTop: 10,
+      marginTop: ScaleVertical(10),
     },
     item: {
       alignItems: 'center',
@@ -171,12 +190,13 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
     iconOutline: {
       borderWidth: 1,
       borderColor: theme.textColor,
-      borderRadius: 50,
-      padding: 10,
+      borderRadius: ScaleHorizontal(50),
+      paddingHorizontal: ScaleHorizontal(9),
+      paddingVertical: ScaleVertical(9),
     },
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
     },
   });

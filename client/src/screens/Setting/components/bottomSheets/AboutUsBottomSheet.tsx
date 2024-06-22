@@ -1,10 +1,15 @@
 import React, { useMemo } from 'react';
-import { ScrollView, StyleSheet, Text, useWindowDimensions } from 'react-native';
+import { ScrollView, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 
 import i18next from 'i18next';
 
 import Logo from 'src/assets/icons/logo';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface AboutUsBottomSheetProps {
@@ -29,6 +34,10 @@ const AboutUsBottomSheet: React.FC<AboutUsBottomSheetProps> = ({
       <Logo width={2100} height={330} />
 
       <Text style={styles.text}>{i18next.t('settings.aboutus.message')}</Text>
+
+      <View style={styles.versionContainer}>
+        <Text style={styles.text}>{i18next.t('settings.aboutus.version')}</Text>
+      </View>
     </ScrollView>
   );
 
@@ -49,16 +58,16 @@ export default AboutUsBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.5,
+      height: SCREEN_HEIGHT * ScaleVertical(0.4),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
     },
     container: {
       flex: 1,
@@ -66,13 +75,17 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
     scrollViewContent: {
       justifyContent: 'center',
       alignItems: 'center',
-      paddingHorizontal: 10,
-      paddingVertical: 20,
-      gap: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(18),
+      gap: 20,
     },
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textMutedColor,
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
+    },
+    versionContainer: {
+      height: ScaleVertical(100),
+      justifyContent: 'flex-end',
     },
   });

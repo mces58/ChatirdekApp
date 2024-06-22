@@ -9,6 +9,11 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -29,8 +34,8 @@ const ProfileContainer: React.FC<ProfileContainerProps> = ({
   onPress,
   icon,
   componentSize = {
-    width: 100,
-    height: 100,
+    width: ScaleHorizontal(90),
+    height: ScaleVertical(90),
   },
   showUserNames = true,
   textStyles,
@@ -71,8 +76,8 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 16,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(15),
+      paddingVertical: ScaleVertical(10),
     },
     row: {
       flexDirection: 'row',
@@ -83,17 +88,12 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
       gap: 1,
     },
     fullName: {
-      fontSize: (textStyles as TextStyle)?.fontSize ?? 18,
+      fontSize: (textStyles as TextStyle)?.fontSize ?? ScaleFontSize(16),
       fontFamily: 'Poppins-SemiBold',
     },
     userName: {
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       fontFamily: 'Poppins-Medium',
-      color: theme.textMutedColor,
-    },
-    typing: {
-      fontSize: 12,
-      fontFamily: 'Poppins-Regular',
       color: theme.textMutedColor,
     },
   });

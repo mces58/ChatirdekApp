@@ -15,12 +15,13 @@ import ArrowIcon from 'src/assets/icons/arrow';
 import CalendarIcon from 'src/assets/icons/calendar';
 import GhostIcon from 'src/assets/icons/ghost';
 import IdIcon from 'src/assets/icons/id';
-import InfoIcon from 'src/assets/icons/info';
+import QuotationIcon from 'src/assets/icons/quotation';
 import SetProfileValueBottomSheet from 'src/components/bottomSheet/SetProfileValueBottomSheet';
 import BackHeader from 'src/components/headers/BackHeader';
 import ListInfo from 'src/components/list/ListUserInfo';
 import ChangeProfileImage from 'src/components/profileContainer/ChangeProfileImage';
 import ProfileModal from 'src/components/profileContainer/ProfileModal';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { ProfileProps } from 'src/navigations/RootStackParamList';
@@ -50,7 +51,13 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
     <View style={styles.container}>
       <BackHeader
         title={i18next.t('global.back')}
-        icon={<ArrowIcon width={25} height={25} direction="left" />}
+        icon={
+          <ArrowIcon
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
+            direction="left"
+          />
+        }
         onPress={() => {
           navigation.goBack();
         }}
@@ -65,7 +72,7 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
       />
       <ChangeProfileImage
         imageUri={image ? image : route?.params?.user?.avatar}
-        componentSize={{ width: 200, height: 200 }}
+        componentSize={{ width: ScaleHorizontal(160), height: ScaleVertical(160) }}
         onPressImage={() => setModalVisible(true)}
         onPressIcon={() => setProfilePhotoBoxVisible(true)}
       />
@@ -73,28 +80,34 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
       <ListInfo
         title={i18next.t('global.fullName')}
         text={user?.fullName}
-        icon={<IdIcon width={30} height={30} />}
+        icon={<IdIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         onPress={() => setFullNameBoxVisible(true)}
       />
 
       <ListInfo
         title={i18next.t('global.username')}
         text={user?.userName}
-        icon={<GhostIcon width={30} height={30} />}
+        icon={<GhostIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         onPress={() => setUserNameBoxVisible(true)}
       />
 
       <ListInfo
         title={i18next.t('global.about')}
         text={user?.about}
-        icon={<InfoIcon width={30} height={30} strokeWidth={1} />}
+        icon={<QuotationIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         onPress={() => setAboutBoxVisible(true)}
       />
 
       <ListInfo
         title={i18next.t('global.createdAt')}
         text={user?.createdAt.split('T')[0]}
-        icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
+        icon={
+          <CalendarIcon
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
+            strokeWidth={1}
+          />
+        }
         disabled
       />
 

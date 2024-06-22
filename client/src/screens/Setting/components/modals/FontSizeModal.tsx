@@ -6,6 +6,11 @@ import i18next from 'i18next';
 import CloseIcon from 'src/assets/icons/close';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { FontSize, fontSizes, useFontSize } from 'src/context/FontSizeContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -46,7 +51,11 @@ const FontSizeModal: React.FC<FontSizeModalProps> = ({ isVisible, onClose }) => 
   const content = (
     <View style={styles.modalContent}>
       <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <CloseIcon width={30} height={30} customColor={Colors.primaryColors.danger} />
+        <CloseIcon
+          width={ScaleHorizontal(25)}
+          height={ScaleVertical(25)}
+          customColor={Colors.primaryColors.danger}
+        />
       </TouchableOpacity>
       <Text style={styles.title}>{i18next.t('settings.chatsBottomSheet.FontSize')}</Text>
 
@@ -65,20 +74,21 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     modalContent: {
       backgroundColor: theme.backgroundColor,
-      padding: 20,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(20),
+      paddingVertical: ScaleVertical(20),
+      borderRadius: ScaleHorizontal(20),
       alignItems: 'center',
       gap: 20,
     },
     title: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       fontFamily: 'Poppins-Bold',
       color: theme.textColor,
     },
     closeButton: {
       position: 'absolute',
-      top: 10,
-      right: 10,
+      top: ScaleVertical(10),
+      right: ScaleHorizontal(10),
     },
     container: {
       width: '100%',
@@ -91,30 +101,30 @@ const createStyles = (theme: Theme) =>
       gap: 10,
     },
     circle: {
-      borderWidth: 1.5,
+      borderWidth: ScaleHorizontal(1.5),
       borderColor: theme.borderColor,
       padding: 2,
-      borderRadius: 50,
+      borderRadius: ScaleHorizontal(50),
     },
     actionButton: {
       backgroundColor: Colors.primaryColors.success,
-      borderRadius: 50,
-      height: 12,
-      width: 12,
+      borderRadius: ScaleHorizontal(50),
+      height: ScaleVertical(12),
+      width: ScaleHorizontal(12),
       justifyContent: 'center',
       alignItems: 'center',
     },
     defaultButton: {
       backgroundColor: 'transparent',
-      borderRadius: 50,
-      height: 12,
-      width: 12,
+      borderRadius: ScaleHorizontal(50),
+      height: ScaleVertical(12),
+      width: ScaleHorizontal(12),
       justifyContent: 'center',
       alignItems: 'center',
     },
     text: {
       color: theme.textColor,
-      fontSize: 16,
+      fontSize: ScaleFontSize(13),
       fontFamily: 'Nunito-Regular',
     },
   });

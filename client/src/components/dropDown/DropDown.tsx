@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   placeholderStyle: {
     fontFamily: 'Nunito-Medium',
     fontSize: 14,
-    color: Colors.primaryColors.dark,
+    color: Colors.primaryColors.textMuted,
   },
   selectedTextStyle: {
     fontFamily: 'Nunito-Medium',

@@ -6,6 +6,11 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 
 interface RegisterModalProps {
   isVisible: boolean;
@@ -44,22 +49,22 @@ export default RegisterModal;
 const styles = StyleSheet.create({
   modalContent: {
     backgroundColor: Colors.primaryColors.beige,
-    paddingHorizontal: 20,
-    paddingVertical: 30,
-    borderRadius: 20,
+    paddingHorizontal: ScaleHorizontal(20),
+    paddingVertical: ScaleVertical(30),
+    borderRadius: ScaleHorizontal(20),
     alignItems: 'center',
     gap: 20,
   },
   closeButton: {
-    width: 30,
-    height: 30,
+    width: ScaleHorizontal(30),
+    height: ScaleVertical(30),
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    top: 10,
-    right: 10,
+    top: ScaleVertical(10),
+    right: ScaleHorizontal(10),
     backgroundColor: Colors.primaryColors.danger,
-    borderRadius: 50,
+    borderRadius: ScaleHorizontal(50),
   },
   textContainer: {
     alignItems: 'center',
@@ -67,26 +72,26 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 20,
+    fontSize: ScaleFontSize(20),
     color: Colors.primaryColors.dark,
     textAlign: 'center',
   },
   message: {
     fontFamily: 'Nunito-Regular',
-    fontSize: 16,
+    fontSize: ScaleFontSize(13.5),
     color: Colors.primaryColors.dark,
     textAlign: 'center',
   },
   button: {
-    height: 40,
-    paddingHorizontal: 20,
+    height: ScaleVertical(40),
+    paddingHorizontal: ScaleHorizontal(20),
     backgroundColor: Colors.primaryColors.primary,
-    borderRadius: 50,
+    borderRadius: ScaleHorizontal(50),
     alignItems: 'center',
   },
   buttonText: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 14,
+    fontSize: ScaleFontSize(14),
     color: Colors.primaryColors.beige,
   },
 });

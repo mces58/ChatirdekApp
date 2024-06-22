@@ -2,6 +2,11 @@ import React, { useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import PenIcon from 'src/assets/icons/pen';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface ListInfoProps {
@@ -26,7 +31,13 @@ const ListInfo: React.FC<ListInfoProps> = ({ title, text, icon, onPress, disable
           </View>
         </View>
 
-        {!disabled && <PenIcon width={25} height={25} strokeWidth={3} />}
+        {!disabled && (
+          <PenIcon
+            width={ScaleHorizontal(22)}
+            height={ScaleVertical(22)}
+            strokeWidth={3}
+          />
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -37,11 +48,11 @@ export default ListInfo;
 const createStyles = (theme: Theme) =>
   StyleSheet.create({
     outline: {
-      marginTop: 40,
-      paddingHorizontal: 20,
-      borderBottomWidth: 1,
+      marginTop: ScaleVertical(35),
+      paddingHorizontal: ScaleHorizontal(18),
+      borderBottomWidth: ScaleHorizontal(1),
       borderBottomColor: theme.borderColor,
-      paddingBottom: 10,
+      paddingBottom: ScaleVertical(10),
     },
     item: {
       width: '97%',
@@ -58,12 +69,12 @@ const createStyles = (theme: Theme) =>
       gap: 5,
     },
     headerText: {
-      fontSize: 12,
+      fontSize: ScaleFontSize(11),
       color: theme.textMutedColor,
       fontFamily: 'Nunito-Bold',
     },
     text: {
-      fontSize: 16,
+      fontSize: ScaleFontSize(13.5),
       color: theme.textColor,
       fontFamily: 'Poppins-SemiBold',
     },

@@ -3,6 +3,11 @@ import { Image, Modal, StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import CrossIcon from 'src/assets/icons/cross';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 
 interface ProfileModalProps {
   imageUri: string;
@@ -15,7 +20,11 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ imageUri, isVisible, onClos
     <Modal visible={isVisible} transparent={true} animationType="fade">
       <View style={styles.modalContainer}>
         <TouchableOpacity style={styles.modalCloseButton} onPress={onClose}>
-          <CrossIcon width={20} height={20} customColor={Colors.primaryColors.beige} />
+          <CrossIcon
+            width={ScaleHorizontal(18)}
+            height={ScaleVertical(18)}
+            customColor={Colors.primaryColors.beige}
+          />
         </TouchableOpacity>
         <Image source={{ uri: imageUri }} style={styles.fullScreenImage} />
       </View>
@@ -34,13 +43,13 @@ const styles = StyleSheet.create({
   },
   modalCloseButton: {
     position: 'absolute',
-    top: 50,
-    right: 20,
+    top: ScaleVertical(30),
+    right: ScaleHorizontal(15),
     zIndex: 1,
   },
   modalCloseText: {
     color: Colors.primaryColors.beige,
-    fontSize: 20,
+    fontSize: ScaleFontSize(18),
   },
   fullScreenImage: {
     flex: 1,

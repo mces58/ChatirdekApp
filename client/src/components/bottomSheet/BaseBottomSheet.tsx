@@ -33,9 +33,9 @@ const BaseBottomSheet = (props: BaseBottomSheetProps) => {
             alignSelf: 'center',
             width: ScaleHorizontal(100),
             height: ScaleVertical(1),
-            borderWidth: ScaleVertical(3.045),
+            borderWidth: ScaleHorizontal(3.045),
             borderColor: theme.borderColor,
-            borderRadius: ScaleVertical(10),
+            borderRadius: ScaleHorizontal(10),
             backgroundColor: theme.borderColor,
           }}
         />

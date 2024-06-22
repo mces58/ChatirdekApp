@@ -9,6 +9,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 
 interface DotProps {
   index: number;
@@ -61,9 +62,9 @@ export default Dot;
 
 const styles = StyleSheet.create({
   dots: {
-    width: 15,
-    height: 15,
-    marginHorizontal: 10,
-    borderRadius: 50,
+    width: ScaleHorizontal(15),
+    height: ScaleVertical(15),
+    marginHorizontal: ScaleHorizontal(9),
+    borderRadius: ScaleHorizontal(50),
   },
 });

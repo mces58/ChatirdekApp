@@ -4,7 +4,7 @@ import Joi from 'joi';
 const register = {
   body: Joi.object().keys({
     fullName: Joi.string().trim().min(2).max(50).required().label('Full Name'),
-    userName: Joi.string().alphanum().min(2).max(30).required().label('Username'),
+    userName: Joi.string().min(2).max(30).required().label('Username'),
     email: Joi.string().trim().email().required().label('Email'),
     password: Joi.string().min(6).required().label('Password'),
     confirmPassword: Joi.string()
@@ -17,7 +17,7 @@ const register = {
 
 const login = {
   body: Joi.object().keys({
-    userName: Joi.string().alphanum().min(2).max(30).required().label('Username'),
+    userName: Joi.string().min(2).max(30).required().label('Username'),
     password: Joi.string().min(6).required().label('Password'),
   }),
 };
@@ -42,7 +42,7 @@ const resetPassword = {
 const updateProfile = {
   body: Joi.object().keys({
     fullName: Joi.string().trim().min(2).max(50).label('Full Name'),
-    userName: Joi.string().alphanum().min(2).max(30).label('Username'),
+    userName: Joi.string().min(2).max(30).label('Username'),
     email: Joi.string().trim().email().label('Email'),
     gender: Joi.string().valid('male', 'female').label('Gender'),
     avatar: Joi.string().label('Avatar'),

@@ -5,6 +5,11 @@ import i18next from 'i18next';
 
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -35,10 +40,10 @@ const OutgoingRequests: React.FC<OutgoingRequestsProps> = ({
     >
       <ProfileContainer
         user={request}
-        componentSize={{ width: 50, height: 50 }}
+        componentSize={{ width: ScaleHorizontal(40), height: ScaleVertical(40) }}
         showUserNames={false}
         disabled
-        textStyles={{ fontSize: 14, color: Colors.primaryColors.dark }}
+        textStyles={{ fontSize: ScaleFontSize(12), color: Colors.primaryColors.dark }}
       />
 
       <TouchableOpacity onPress={() => onUndoRequest(request.id)} style={styles.button}>
@@ -66,7 +71,7 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flex: 1,
-      marginTop: 30,
+      marginTop: ScaleVertical(28),
     },
     userContainer: {
       flexDirection: 'row',
@@ -74,25 +79,26 @@ const createStyles = (theme: Theme) =>
       justifyContent: 'space-between',
       backgroundColor: theme.borderColor,
       width: '100%',
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      borderRadius: 20,
-      marginBottom: 20,
+      paddingVertical: ScaleVertical(5),
+      paddingHorizontal: ScaleHorizontal(8),
+      borderRadius: ScaleHorizontal(20),
+      marginBottom: ScaleVertical(18),
     },
     button: {
-      backgroundColor: Colors.primaryColors.linearGradient2,
-      padding: 10,
-      borderRadius: 10,
+      backgroundColor: Colors.primaryColors.success,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
     },
     buttonText: {
       fontFamily: 'Nunito-SemiBold',
       color: Colors.primaryColors.light,
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
     },
     noRequestsText: {
       fontFamily: 'Poppins-SemiBold',
       color: theme.textColor,
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       textAlign: 'center',
     },
     shadow: {

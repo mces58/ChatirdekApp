@@ -15,11 +15,13 @@ import animation from 'src/assets/animatons/user-profile.json';
 import ArrowIcon from 'src/assets/icons/arrow';
 import CalendarIcon from 'src/assets/icons/calendar';
 import GenderIcon from 'src/assets/icons/gender';
-import { GroupPeopleIcon } from 'src/assets/icons/headers';
+import GhostIcon from 'src/assets/icons/ghost';
 import InfoIcon from 'src/assets/icons/info';
+import QuotationIcon from 'src/assets/icons/quotation';
 import Card from 'src/components/cards/Card';
 import BackHeader from 'src/components/headers/BackHeader';
 import ProfileWithText from 'src/components/profileContainer/ProfileWithText';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { UserProfileProps } from 'src/navigations/RootStackParamList';
@@ -36,32 +38,56 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
     <View style={styles.screenContainer}>
       <BackHeader
         title={user?.userName}
-        icon={<ArrowIcon width={25} height={25} direction="left" />}
+        icon={
+          <ArrowIcon
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
+            direction="left"
+          />
+        }
         onPress={() => navigation.goBack()}
-        componentSize={{ height: 80 }}
+        componentSize={{ height: ScaleVertical(75) }}
       />
       <View style={styles.container}>
         <ProfileWithText
           text={user?.fullName}
           imageUri={user?.hideAvatar ? `https://robohash.org/${user?.id}` : user?.avatar}
-          componentSize={{ width: 150, height: 150 }}
+          componentSize={{ width: ScaleHorizontal(125), height: ScaleVertical(125) }}
         />
 
         <View style={styles.userContainer}>
           <Card
             title={i18next.t('global.createdAt')}
-            text={user?.createdAt?.split('T')[0]}
-            icon={<CalendarIcon width={25} height={25} strokeWidth={1.5} />}
+            text={new Date(user?.createdAt).toLocaleDateString()}
+            icon={
+              <CalendarIcon
+                width={ScaleHorizontal(22)}
+                height={ScaleVertical(22)}
+                strokeWidth={1.5}
+              />
+            }
           />
           <Card
             title={i18next.t('global.email')}
             text={user?.email}
-            icon={<InfoIcon width={25} height={25} strokeWidth={1.5} />}
+            icon={
+              <InfoIcon
+                width={ScaleHorizontal(22)}
+                height={ScaleVertical(22)}
+                strokeWidth={1.5}
+              />
+            }
           />
           <Card
             title={i18next.t('global.friendCount')}
             text={user?.friends?.length.toString()}
-            icon={<GroupPeopleIcon width={25} height={25} strokeWidth={1.5} />}
+            icon={
+              <GhostIcon
+                width={ScaleHorizontal(22)}
+                height={ScaleVertical(22)}
+                strokeWidth={1.5}
+              />
+            }
           />
           <Card
             title={i18next.t('global.gender')}
@@ -70,13 +96,25 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
                 ? i18next.t('global.male')
                 : i18next.t('global.female')
             }
-            icon={<GenderIcon width={25} height={25} strokeWidth={0.8} />}
+            icon={
+              <GenderIcon
+                width={ScaleHorizontal(22)}
+                height={ScaleVertical(22)}
+                strokeWidth={0.8}
+              />
+            }
           />
           {user?.hideAbout ? null : (
             <Card
               title={i18next.t('global.about')}
               text={user?.about ? user.about : '...'}
-              icon={<GroupPeopleIcon width={25} height={25} strokeWidth={1.5} />}
+              icon={
+                <QuotationIcon
+                  width={ScaleHorizontal(22)}
+                  height={ScaleVertical(22)}
+                  strokeWidth={1.5}
+                />
+              }
             />
           )}
         </View>
@@ -87,8 +125,8 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
               source={animation}
               style={{
                 width: SCREEN_WIDTH,
-                height: SCREEN_WIDTH * 0.6,
-                marginTop: 20,
+                height: SCREEN_WIDTH * ScaleVertical(0.5),
+                marginTop: ScaleVertical(18),
               }}
               autoPlay
               loop
@@ -113,13 +151,13 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     container: {
       flex: 1,
-      paddingVertical: 10,
+      paddingVertical: ScaleVertical(8),
       gap: 20,
     },
     userContainer: {
       alignItems: 'center',
       gap: 25,
-      paddingBottom: 25,
+      paddingBottom: ScaleVertical(20),
     },
     animationContainer: {
       flex: 1,

@@ -14,6 +14,11 @@ import { jwtDecode } from 'jwt-decode';
 import { GroupPeopleIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
 import LoadingIndicator from 'src/components/loading/Loading';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { GroupLastMessages } from 'src/constants/types/group-message';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
@@ -93,13 +98,13 @@ const Group: React.FC<GroupProps> = ({ navigation }) => {
       style={styles.screenContainer}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingBottom: 100,
+        paddingBottom: ScaleVertical(90),
       }}
       showsVerticalScrollIndicator={false}
     >
       <Header
         title={i18next.t('group.group.header')}
-        icon={<GroupPeopleIcon width={30} height={30} />}
+        icon={<GroupPeopleIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         onIconPress={() => setCreateGroupBottomSheetVisible(true)}
       />
       {loading ? (
@@ -144,8 +149,8 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       paddingTop: STATUSBAR_HEIGHT,
     },
     container: {
-      paddingHorizontal: 20,
-      paddingVertical: 20,
+      paddingHorizontal: ScaleHorizontal(15),
+      paddingVertical: ScaleVertical(15),
       gap: 20,
       alignItems: 'center',
     },
@@ -156,7 +161,7 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     noGroupText: {
       fontFamily: 'Poppins-Regular',
-      fontSize: 20,
+      fontSize: ScaleFontSize(16),
       color: theme.textColor,
       textAlign: 'center',
     },

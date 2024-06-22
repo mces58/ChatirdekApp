@@ -15,6 +15,11 @@ import SendMessageIcon from 'src/assets/icons/send-message';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -70,10 +75,10 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
     >
       <ProfileContainer
         user={user}
-        componentSize={{ width: 50, height: 50 }}
+        componentSize={{ width: ScaleHorizontal(40), height: ScaleVertical(40) }}
         showUserNames={false}
         disabled
-        textStyles={{ fontSize: 16 }}
+        textStyles={{ fontSize: ScaleFontSize(14) }}
       />
 
       <View style={styles.buttonContainer}>
@@ -89,8 +94,8 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
           }}
         >
           <SendMessageIcon
-            width={20}
-            height={20}
+            width={ScaleHorizontal(18)}
+            height={ScaleVertical(18)}
             customColor={Colors.primaryColors.light}
             strokeWidth={4}
           />
@@ -100,8 +105,8 @@ const FriendsBottomSheet: React.FC<FriendsBoxBottomSheetProps> = ({
           onPress={() => removeFriend(user.id)}
         >
           <BinIcon
-            width={20}
-            height={20}
+            width={ScaleHorizontal(18)}
+            height={ScaleVertical(18)}
             strokeWidth={4}
             customColor={Colors.primaryColors.beige}
           />
@@ -146,16 +151,16 @@ export default FriendsBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.6,
+      height: SCREEN_HEIGHT * ScaleVertical(0.5),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(10),
       gap: 20,
     },
     container: {
@@ -163,11 +168,11 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       gap: 20,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
       textAlign: 'center',
-      borderBottomWidth: 1,
+      borderBottomWidth: ScaleHorizontal(1),
       borderBottomColor: theme.borderColor,
     },
     userContainer: {
@@ -176,9 +181,9 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       justifyContent: 'space-between',
       backgroundColor: theme.borderColor,
       width: '100%',
-      paddingVertical: 10,
-      paddingRight: 15,
-      borderRadius: 20,
+      paddingVertical: ScaleVertical(8),
+      paddingRight: ScaleHorizontal(10),
+      borderRadius: ScaleHorizontal(20),
     },
     buttonContainer: {
       flexDirection: 'row',
@@ -187,18 +192,18 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
     },
     messageButton: {
       backgroundColor: Colors.primaryColors.primary,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 20,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(20),
     },
     deleteButton: {
       backgroundColor: Colors.primaryColors.danger,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 20,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(20),
     },
     noFriendContainer: {
-      height: 200,
+      height: ScaleFontSize(200),
       justifyContent: 'center',
       alignItems: 'center',
     },

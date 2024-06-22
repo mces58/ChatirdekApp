@@ -7,6 +7,11 @@ import GalleryIcon from 'src/assets/icons/gallery';
 import NoteIcon from 'src/assets/icons/note';
 import NotificationBubble from 'src/components/bubble/NotificationBubble';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { LastMessages } from 'src/constants/types/message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -45,7 +50,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           {!isReceiver && (
             <Text style={styles.lastSeen}>{i18next.t('global.you') + ': '}</Text>
           )}
-          <GalleryIcon width={15} height={15} />
+          <GalleryIcon width={ScaleHorizontal(13)} height={ScaleVertical(13)} />
         </View>
       );
     }
@@ -58,7 +63,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
           {!isReceiver && (
             <Text style={styles.lastSeen}>{i18next.t('global.you') + ': '}</Text>
           )}
-          <NoteIcon width={15} height={15} />
+          <NoteIcon width={ScaleHorizontal(13)} height={ScaleVertical(13)} />
         </View>
       );
     }
@@ -80,8 +85,8 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
                     : user.receiver.avatar
                 }
                 componentSize={{
-                  height: 50,
-                  width: 50,
+                  width: ScaleHorizontal(40),
+                  height: ScaleVertical(40),
                 }}
               />
             </View>
@@ -125,37 +130,37 @@ const createStyles = (theme: Theme) =>
       width: '100%',
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 16,
+      paddingHorizontal: ScaleHorizontal(14),
       gap: 10,
     },
     row: {
       flexDirection: 'row',
       width: '90%',
-      paddingVertical: 20,
+      paddingVertical: ScaleVertical(18),
     },
     userInfoContainer: {
       width: '70%',
-      paddingVertical: 5,
+      paddingVertical: ScaleVertical(5),
     },
     userName: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 14,
+      fontSize: ScaleFontSize(13),
       color: theme.textColor,
     },
     lastSeen: {
       fontFamily: 'Nunito-Regular',
-      fontSize: 12,
+      fontSize: ScaleFontSize(10),
       color: theme.textMutedColor,
     },
     time: {
       position: 'absolute',
-      right: 30,
-      top: 30,
+      right: ScaleHorizontal(30),
+      top: ScaleVertical(30),
       alignItems: 'center',
     },
     timeText: {
       fontFamily: 'Nunito-Bold',
-      fontSize: 12,
+      fontSize: ScaleFontSize(11),
       color: theme.textMutedColor,
     },
     shadow: {

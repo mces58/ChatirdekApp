@@ -16,6 +16,11 @@ import BackHeaderWithUsers from 'src/components/headers/BackHeaderWithUsers';
 import AudioPlayer from 'src/components/message/AudioPlayer';
 import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Group } from 'src/constants/types/group';
 import { GroupMessage } from 'src/constants/types/group-message';
 import { Response } from 'src/constants/types/response';
@@ -109,7 +114,7 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
 
             {
               justifyContent: 'space-between',
-              marginTop: 5,
+              marginTop: ScaleVertical(5),
               gap: 10,
             },
           ]}
@@ -135,19 +140,25 @@ const GroupChat: React.FC<GroupChatProps> = ({ navigation, route }) => {
       <BackHeaderWithUsers
         meId={meId}
         group={group}
-        icon={<ArrowIcon width={30} height={30} direction="left" />}
+        icon={
+          <ArrowIcon
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
+            direction="left"
+          />
+        }
         onPressHeader={() =>
           navigation.navigate('GroupInfo', { groupId: route.params.groupId })
         }
         onPressIcon={() => navigation.goBack()}
-        componentSize={{ height: 100 }}
+        componentSize={{ height: ScaleVertical(85) }}
       />
 
       <ScrollView
         ref={scrollViewRef}
         onContentSizeChange={() => scrollViewRef.current?.scrollToEnd({ animated: true })}
         style={styles.messageList}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={{ paddingBottom: ScaleVertical(20) }}
         showsVerticalScrollIndicator={false}
       >
         {groupMessages.messages?.map((message: GroupMessage, index: number) =>
@@ -171,23 +182,23 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     messageList: {
       width: '100%',
-      paddingHorizontal: 15,
-      paddingVertical: 15,
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingVertical: ScaleVertical(12),
     },
     myMessage: {
       backgroundColor: Colors.primaryColors.linearGradient2,
-      marginVertical: 5,
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      borderRadius: 15,
+      marginVertical: ScaleVertical(5),
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(15),
       alignSelf: 'flex-end',
     },
     theirMessage: {
       backgroundColor: Colors.primaryColors.linearGradient1,
-      marginVertical: 5,
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      borderRadius: 15,
+      marginVertical: ScaleVertical(5),
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(15),
       alignSelf: 'flex-start',
     },
     text: {
@@ -195,7 +206,7 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       color: Colors.primaryColors.dark,
     },
     timestamp: {
-      fontSize: 11,
+      fontSize: ScaleFontSize(10),
       color: Colors.primaryColors.dark,
     },
     shadow: {

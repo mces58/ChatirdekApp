@@ -21,6 +21,7 @@ import LottieView from 'lottie-react-native';
 
 import loginAnimation from 'src/assets/animatons/login.json';
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { useSocket } from 'src/context/SocketContext';
 import LoginForm from 'src/forms/LoginForm';
 import { GetGradientStartEnd } from 'src/utils/rotate';
@@ -92,11 +93,11 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
               styles.lineaderGradient,
               styles.shadow,
               {
-                borderRadius: SCREEN_WIDTH * 0.8,
-                width: SCREEN_WIDTH * 1.5,
-                height: SCREEN_HEIGHT * 0.75,
-                top: -SCREEN_WIDTH * 0.6,
-                left: -SCREEN_WIDTH * 0.25,
+                borderRadius: SCREEN_WIDTH * ScaleHorizontal(0.65),
+                width: SCREEN_WIDTH * ScaleHorizontal(1.25),
+                height: SCREEN_HEIGHT * ScaleVertical(0.7),
+                top: -SCREEN_WIDTH * ScaleVertical(0.6),
+                left: -SCREEN_WIDTH * ScaleHorizontal(0.2),
               },
             ]}
           >
@@ -104,10 +105,10 @@ const Login: React.FC<LoginProps> = ({ navigation }) => {
               <LottieView
                 source={loginAnimation}
                 style={{
-                  width: SCREEN_WIDTH * 0.85,
-                  height: SCREEN_WIDTH * 0.85,
+                  width: SCREEN_WIDTH * ScaleHorizontal(0.8),
+                  height: SCREEN_WIDTH * ScaleVertical(0.8),
                   position: 'absolute',
-                  bottom: -SCREEN_WIDTH * 0.1,
+                  bottom: -SCREEN_WIDTH * ScaleVertical(0.1),
                   transform: [{ rotate: '35deg' }],
                 }}
                 autoPlay

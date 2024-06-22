@@ -6,6 +6,11 @@ import { Audio } from 'expo-av';
 import PlayIcon from 'src/assets/icons/play';
 import StopIcon from 'src/assets/icons/stop';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 
 interface AudioPlayerProps {
   audioUrl: string;
@@ -103,9 +108,17 @@ const AudioPlayer: React.FC<AudioPlayerProps> = ({ audioUrl }) => {
           style={styles.button}
         >
           {isPlaying ? (
-            <StopIcon width={17} height={17} />
+            <StopIcon
+              width={ScaleHorizontal(15)}
+              height={ScaleVertical(15)}
+              customColor={Colors.primaryColors.dark}
+            />
           ) : (
-            <PlayIcon width={17} height={17} />
+            <PlayIcon
+              width={ScaleHorizontal(15)}
+              height={ScaleVertical(15)}
+              customColor={Colors.primaryColors.dark}
+            />
           )}
         </TouchableOpacity>
         <View style={styles.progressContainer}>
@@ -139,17 +152,17 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: Colors.primaryColors.headerColor,
-    paddingHorizontal: 8,
-    paddingVertical: 8,
-    borderRadius: 50,
+    paddingHorizontal: ScaleHorizontal(7),
+    paddingVertical: ScaleVertical(7),
+    borderRadius: ScaleHorizontal(50),
     justifyContent: 'center',
     alignItems: 'center',
   },
   progressContainer: {
     flex: 1,
-    height: 5,
+    height: ScaleVertical(5),
     backgroundColor: Colors.primaryColors.gray,
-    borderRadius: 5,
+    borderRadius: ScaleHorizontal(50),
     overflow: 'hidden',
   },
   progressBar: {
@@ -158,7 +171,7 @@ const styles = StyleSheet.create({
   },
   durationText: {
     fontFamily: 'Nunito-Regular',
-    fontSize: 10,
+    fontSize: ScaleFontSize(9),
     color: Colors.primaryColors.dark,
     alignSelf: 'flex-end',
   },

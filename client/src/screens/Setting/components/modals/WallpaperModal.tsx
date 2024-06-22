@@ -6,6 +6,11 @@ import i18next from 'i18next';
 import CloseIcon from 'src/assets/icons/close';
 import BaseModal from 'src/components/modal/BaseModal';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper, walpaperColors } from 'src/context/WallpaperContext';
 
@@ -38,7 +43,11 @@ const WallpaperModal: React.FC<WallpaperModalProps> = ({ isVisible, onClose }) =
   const content = (
     <View style={styles.modalContent}>
       <TouchableOpacity style={styles.closeButton} onPress={onClose}>
-        <CloseIcon width={30} height={30} customColor={Colors.primaryColors.danger} />
+        <CloseIcon
+          width={ScaleHorizontal(25)}
+          height={ScaleVertical(25)}
+          customColor={Colors.primaryColors.danger}
+        />
       </TouchableOpacity>
       <Text style={styles.title}>
         {i18next.t('settings.chatsBottomSheet.WallpaperColor')}
@@ -70,29 +79,29 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     modalContent: {
       backgroundColor: theme.backgroundColor,
-      paddingHorizontal: 20,
-      paddingVertical: 20,
-      borderRadius: 20,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(18),
+      borderRadius: ScaleHorizontal(20),
       alignItems: 'center',
       gap: 20,
     },
     closeButton: {
       position: 'absolute',
-      top: 10,
-      right: 10,
+      top: ScaleVertical(10),
+      right: ScaleHorizontal(10),
     },
     title: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       fontFamily: 'Poppins-Bold',
       color: theme.textColor,
     },
     selectedColor: {
-      width: 100,
-      height: 100,
-      borderRadius: 50,
+      width: ScaleHorizontal(80),
+      height: ScaleHorizontal(80),
+      borderRadius: ScaleHorizontal(99),
       justifyContent: 'center',
       alignItems: 'center',
-      borderWidth: 3,
+      borderWidth: ScaleHorizontal(2),
       borderColor: theme.borderColor,
     },
     colorContainer: {
@@ -102,23 +111,24 @@ const createStyles = (theme: Theme) =>
       gap: 20,
     },
     colorOption: {
-      width: 60,
-      height: 60,
-      borderRadius: 99,
+      width: ScaleHorizontal(50),
+      height: ScaleHorizontal(50),
+      borderRadius: ScaleHorizontal(99),
     },
     btn: {
       width: '100%',
       alignItems: 'center',
       justifyContent: 'center',
-      borderRadius: 20,
-      padding: 14,
-      borderWidth: 1,
+      borderRadius: ScaleHorizontal(20),
+      paddingVertical: ScaleVertical(10),
+      paddingHorizontal: ScaleHorizontal(10),
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
       backgroundColor: Colors.primaryColors.success,
     },
     btnText: {
       color: Colors.primaryColors.light,
-      fontSize: 16,
+      fontSize: ScaleFontSize(13),
       fontFamily: 'Poppins-Bold',
     },
     shadow: {

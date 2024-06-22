@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, TouchableOpacity } from 'react-native';
 
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
+
 import ProfileModal from '../profileContainer/ProfileModal';
 
 interface ImageMessageProps {
@@ -31,13 +33,13 @@ export default ImageMessage;
 
 const styles = StyleSheet.create({
   imageContainer: {
-    borderRadius: 10,
+    borderRadius: ScaleHorizontal(10),
     overflow: 'hidden',
-    marginVertical: 5,
+    marginVertical: ScaleVertical(5),
   },
   image: {
-    height: 200,
-    width: 200,
-    borderRadius: 15,
+    width: ScaleHorizontal(190),
+    height: ScaleVertical(190),
+    borderRadius: ScaleHorizontal(15),
   },
 });

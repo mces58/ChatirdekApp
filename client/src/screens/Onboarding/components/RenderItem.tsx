@@ -9,6 +9,12 @@ import Animated, {
 
 import LottieView from 'lottie-react-native';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
+
 import { OnboardingData } from '../data';
 
 interface RenderItemProps {
@@ -65,9 +71,9 @@ const RenderItem: React.FC<RenderItemProps> = ({ index, x, item }) => {
         <LottieView
           source={item.animation}
           style={{
-            width: SCREEN_WIDTH * 0.7,
-            height: SCREEN_WIDTH * 0.7,
-            marginTop: 50,
+            width: SCREEN_WIDTH * ScaleHorizontal(0.7),
+            height: SCREEN_WIDTH * ScaleVertical(0.7),
+            marginTop: ScaleVertical(45),
           }}
           autoPlay
           loop
@@ -85,14 +91,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'space-around',
     alignItems: 'center',
-    marginBottom: 120,
+    marginBottom: ScaleVertical(100),
   },
   itemText: {
     fontFamily: 'Poppins-Bold',
     textAlign: 'center',
-    fontSize: 20,
-    marginBottom: 10,
-    marginHorizontal: 20,
+    fontSize: ScaleFontSize(18),
+    marginBottom: ScaleVertical(10),
+    marginHorizontal: ScaleHorizontal(20),
   },
   circleContainer: {
     ...StyleSheet.absoluteFillObject,

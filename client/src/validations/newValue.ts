@@ -6,10 +6,14 @@ export const newValueSchema = (type: string) => {
     newValue:
       type === 'userName'
         ? Yup.string()
+            .trim()
             .matches(/^[a-zA-Z0-9]+$/)
             .min(2, i18next.t('alert.minCharacter', { length: 2 }))
             .required(i18next.t('alert.fillAllFields'))
             .label('Username')
-        : Yup.string().required(i18next.t('alert.fillAllFields')).label('Full Name'),
+        : Yup.string()
+            .trim()
+            .required(i18next.t('alert.fillAllFields'))
+            .label('Full Name'),
   });
 };

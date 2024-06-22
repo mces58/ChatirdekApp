@@ -17,6 +17,11 @@ import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import LoadingIndicator from 'src/components/loading/Loading';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -111,9 +116,9 @@ const AddMemberGroupBottomSheet: React.FC<AddMemberGroupBottomSheetProps> = ({
     >
       <ProfileContainer
         user={user}
-        componentSize={{ width: 50, height: 50 }}
+        componentSize={{ width: ScaleHorizontal(40), height: ScaleVertical(40) }}
         showUserNames={false}
-        textStyles={{ fontSize: 14 }}
+        textStyles={{ fontSize: ScaleFontSize(12) }}
         disabled
       />
 
@@ -196,27 +201,27 @@ export default AddMemberGroupBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.5,
+      height: SCREEN_HEIGHT * ScaleVertical(0.4),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
       gap: 10,
     },
     container: {
       flex: 1,
       alignItems: 'center',
-      paddingHorizontal: 10,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
       gap: 10,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
     },
@@ -225,17 +230,17 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
     },
     scrollViewContent: {
       alignItems: 'center',
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
       borderColor: theme.borderColor,
-      borderWidth: 1,
+      borderWidth: ScaleHorizontal(1),
       gap: 10,
     },
     bodyHeaderText: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
     },
     userContainer: {
       width: '100%',
@@ -245,19 +250,19 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       textAlign: 'center',
       fontFamily: 'Nunito-Bold',
       color: theme.textMutedColor,
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
     },
     button: {
-      backgroundColor: Colors.primaryColors.primary,
-      paddingHorizontal: 15,
-      paddingVertical: 15,
-      borderRadius: 20,
       width: '100%',
+      backgroundColor: Colors.primaryColors.primary,
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingVertical: ScaleVertical(12),
+      borderRadius: ScaleHorizontal(20),
     },
     buttonText: {
       textAlign: 'center',
       fontFamily: 'Nunito-Bold',
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       color: Colors.primaryColors.beige,
     },
     shadow: {
@@ -275,20 +280,20 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       alignItems: 'center',
       justifyContent: 'space-between',
       backgroundColor: theme.borderColor,
-      paddingVertical: 10,
-      paddingRight: 15,
-      borderRadius: 20,
+      paddingVertical: ScaleVertical(8),
+      paddingRight: ScaleHorizontal(12),
+      borderRadius: ScaleHorizontal(20),
     },
     removeButton: {
       backgroundColor: Colors.primaryColors.danger,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 20,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(20),
     },
     selectButton: {
       backgroundColor: Colors.primaryColors.primary,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 20,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(20),
     },
   });

@@ -10,6 +10,7 @@ import Animated, {
 } from 'react-native-reanimated';
 
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 
 interface SwitchButtonProps {
   activeColor: string;
@@ -83,21 +84,21 @@ export default SwitchButton;
 
 const styles = StyleSheet.create({
   main: {
-    width: 60,
-    height: 40,
+    width: ScaleHorizontal(50),
+    height: ScaleVertical(30),
     alignItems: 'center',
     justifyContent: 'center',
   },
   container: {
-    width: 50,
-    height: 28,
-    borderRadius: 30,
+    width: ScaleHorizontal(45),
+    height: ScaleVertical(25),
+    borderRadius: ScaleHorizontal(30),
     justifyContent: 'center',
   },
   circle: {
-    width: 24,
-    height: 24,
-    borderRadius: 30,
+    width: ScaleHorizontal(20),
+    height: ScaleVertical(20),
+    borderRadius: ScaleHorizontal(30),
     backgroundColor: Colors.primaryColors.beige,
     shadowColor: Colors.primaryColors.dark,
     shadowOffset: {

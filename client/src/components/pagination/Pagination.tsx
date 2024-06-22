@@ -4,6 +4,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import i18next from 'i18next';
 
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface PaginationProps {
@@ -72,13 +77,13 @@ const createStyles = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       gap: 10,
-      marginVertical: 5,
+      marginVertical: ScaleVertical(5),
     },
     button: {
-      paddingHorizontal: 10,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
       backgroundColor: theme.textColor,
-      borderRadius: 10,
+      borderRadius: ScaleHorizontal(10),
     },
     active: {
       backgroundColor: Colors.primaryColors.danger,
@@ -88,7 +93,7 @@ const createStyles = (theme: Theme) =>
     },
     text: {
       fontFamily: 'Nunito-SemiBold',
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       color: theme.backgroundColor,
     },
     shadow: {

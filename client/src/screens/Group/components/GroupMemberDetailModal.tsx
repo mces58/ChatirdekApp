@@ -6,6 +6,11 @@ import i18next from 'i18next';
 import BaseModal from 'src/components/modal/BaseModal';
 import { ModalAnimation } from 'src/components/modal/modalAnimation';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -148,19 +153,20 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     modalContent: {
       backgroundColor: theme.backgroundColor,
-      paddingHorizontal: 20,
-      paddingVertical: 20,
-      borderRadius: 20,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(18),
+      borderRadius: ScaleHorizontal(20),
       alignItems: 'center',
       gap: 20,
     },
     closeButton: {
+      width: ScaleHorizontal(28),
+      height: ScaleVertical(28),
       alignSelf: 'flex-end',
       backgroundColor: Colors.primaryColors.danger,
-      padding: 5,
-      borderRadius: 50,
-      width: 30,
-      height: 30,
+      paddingHorizontal: ScaleHorizontal(5),
+      paddingVertical: ScaleVertical(5),
+      borderRadius: ScaleHorizontal(50),
       alignItems: 'center',
     },
     closeButtonText: {
@@ -168,14 +174,14 @@ const createStyles = (theme: Theme) =>
     },
     row: {
       width: '100%',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
       backgroundColor: theme.borderColor,
-      borderRadius: 30,
+      borderRadius: ScaleHorizontal(30),
     },
     text: {
       fontFamily: 'Nunito-Bold',
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       color: Colors.primaryColors.dark,
     },
     shadow: {

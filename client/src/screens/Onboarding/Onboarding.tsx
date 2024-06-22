@@ -6,6 +6,7 @@ import Animated, {
   useSharedValue,
 } from 'react-native-reanimated';
 
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { OnboardingProps } from 'src/navigations/RootStackParamList';
 
 import CustomButton from './components/Button';
@@ -87,10 +88,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginHorizontal: 30,
-    paddingVertical: 30,
+    marginHorizontal: ScaleHorizontal(25),
+    paddingVertical: ScaleVertical(25),
     position: 'absolute',
-    bottom: 20,
+    bottom: ScaleVertical(18),
     left: 0,
     right: 0,
   },

@@ -11,6 +11,11 @@ import i18next from 'i18next';
 
 import { MoonThemeIcon, SunThemeIcon } from 'src/assets/icons/theme';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface ThemeBottomSheetProps {
@@ -39,7 +44,7 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
         }}
       >
         <Text style={styles.text}>{i18next.t('global.light')}</Text>
-        <SunThemeIcon width={30} height={30} />
+        <SunThemeIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />
       </TouchableOpacity>
 
       <TouchableOpacity
@@ -50,7 +55,7 @@ const ThemeBottomSheet: React.FC<ThemeBottomSheetProps> = ({
         }}
       >
         <Text style={styles.text}>{i18next.t('global.dark')}</Text>
-        <MoonThemeIcon width={30} height={30} />
+        <MoonThemeIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />
       </TouchableOpacity>
     </View>
   );
@@ -72,25 +77,25 @@ export default ThemeBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.3,
+      height: SCREEN_HEIGHT * ScaleVertical(0.25),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
     },
     container: {
       flex: 1,
       alignItems: 'center',
       gap: 15,
-      marginTop: 20,
+      marginTop: ScaleVertical(15),
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
     },
@@ -100,16 +105,16 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       alignItems: 'center',
       gap: 10,
       width: '100%',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
       backgroundColor: theme.backgroundColor,
-      borderWidth: 1,
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.textColor,
     },
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 14,
+      fontSize: ScaleFontSize(13),
     },
   });

@@ -7,6 +7,7 @@ import * as FileSystem from 'expo-file-system';
 import MicrophoneIcon from 'src/assets/icons/microphone';
 import StopIcon from 'src/assets/icons/stop';
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 
 import { RecordingOptions } from 'expo-av/build/Audio';
 
@@ -114,11 +115,19 @@ const Recording: React.FC<RecordingProps> = ({
       <TouchableOpacity onPress={toggleRecording}>
         {isRecording ? (
           <View style={[styles.icon, styles.shadow]}>
-            <StopIcon width={25} height={25} />
+            <StopIcon
+              width={ScaleHorizontal(22)}
+              height={ScaleVertical(22)}
+              customColor={Colors.primaryColors.dark}
+            />
           </View>
         ) : (
           <View style={[styles.icon, styles.shadow]}>
-            <MicrophoneIcon width={25} height={25} />
+            <MicrophoneIcon
+              width={ScaleHorizontal(22)}
+              height={ScaleVertical(22)}
+              customColor={Colors.primaryColors.dark}
+            />
           </View>
         )}
       </TouchableOpacity>
@@ -134,15 +143,15 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   icon: {
-    width: 45,
-    height: 45,
-    borderRadius: 25,
+    width: ScaleHorizontal(40),
+    height: ScaleVertical(40),
+    borderRadius: ScaleHorizontal(50),
     backgroundColor: Colors.primaryColors.headerColor,
     alignItems: 'center',
     justifyContent: 'center',
   },
   shadow: {
-    shadowColor: '#000',
+    shadowColor: Colors.primaryColors.dark,
     shadowOffset: {
       width: 0,
       height: 2,

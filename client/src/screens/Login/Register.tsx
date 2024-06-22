@@ -23,6 +23,11 @@ import LottieView from 'lottie-react-native';
 
 import registerAnimation from 'src/assets/animatons/register.json';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import RegisterForm from 'src/forms/RegisterForm';
 import { RegisterProps } from 'src/navigations/RootStackParamList';
 import { GetGradientStartEnd } from 'src/utils/rotate';
@@ -77,8 +82,7 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          flexGrow: 1,
-          height: SCREEN_HEIGHT * 1.5,
+          height: SCREEN_HEIGHT * ScaleVertical(1.25),
           gap: 50,
         }}
       >
@@ -90,11 +94,11 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
               styles.lineaderGradient,
               styles.shadow,
               {
-                borderRadius: SCREEN_WIDTH * 0.8,
-                width: SCREEN_WIDTH * 1.5,
-                height: SCREEN_HEIGHT * 0.75,
-                top: -SCREEN_WIDTH * 0.6,
-                left: -SCREEN_WIDTH * 0.25,
+                borderRadius: SCREEN_WIDTH * ScaleHorizontal(0.8),
+                width: SCREEN_WIDTH * ScaleHorizontal(1.3),
+                height: SCREEN_HEIGHT * ScaleVertical(0.7),
+                top: -SCREEN_WIDTH * ScaleVertical(0.6),
+                left: -SCREEN_WIDTH * ScaleHorizontal(0.21),
               },
             ]}
           >
@@ -102,10 +106,10 @@ const Register: React.FC<RegisterProps> = ({ navigation }) => {
               <LottieView
                 source={registerAnimation}
                 style={{
-                  width: SCREEN_WIDTH * 0.85,
-                  height: SCREEN_WIDTH * 0.85,
+                  width: SCREEN_WIDTH * ScaleHorizontal(0.85),
+                  height: SCREEN_WIDTH * ScaleVertical(0.85),
                   position: 'absolute',
-                  bottom: -SCREEN_WIDTH * 0.1,
+                  bottom: -SCREEN_WIDTH * ScaleVertical(0.1),
                 }}
                 autoPlay
                 loop
@@ -162,12 +166,12 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 40,
+    fontSize: ScaleFontSize(38),
     color: Colors.primaryColors.dark,
   },
   textBody: {
     fontFamily: 'Nunito-Medium',
-    fontSize: 18,
+    fontSize: ScaleFontSize(14),
     color: Colors.primaryColors.dark,
     textAlign: 'center',
   },

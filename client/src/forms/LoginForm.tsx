@@ -8,6 +8,11 @@ import { jwtDecode } from 'jwt-decode';
 import Button from 'src/components/button/Button';
 import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { LoginData } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -87,6 +92,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 value={values.userName}
                 onChangeText={handleChange('userName')}
                 onBlur={handleBlur('userName')}
+                placeholderTextColor={Colors.primaryColors.textMuted}
               />
               {touched.userName && errors.userName && (
                 <Text style={styles.errorText}>{errors.userName}</Text>
@@ -100,6 +106,7 @@ const LoginForm: React.FC<LoginFormProps> = ({
                 value={values.password}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
+                placeholderTextColor={Colors.primaryColors.textMuted}
               />
               {touched.password && errors.password && (
                 <Text style={styles.errorText}>{errors.password}</Text>
@@ -157,12 +164,12 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 40,
+    fontSize: ScaleFontSize(35),
     color: Colors.primaryColors.dark,
   },
   textBody: {
     fontFamily: 'Nunito-Medium',
-    fontSize: 18,
+    fontSize: ScaleFontSize(14),
     color: Colors.primaryColors.dark,
   },
   inputContainer: {
@@ -177,10 +184,10 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: '100%',
-    height: 50,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    borderWidth: 1,
+    height: ScaleVertical(40),
+    paddingHorizontal: ScaleHorizontal(10),
+    borderRadius: ScaleHorizontal(10),
+    borderWidth: ScaleHorizontal(1),
     borderColor: Colors.primaryColors.dark,
   },
   forgetPassworContainer: {
@@ -193,11 +200,11 @@ const styles = StyleSheet.create({
   },
   forgetPassworButtonText: {
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 14,
+    fontSize: ScaleFontSize(13),
     color: Colors.primaryColors.primary,
-    borderBottomWidth: 1,
+    borderBottomWidth: ScaleHorizontal(1),
     borderBottomColor: Colors.primaryColors.primary,
-    paddingBottom: 5,
+    paddingBottom: ScaleVertical(5),
   },
   registerContainer: {
     flexDirection: 'row',
@@ -207,18 +214,18 @@ const styles = StyleSheet.create({
   },
   registerText: {
     fontFamily: 'Nunito-Medium',
-    fontSize: 14,
+    fontSize: ScaleFontSize(13),
     color: Colors.primaryColors.dark,
   },
   registerLinkText: {
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 14,
+    fontSize: ScaleFontSize(13),
     color: Colors.primaryColors.primary,
   },
   errorText: {
     fontFamily: 'Nunito-Regular',
     color: Colors.primaryColors.danger,
-    fontSize: 12,
+    fontSize: ScaleFontSize(10),
     textAlign: 'center',
   },
 });

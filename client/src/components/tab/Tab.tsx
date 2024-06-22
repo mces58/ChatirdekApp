@@ -1,6 +1,11 @@
 import React, { useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 type TabContent = {
@@ -60,35 +65,35 @@ const createStyles = (theme: Theme) =>
       flex: 1,
       alignItems: 'center',
       justifyContent: 'center',
-      marginVertical: 20,
+      marginVertical: ScaleVertical(18),
     },
     tabContainer: {
       flexDirection: 'row',
-      marginHorizontal: 20,
-      borderWidth: 1,
+      marginHorizontal: ScaleHorizontal(18),
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
-      borderRadius: 15,
+      borderRadius: ScaleHorizontal(15),
     },
     tab: {
       flex: 1,
-      paddingVertical: 12,
+      paddingVertical: ScaleVertical(10),
       backgroundColor: theme.borderColor,
     },
     activeTab: {
       backgroundColor: theme.backgroundColor,
     },
     leftTab: {
-      borderTopLeftRadius: 15,
-      borderBottomLeftRadius: 15,
+      borderTopLeftRadius: ScaleHorizontal(15),
+      borderBottomLeftRadius: ScaleHorizontal(15),
     },
     rightTab: {
-      borderTopRightRadius: 15,
-      borderBottomRightRadius: 15,
+      borderTopRightRadius: ScaleHorizontal(15),
+      borderBottomRightRadius: ScaleHorizontal(15),
     },
     tabText: {
       fontFamily: 'Nunito-SemiBold',
-      fontSize: 16,
-      lineHeight: 20,
+      fontSize: ScaleFontSize(13),
+      lineHeight: ScaleVertical(20),
       textAlign: 'center',
       color: theme.textMutedColor,
     },
@@ -98,7 +103,7 @@ const createStyles = (theme: Theme) =>
     contentContainer: {
       flex: 1,
       width: '100%',
-      paddingHorizontal: 15,
+      paddingHorizontal: ScaleHorizontal(12),
     },
     hidden: {
       display: 'none',

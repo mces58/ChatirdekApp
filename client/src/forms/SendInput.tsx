@@ -12,6 +12,7 @@ import SendIcon from 'src/assets/icons/send';
 import Button from 'src/components/button/Button';
 import Recording from 'src/components/recoring/Recording';
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useSocket } from 'src/context/SocketContext';
@@ -245,10 +246,10 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
               />
               <View style={styles.iconContainer}>
                 <TouchableOpacity onPress={gallery}>
-                  <GalleryIcon width={25} height={25} />
+                  <GalleryIcon width={ScaleHorizontal(22)} height={ScaleVertical(22)} />
                 </TouchableOpacity>
                 <TouchableOpacity onPress={camera}>
-                  <CameraIcon width={25} height={25} />
+                  <CameraIcon width={ScaleHorizontal(22)} height={ScaleVertical(22)} />
                 </TouchableOpacity>
               </View>
             </View>
@@ -268,8 +269,8 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
               disabled={!isValid || values.message.trim() === ''}
             >
               <SendIcon
-                width={30}
-                height={30}
+                width={ScaleHorizontal(28)}
+                height={ScaleVertical(28)}
                 customColor={
                   !isValid || values.message.trim() === ''
                     ? theme.textMutedColor
@@ -290,9 +291,9 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       flexDirection: 'row',
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderTopWidth: 1,
+      paddingHorizontal: ScaleHorizontal(10),
+      paddingVertical: ScaleVertical(10),
+      borderTopWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
       backgroundColor: theme.backgroundColor,
       gap: 10,
@@ -303,24 +304,24 @@ const createStyles = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'center',
       borderColor: theme.borderColor,
-      borderWidth: 1,
-      borderRadius: 5,
+      borderWidth: ScaleHorizontal(1),
+      borderRadius: ScaleHorizontal(10),
     },
     iconContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
       alignItems: 'center',
       gap: 10,
-      paddingHorizontal: 5,
+      paddingHorizontal: ScaleHorizontal(8),
     },
     input: {
       flex: 1,
-      paddingLeft: 15,
-      paddingVertical: 10,
+      paddingLeft: ScaleHorizontal(10),
+      paddingVertical: ScaleVertical(8),
       color: theme.textColor,
     },
     icon: {
-      paddingHorizontal: 5,
+      paddingHorizontal: ScaleHorizontal(5),
       justifyContent: 'center',
       alignItems: 'center',
     },
@@ -332,8 +333,8 @@ const createStyles = (theme: Theme) =>
       gap: 10,
     },
     button: {
-      width: 80,
-      height: 40,
+      width: ScaleHorizontal(80),
+      height: ScaleVertical(35),
     },
     buttonPlay: {
       backgroundColor: Colors.primaryColors.primary,

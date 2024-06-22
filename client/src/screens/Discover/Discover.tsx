@@ -17,6 +17,11 @@ import SearchIcon from 'src/assets/icons/search';
 import Header from 'src/components/headers/Header';
 import Pagination from 'src/components/pagination/Pagination';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -110,7 +115,7 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
     <View style={styles.screenContainer}>
       <Header
         title={i18next.t('discover.discover.header')}
-        icon={<EarthIcon width={30} height={30} />}
+        icon={<EarthIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         onIconPress={() => setRequestBoxBottomSheetVisible(true)}
         notificationCount={notificationCount}
       />
@@ -137,14 +142,14 @@ const Discover: React.FC<DiscoverProps> = ({ navigation }) => {
                     {i18next.t('discover.discover.message')}
                   </Text>
                   <TouchableOpacity onPress={() => setCardDisplay(true)}>
-                    <CrossIcon width={15} height={15} />
+                    <CrossIcon width={ScaleHorizontal(12)} height={ScaleVertical(12)} />
                   </TouchableOpacity>
                 </View>
 
                 <View style={[styles.textInputContainer, styles.shadow]}>
                   <SearchIcon
-                    width={20}
-                    height={20}
+                    width={ScaleHorizontal(18)}
+                    height={ScaleVertical(18)}
                     customColor={
                       search.length > 0
                         ? Colors.primaryColors.dark
@@ -209,41 +214,41 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     container: {
       flex: 1,
-      paddingHorizontal: 10,
-      paddingVertical: 20,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(18),
       gap: 20,
     },
     headerContainer: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      borderWidth: 1,
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingVertical: ScaleVertical(8),
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
       backgroundColor: theme.cardColor,
-      borderRadius: 20,
+      borderRadius: ScaleHorizontal(20),
     },
     headerText: {
       width: '90%',
       fontFamily: 'Nunito-SemiBold',
       fontStyle: 'italic',
       color: theme.textColor,
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       textAlign: 'center',
     },
     body: {
       flex: 1,
-      paddingHorizontal: 10,
-      paddingVertical: 5,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(5),
       gap: 20,
     },
     paginationContainer: {
       width: '100%',
-      paddingHorizontal: 10,
-      paddingVertical: 5,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(5),
       alignSelf: 'center',
       position: 'absolute',
-      bottom: 65,
+      bottom: ScaleVertical(60),
     },
     noUserContainer: {
       flex: 1,
@@ -253,24 +258,24 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     noUserText: {
       fontFamily: 'Nunito-Regular',
       color: theme.textColor,
-      fontSize: 24,
+      fontSize: ScaleFontSize(20),
     },
     textInputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 10,
-      paddingVertical: 5,
-      borderWidth: 1,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(5),
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
       backgroundColor: theme.cardColor,
-      borderRadius: 20,
+      borderRadius: ScaleHorizontal(20),
     },
     textInput: {
       width: '90%',
       fontFamily: 'Nunito-Regular',
       color: theme.textColor,
-      fontSize: 16,
-      marginLeft: 10,
+      fontSize: ScaleFontSize(13),
+      marginLeft: ScaleHorizontal(8),
     },
     shadow: {
       shadowColor: theme.shadowColor,

@@ -22,6 +22,11 @@ import { PencilWriteIcon } from 'src/assets/icons/headers';
 import SearchIcon from 'src/assets/icons/search';
 import Header from 'src/components/headers/Header';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { LastMessages } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
@@ -141,7 +146,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
 
       <Header
         title={i18next.t('chat.home.header')}
-        icon={<PencilWriteIcon width={30} height={30} />}
+        icon={<PencilWriteIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         onIconPress={() => setFriendsBottomSheetVisible(true)}
       />
 
@@ -155,8 +160,8 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
           />
           <View style={styles.searchIcon}>
             <SearchIcon
-              width={20}
-              height={20}
+              width={ScaleHorizontal(18)}
+              height={ScaleVertical(18)}
               customColor={
                 search.length > 0
                   ? Colors.primaryColors.dark
@@ -175,7 +180,11 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
               setSearch('');
             }}
           >
-            <CrossIcon width={15} height={15} customColor={Colors.primaryColors.dark} />
+            <CrossIcon
+              width={ScaleHorizontal(13)}
+              height={ScaleVertical(13)}
+              customColor={Colors.primaryColors.dark}
+            />
           </TouchableOpacity>
         </View>
 
@@ -218,46 +227,46 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     scrollContainer: {
       paddingTop: STATUSBAR_HEIGHT,
-      paddingBottom: 100,
+      paddingBottom: ScaleVertical(100),
       gap: 10,
     },
     container: {
       flex: 1,
-      paddingHorizontal: 10,
+      paddingHorizontal: ScaleHorizontal(10),
       gap: 10,
     },
     searchBarContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      borderRadius: 50,
-      paddingHorizontal: 35,
-      paddingVertical: 10,
+      borderRadius: ScaleHorizontal(50),
+      paddingHorizontal: ScaleHorizontal(30),
+      paddingVertical: ScaleVertical(8),
       backgroundColor: theme.borderColor,
     },
     searchInput: {
       width: '100%',
-      paddingHorizontal: 10,
+      paddingHorizontal: ScaleHorizontal(8),
     },
     searchIcon: {
       position: 'absolute',
-      left: 15,
-      top: 13,
+      left: ScaleHorizontal(13),
+      top: ScaleVertical(10),
       zIndex: 1,
     },
     crossIcon: {
       position: 'absolute',
-      right: 20,
-      top: 16,
+      right: ScaleHorizontal(15),
+      top: ScaleVertical(13),
       zIndex: 1,
     },
     noMessageContainer: {
-      flex: 1,
+      height: ScaleVertical(400),
       justifyContent: 'center',
       alignItems: 'center',
     },
     noMessageText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       color: theme.textColor,
       textAlign: 'center',
     },

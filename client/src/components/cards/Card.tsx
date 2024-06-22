@@ -1,6 +1,11 @@
 import React, { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface CardProps {
@@ -30,11 +35,11 @@ const createStyles = (theme: Theme) =>
     container: {
       width: '90%',
       backgroundColor: theme.cardColor,
-      paddingHorizontal: 25,
-      paddingVertical: 15,
+      paddingHorizontal: ScaleHorizontal(20),
+      paddingVertical: ScaleVertical(12),
       flexDirection: 'row',
       justifyContent: 'space-between',
-      borderRadius: 30,
+      borderRadius: ScaleHorizontal(30),
       alignItems: 'center',
       borderWidth: 1,
       borderColor: theme.borderColor,
@@ -46,12 +51,12 @@ const createStyles = (theme: Theme) =>
     },
     title: {
       fontFamily: 'Poppins-SemiBold',
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       color: theme.textColor,
     },
     text: {
       fontFamily: 'Poppins-Regular',
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       color: theme.textColor,
     },
     shadow: {

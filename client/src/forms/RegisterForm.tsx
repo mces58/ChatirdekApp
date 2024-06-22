@@ -7,6 +7,11 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import DropDown from 'src/components/dropDown/DropDown';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { RegisterData } from 'src/constants/types/user';
 import RegisterModal from 'src/screens/Login/components/RegisterModal';
@@ -72,6 +77,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
               value={values.fullName}
               onChangeText={handleChange('fullName')}
               onBlur={handleBlur('fullName')}
+              placeholderTextColor={Colors.primaryColors.textMuted}
             />
             {touched.fullName && errors.fullName && (
               <Text style={styles.errorText}>{errors.fullName}</Text>
@@ -85,6 +91,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
               value={values.userName}
               onChangeText={handleChange('userName')}
               onBlur={handleBlur('userName')}
+              placeholderTextColor={Colors.primaryColors.textMuted}
             />
             {touched.userName && errors.userName && (
               <Text style={styles.errorText}>{errors.userName}</Text>
@@ -98,6 +105,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
               value={values.email}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
+              placeholderTextColor={Colors.primaryColors.textMuted}
             />
             {touched.email && errors.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
@@ -113,6 +121,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
                 value={values.password}
                 onChangeText={handleChange('password')}
                 onBlur={handleBlur('password')}
+                placeholderTextColor={Colors.primaryColors.textMuted}
               />
               {touched.password && errors.password && (
                 <Text style={styles.errorText}>{errors.password}</Text>
@@ -128,6 +137,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
               value={values.confirmPassword}
               onChangeText={handleChange('confirmPassword')}
               onBlur={handleBlur('confirmPassword')}
+              placeholderTextColor={Colors.primaryColors.textMuted}
             />
             {touched.confirmPassword && errors.confirmPassword && (
               <Text style={styles.errorText}>{errors.confirmPassword}</Text>
@@ -200,15 +210,15 @@ const styles = StyleSheet.create({
   },
   textInput: {
     width: '100%',
-    height: 50,
-    paddingHorizontal: 10,
-    borderRadius: 10,
-    borderWidth: 1,
+    height: ScaleVertical(40),
+    paddingHorizontal: ScaleHorizontal(10),
+    borderRadius: ScaleHorizontal(10),
+    borderWidth: ScaleHorizontal(1),
     borderColor: Colors.primaryColors.dark,
   },
   errorText: {
     fontFamily: 'Nunito-Regular',
-    fontSize: 12,
+    fontSize: ScaleFontSize(10),
     color: Colors.primaryColors.danger,
   },
   buttonContainer: {
@@ -224,12 +234,12 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontFamily: 'Nunito-Medium',
-    fontSize: 14,
+    fontSize: ScaleFontSize(13),
     color: Colors.primaryColors.dark,
   },
   loginLinkText: {
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 14,
+    fontSize: ScaleFontSize(13),
     color: Colors.primaryColors.primary,
   },
 });

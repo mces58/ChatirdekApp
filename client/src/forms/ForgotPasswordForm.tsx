@@ -7,6 +7,11 @@ import i18next from 'i18next';
 import Button from 'src/components/button/Button';
 import LoadingIndicator from 'src/components/loading/Loading';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { ForgotPassword } from 'src/constants/types/user';
 import authService from 'src/services/auth-service';
@@ -74,6 +79,7 @@ const ForgotPasswordForm: React.FC<ForgotPasswordFormProps> = ({
               value={values.email}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
+              placeholderTextColor={Colors.primaryColors.textMuted}
             />
             {touched.email && errors.email && (
               <Text style={styles.errorText}>{errors.email}</Text>
@@ -96,8 +102,8 @@ export default ForgotPasswordForm;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: ScaleHorizontal(15),
+    paddingVertical: ScaleVertical(20),
     gap: 30,
   },
   headerContainer: {
@@ -108,13 +114,13 @@ const styles = StyleSheet.create({
   },
   headerText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 20,
+    fontSize: ScaleFontSize(18),
     textAlign: 'center',
     color: Colors.primaryColors.dark,
   },
   subHeader: {
     fontFamily: 'Nunito-Medium',
-    fontSize: 14,
+    fontSize: ScaleFontSize(12),
     textAlign: 'center',
     color: Colors.primaryColors.textMuted,
   },
@@ -123,21 +129,21 @@ const styles = StyleSheet.create({
   },
   text: {
     fontFamily: 'Nunito-SemiBold',
-    fontSize: 16,
+    fontSize: ScaleFontSize(14),
     color: Colors.primaryColors.dark,
   },
   textInput: {
     width: '100%',
-    height: 50,
-    paddingHorizontal: 10,
-    borderWidth: 1,
+    height: ScaleVertical(40),
+    paddingHorizontal: ScaleHorizontal(10),
+    borderWidth: ScaleHorizontal(1),
     borderColor: Colors.primaryColors.dark,
-    borderRadius: 20,
+    borderRadius: ScaleHorizontal(10),
   },
   errorText: {
     fontFamily: 'Nunito-Regular',
     color: Colors.primaryColors.danger,
-    fontSize: 12,
+    fontSize: ScaleFontSize(10),
     textAlign: 'center',
   },
 });

@@ -11,6 +11,11 @@ import {
 
 import i18next from 'i18next';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { User } from 'src/constants/types/user';
 import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -32,8 +37,8 @@ const ProfileContainerWithOnline: React.FC<ProfileContainerWithOnlineProps> = ({
   onPress,
   icon,
   componentSize = {
-    width: 100,
-    height: 100,
+    width: ScaleHorizontal(80),
+    height: ScaleVertical(80),
   },
   showUserNames = true,
   textStyles,
@@ -92,8 +97,8 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 16,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(10),
+      paddingVertical: ScaleVertical(10),
     },
     row: {
       flexDirection: 'row',
@@ -104,16 +109,16 @@ const createStyles = (theme: Theme, textStyles: StyleProp<TextStyle>) =>
       gap: 1,
     },
     fullName: {
-      fontSize: (textStyles as TextStyle)?.fontSize ?? 18,
+      fontSize: (textStyles as TextStyle)?.fontSize ?? ScaleFontSize(14),
       fontFamily: 'Poppins-SemiBold',
     },
     userName: {
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       fontFamily: 'Poppins-Medium',
       color: theme.textMutedColor,
     },
     typing: {
-      fontSize: 12,
+      fontSize: ScaleFontSize(10),
       fontFamily: 'Poppins-Regular',
       color: theme.textMutedColor,
     },

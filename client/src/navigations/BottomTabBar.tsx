@@ -20,6 +20,7 @@ import {
   SettingIcon,
 } from 'src/assets/icons/bottom-tabs';
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import Home from 'src/screens/Chat/Home';
 import Discover from 'src/screens/Discover/Discover';
@@ -63,8 +64,8 @@ const BottomTabNavigator: React.FC = () => {
           left: 0,
           right: 0,
           height: Platform.OS === 'ios' ? 70 : 80,
-          borderTopLeftRadius: 25,
-          borderTopRightRadius: 25,
+          borderTopLeftRadius: ScaleHorizontal(25),
+          borderTopRightRadius: ScaleHorizontal(25),
           width: width,
         },
         tabBarBackground: () => {
@@ -77,6 +78,7 @@ const BottomTabNavigator: React.FC = () => {
               {...GetGradientStartEnd(180)}
               style={[
                 styles.linearGradint,
+                styles.shadow,
                 {
                   height: Platform.OS === 'ios' ? 80 : 80,
                 },
@@ -95,8 +97,8 @@ const BottomTabNavigator: React.FC = () => {
               <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
                   <ChatIcon
-                    width={30}
-                    height={30}
+                    width={ScaleHorizontal(25)}
+                    height={ScaleVertical(25)}
                     customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
@@ -130,8 +132,8 @@ const BottomTabNavigator: React.FC = () => {
               <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
                   <GroupIcon
-                    width={30}
-                    height={30}
+                    width={ScaleHorizontal(25)}
+                    height={ScaleVertical(25)}
                     customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
@@ -165,8 +167,8 @@ const BottomTabNavigator: React.FC = () => {
               <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
                   <DiscoverIcon
-                    width={30}
-                    height={30}
+                    width={ScaleHorizontal(25)}
+                    height={ScaleVertical(25)}
                     customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
@@ -200,8 +202,8 @@ const BottomTabNavigator: React.FC = () => {
               <View style={styles.bottomContainer}>
                 <Animated.View style={focused && animatedStyle}>
                   <SettingIcon
-                    width={30}
-                    height={30}
+                    width={ScaleHorizontal(25)}
+                    height={ScaleVertical(25)}
                     customColor={
                       focused
                         ? theme.bottomTabBarActiveIconColor ??
@@ -238,8 +240,8 @@ const createStyles = (theme: Theme) =>
       top: 0,
       left: 0,
       right: 0,
-      borderTopLeftRadius: 25,
-      borderTopRightRadius: 25,
+      borderTopLeftRadius: ScaleHorizontal(25),
+      borderTopRightRadius: ScaleHorizontal(25),
     },
     bottomContainer: {
       gap: 1,

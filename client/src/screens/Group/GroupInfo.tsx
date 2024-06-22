@@ -25,6 +25,11 @@ import BackHeader from 'src/components/headers/BackHeader';
 import ListInfo from 'src/components/list/ListUserInfo';
 import ProfileImage from 'src/components/profileContainer/ProfileImage';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Group } from 'src/constants/types/group';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
@@ -107,8 +112,14 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
     <ScrollView style={styles.screenContainer} showsVerticalScrollIndicator={false}>
       <BackHeader
         title={group?.name}
-        icon={<ArrowIcon width={30} height={30} direction="left" />}
-        componentSize={{ height: 90 }}
+        icon={
+          <ArrowIcon
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
+            direction="left"
+          />
+        }
+        componentSize={{ height: ScaleVertical(80) }}
         onPress={() => navigation.goBack()}
       />
 
@@ -116,7 +127,13 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
         <ListInfo
           title={i18next.t('group.groupInfo.groupName')}
           text={group?.name}
-          icon={<IdIcon width={30} height={30} strokeWidth={3} />}
+          icon={
+            <IdIcon
+              width={ScaleHorizontal(25)}
+              height={ScaleVertical(25)}
+              strokeWidth={3}
+            />
+          }
           onPress={
             meId === group?.owner?.id
               ? () => setGroupNameBoxVisible(true)
@@ -128,7 +145,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
         <ListInfo
           title={i18next.t('group.groupInfo.groupDescription')}
           text={group?.description}
-          icon={<QuotationIcon width={30} height={30} />}
+          icon={<QuotationIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
           onPress={
             meId === group?.owner?.id
               ? () => setGroupDescriptionBoxVisible(true)
@@ -140,14 +157,20 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
         <ListInfo
           title={i18next.t('global.createdAt')}
           text={new Date(group?.createdAt).toLocaleDateString()}
-          icon={<CalendarIcon width={30} height={30} strokeWidth={1} />}
+          icon={
+            <CalendarIcon
+              width={ScaleHorizontal(25)}
+              height={ScaleVertical(25)}
+              strokeWidth={1}
+            />
+          }
           disabled
         />
 
         <ListInfo
           title={i18next.t('group.groupInfo.owner')}
           text={group?.owner?.fullName}
-          icon={<DiamondIcon width={30} height={30} />}
+          icon={<DiamondIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
           disabled
         />
 
@@ -161,7 +184,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                 style={{
                   color: theme.textColor,
                   fontFamily: 'Nunito-Regular',
-                  fontSize: 12,
+                  fontSize: ScaleFontSize(10),
                 }}
               >
                 ({i18next.t('global.outsideOwner')})
@@ -181,8 +204,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                   onPress={() => setAddMemberBottomSheetVisible(true)}
                 >
                   <PlussIcon
-                    width={20}
-                    height={20}
+                    width={ScaleHorizontal(18)}
+                    height={ScaleVertical(18)}
                     customColor={Colors.primaryColors.dark}
                   />
                   <Text style={styles.addMemberButtonText}>
@@ -199,8 +222,8 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                   {i18next.t('global.leave')}
                 </Text>
                 <LogoutIcon
-                  width={20}
-                  height={20}
+                  width={ScaleHorizontal(18)}
+                  height={ScaleVertical(18)}
                   customColor={Colors.primaryColors.beige}
                 />
               </TouchableOpacity>
@@ -209,7 +232,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
             <View
               style={{
                 borderBottomColor: theme.borderColor,
-                borderBottomWidth: 1,
+                borderBottomWidth: ScaleHorizontal(1),
               }}
             >
               <TouchableOpacity
@@ -223,8 +246,15 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                 disabled={meId === group?.owner?.id}
               >
                 <ProfileImage
-                  imageUri={group?.owner?.avatar}
-                  componentSize={{ width: 50, height: 50 }}
+                  imageUri={
+                    group?.owner?.hideAvatar
+                      ? `https://robohash.org/${group?.owner?.id}`
+                      : group?.owner?.avatar
+                  }
+                  componentSize={{
+                    width: ScaleHorizontal(40),
+                    height: ScaleVertical(40),
+                  }}
                 />
 
                 <Text style={styles.userName}>
@@ -235,7 +265,7 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                     style={{
                       color: theme.textMutedColor,
                       fontFamily: 'Nunito-Regular',
-                      fontSize: 12,
+                      fontSize: ScaleFontSize(10),
                     }}
                   >
                     {i18next.t('global.admin')}
@@ -269,7 +299,10 @@ const GroupInfo: React.FC<GroupInfoProps> = ({ navigation, route }) => {
                           ? `https://robohash.org/${user?.id}`
                           : user?.avatar
                       }
-                      componentSize={{ width: 50, height: 50 }}
+                      componentSize={{
+                        width: ScaleHorizontal(40),
+                        height: ScaleVertical(40),
+                      }}
                     />
                     <Text style={styles.userName}>{user?.fullName}</Text>
                   </TouchableOpacity>
@@ -347,25 +380,25 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     container: {
       flex: 1,
-      paddingHorizontal: 10,
-      paddingBottom: 30,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingBottom: ScaleVertical(27),
     },
     body: {
       width: '100%',
-      marginTop: 20,
+      marginTop: ScaleVertical(18),
     },
     memberHeaderTextContainer: {
       width: '100%',
-      paddingHorizontal: 20,
+      paddingHorizontal: ScaleHorizontal(18),
     },
     memberHeaderText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 18,
+      fontSize: ScaleFontSize(16),
       color: theme.textColor,
     },
     memberContainer: {
       width: '100%',
-      paddingHorizontal: 20,
+      paddingHorizontal: ScaleHorizontal(18),
       gap: 10,
     },
     addMemberContainer: {
@@ -373,8 +406,8 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      paddingVertical: 10,
-      borderBottomWidth: 1,
+      paddingVertical: ScaleVertical(8),
+      borderBottomWidth: ScaleHorizontal(1),
       borderBottomColor: theme.borderColor,
     },
     addMemberButton: {
@@ -382,13 +415,13 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       alignItems: 'center',
       gap: 10,
       backgroundColor: Colors.primaryColors.headerColor,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
     },
     addMemberButtonText: {
       color: Colors.primaryColors.dark,
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       fontFamily: 'Nunito-Bold',
     },
     leaveGroupButton: {
@@ -396,13 +429,13 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       alignItems: 'center',
       gap: 10,
       backgroundColor: Colors.primaryColors.linearGradient2,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
     },
     leaveGroupButtonText: {
       color: Colors.primaryColors.beige,
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       fontFamily: 'Nunito-Bold',
     },
     userContainer: {
@@ -410,12 +443,12 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       flexDirection: 'row',
       alignItems: 'center',
       gap: 10,
-      paddingVertical: 10,
+      paddingVertical: ScaleVertical(8),
       borderBottomColor: theme.borderColor,
     },
     userName: {
       fontFamily: 'Nunito-Bold',
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       color: theme.textColor,
     },
     shadow: {

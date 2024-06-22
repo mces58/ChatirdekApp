@@ -13,6 +13,11 @@ import i18next from 'i18next';
 import DotIcon from 'src/assets/icons/dot';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import OpenLinkButton from 'src/components/link/OpenLinkButton';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import { helpQuestions, Question } from '../../constants/questions';
@@ -38,7 +43,7 @@ const HelpBottomSheet: React.FC<HelpBottomSheetProps> = ({ isVisible, onSwipeDow
   const renderQuestions = useCallback(
     (question: Question, index: number) => (
       <View key={index} style={styles.question}>
-        <DotIcon width={20} height={20} />
+        <DotIcon width={ScaleHorizontal(20)} height={ScaleVertical(20)} />
         <OpenLinkButton
           url={question.answerUrl}
           text={i18next.t(`settings.helpBottomSheet.${question.question}`)}
@@ -109,71 +114,72 @@ export default HelpBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.5,
+      height: SCREEN_HEIGHT * ScaleVertical(0.4),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 15,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
     },
     container: {
       flex: 1,
     },
     scrollViewContent: {
-      paddingHorizontal: 10,
-      paddingVertical: 20,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(18),
       gap: 15,
     },
     headerText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       alignSelf: 'center',
     },
     textInput: {
       width: '100%',
-      borderWidth: 1,
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
-      borderRadius: 10,
-      padding: 10,
+      borderRadius: ScaleHorizontal(10),
+      paddingHorizontal: ScaleHorizontal(10),
+      paddingVertical: ScaleVertical(8),
       color: theme.textColor,
     },
     questionContainer: {
       flex: 1,
-      marginTop: 10,
+      marginTop: ScaleVertical(10),
     },
     questionHeader: {
       fontFamily: 'Poppins-SemiBold',
-      fontSize: 18,
+      fontSize: ScaleFontSize(15),
       color: theme.textColor,
     },
     question: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingVertical: 10,
-      paddingHorizontal: 5,
-      borderRadius: 10,
+      paddingVertical: ScaleVertical(8),
+      paddingHorizontal: ScaleHorizontal(5),
+      borderRadius: ScaleHorizontal(10),
       gap: 10,
     },
     questionText: {
       fontFamily: 'Nunito-Medium',
-      fontSize: 16,
+      fontSize: ScaleFontSize(12),
       color: theme.textColor,
     },
     notFoundContainer: {
       width: '100%',
-      height: 150,
+      height: ScaleVertical(100),
       justifyContent: 'center',
       alignItems: 'center',
     },
     notFoundText: {
       alignSelf: 'center',
       fontFamily: 'Poppins-Light',
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
     },
   });

@@ -2,6 +2,8 @@ import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
+import { ScaleVertical } from 'src/constants/screen/screenSize';
+
 import { OnboardingData } from '../data';
 import Dot from './Dot';
 
@@ -24,7 +26,7 @@ export default Pagination;
 const styles = StyleSheet.create({
   paginationContainer: {
     flexDirection: 'row',
-    height: 40,
+    height: ScaleVertical(40),
     justifyContent: 'center',
     alignItems: 'center',
   },

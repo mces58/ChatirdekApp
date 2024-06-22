@@ -6,6 +6,11 @@ import i18next from 'i18next';
 
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { User } from 'src/constants/types/user';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { GetGradientStartEnd } from 'src/utils/rotate';
@@ -39,8 +44,8 @@ const UserCard: React.FC<UserCardProps> = ({
         <TouchableOpacity style={styles.userContainer} onPress={onPressCard}>
           <ProfileContainer
             user={user}
-            componentSize={{ width: 55, height: 55 }}
-            textStyles={{ fontSize: 14 }}
+            componentSize={{ width: ScaleHorizontal(45), height: ScaleVertical(45) }}
+            textStyles={{ fontSize: ScaleFontSize(13) }}
             showUserNames={false}
             disabled
           />
@@ -63,9 +68,9 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     linearGradient: {
       width: '100%',
-      paddingVertical: 5,
-      paddingHorizontal: 10,
-      borderRadius: 20,
+      paddingVertical: ScaleVertical(5),
+      paddingHorizontal: ScaleHorizontal(8),
+      borderRadius: ScaleHorizontal(20),
     },
     userContainer: {
       flexDirection: 'row',
@@ -74,13 +79,13 @@ const createStyles = (theme: Theme) =>
     },
     button: {
       backgroundColor: Colors.primaryColors.dark,
-      paddingHorizontal: 10,
-      paddingVertical: 10,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
     },
     buttonText: {
       fontFamily: 'Nunito-SemiBold',
-      fontSize: 12,
+      fontSize: ScaleFontSize(10),
       color: Colors.primaryColors.light,
     },
     shadow: {

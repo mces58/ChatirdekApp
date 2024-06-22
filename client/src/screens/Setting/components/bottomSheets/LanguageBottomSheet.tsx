@@ -6,6 +6,11 @@ import i18next from 'i18next';
 import { EnglishFlagIcon, TurkishFlagIcon } from 'src/assets/icons/flag';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import LanguageSwitcher from 'src/constants/localization/LanguageSwitcher';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface LanguageBottomSheetProps {
@@ -32,7 +37,7 @@ const LanguageBottomSheet: React.FC<LanguageBottomSheetProps> = ({
         languageCode="tr"
         onSwipeDown={onSwipeDown}
         componentStyle={styles.button}
-        flag={<TurkishFlagIcon width={30} height={30} />}
+        flag={<TurkishFlagIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
       />
 
       <LanguageSwitcher
@@ -40,7 +45,7 @@ const LanguageBottomSheet: React.FC<LanguageBottomSheetProps> = ({
         languageCode="en"
         onSwipeDown={onSwipeDown}
         componentStyle={styles.button}
-        flag={<EnglishFlagIcon width={30} height={30} />}
+        flag={<EnglishFlagIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
       />
     </View>
   );
@@ -62,25 +67,25 @@ export default LanguageBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.3,
+      height: SCREEN_HEIGHT * ScaleVertical(0.25),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
     },
     container: {
       flex: 1,
       alignItems: 'center',
       gap: 15,
-      marginTop: 20,
+      marginTop: ScaleVertical(15),
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
     },
@@ -90,11 +95,11 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       alignItems: 'center',
       gap: 10,
       width: '100%',
-      paddingHorizontal: 20,
-      paddingVertical: 10,
-      borderRadius: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(10),
       backgroundColor: theme.backgroundColor,
-      borderWidth: 1,
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.textColor,
     },
   });

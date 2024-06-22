@@ -8,6 +8,11 @@ import {
   ViewStyle,
 } from 'react-native';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface BackHeaderProps {
@@ -21,7 +26,7 @@ const BackHeader: React.FC<BackHeaderProps> = ({
   title,
   icon,
   onPress,
-  componentSize = { height: 100 },
+  componentSize = { height: ScaleVertical(75) },
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -48,9 +53,9 @@ const createStyles = (theme: Theme) =>
       backgroundColor: theme.headerBackgroundColor,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 20,
-      borderBottomRightRadius: 25,
-      borderBottomLeftRadius: 25,
+      paddingHorizontal: ScaleHorizontal(18),
+      borderBottomRightRadius: ScaleHorizontal(25),
+      borderBottomLeftRadius: ScaleHorizontal(25),
       shadowColor: theme.shadowColor,
       shadowOffset: {
         width: 0,
@@ -68,6 +73,6 @@ const createStyles = (theme: Theme) =>
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
     },
   });

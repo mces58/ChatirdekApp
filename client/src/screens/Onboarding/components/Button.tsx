@@ -19,6 +19,11 @@ import i18next from 'i18next';
 
 import ArrowIcon from 'src/assets/icons/arrow';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 
 import { OnboardingData } from '../data';
 
@@ -103,8 +108,8 @@ const CustomButton: React.FC<CustomButtonProps> = ({
         </Animated.Text>
         <Animated.View style={[styles.arrow, arrowAnimationStyle]}>
           <ArrowIcon
-            width={30}
-            height={30}
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
             customColor={Colors.primaryColors.light}
             direction="right"
           />
@@ -119,8 +124,9 @@ export default CustomButton;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.primaryColors.orange,
-    padding: 10,
-    borderRadius: 100,
+    paddingHorizontal: ScaleHorizontal(8),
+    paddingVertical: ScaleVertical(8),
+    borderRadius: ScaleHorizontal(99),
     justifyContent: 'center',
     alignItems: 'center',
     overflow: 'hidden',
@@ -131,7 +137,7 @@ const styles = StyleSheet.create({
   textButton: {
     fontFamily: 'Poppins-SemiBold',
     color: Colors.primaryColors.light,
-    fontSize: 16,
+    fontSize: ScaleFontSize(14),
     position: 'absolute',
   },
 });

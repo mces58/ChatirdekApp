@@ -13,6 +13,11 @@ import { Formik } from 'formik';
 import i18next from 'i18next';
 
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { useAuthContext } from 'src/context/AuthContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
@@ -148,16 +153,16 @@ export default SetProfileValueBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.3,
+      height: SCREEN_HEIGHT * ScaleVertical(0.25),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
       gap: 15,
     },
     container: {
@@ -166,25 +171,26 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
       gap: 15,
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
     },
     textInput: {
       width: '100%',
-      height: 50,
-      paddingVertical: 10,
-      paddingHorizontal: 10,
+      height: ScaleVertical(40),
+      paddingVertical: ScaleVertical(8),
+      paddingHorizontal: ScaleHorizontal(8),
       color: theme.textColor,
-      borderRadius: 10,
-      borderWidth: 1,
+      borderRadius: ScaleHorizontal(10),
+      borderWidth: ScaleHorizontal(1),
       borderColor: theme.borderColor,
     },
     button: {
       width: '100%',
-      padding: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
       backgroundColor: Colors.primaryColors.headerColor,
-      borderRadius: 10,
+      borderRadius: ScaleHorizontal(10),
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -200,13 +206,13 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
     },
     buttonText: {
       color: Colors.primaryColors.dark,
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       fontFamily: 'Nunito-Bold',
     },
     errorText: {
       fontFamily: 'Nunito-Bold',
       color: Colors.primaryColors.danger,
       textAlign: 'center',
-      fontSize: 12,
+      fontSize: ScaleFontSize(10),
     },
   });

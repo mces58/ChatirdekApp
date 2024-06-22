@@ -148,6 +148,7 @@
   "settings.list.privacy": "Privacy",
   "settings.list.help": "Help",
   "settings.list.aboutus": "About Us",
+  "settings.aboutus.version": "Version 1.0.0",
   "settings.list.logout": "Logout",
   "settings.profilePhotoBottomSheet.header": "Profile Photo",
   "settings.languageBottomSheet.header": "Choose your language",

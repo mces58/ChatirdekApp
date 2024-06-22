@@ -17,6 +17,11 @@ import BackHeaderWithImage from 'src/components/headers/BackHeaderWithImage';
 import AudioPlayer from 'src/components/message/AudioPlayer';
 import ImageMessage from 'src/components/message/ImageMessage';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Message } from 'src/constants/types/message';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useFontSize } from 'src/context/FontSizeContext';
@@ -110,10 +115,16 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
       <View style={[styles.container, { backgroundColor: wallpaper.color }]}>
         <BackHeaderWithImage
           user={messages?.receiver || route.params.receiver}
-          componentSize={{ height: 95 }}
-          icon={<ArrowIcon width={30} height={30} direction="left" />}
+          componentSize={{ height: ScaleVertical(85) }}
+          icon={
+            <ArrowIcon
+              width={ScaleHorizontal(30)}
+              height={ScaleVertical(30)}
+              direction="left"
+            />
+          }
           onPressIcon={() => navigation.goBack()}
-          imageComponentSize={{ height: 50, width: 50 }}
+          imageComponentSize={{ width: ScaleHorizontal(40), height: ScaleVertical(40) }}
           onPressHeader={() =>
             navigation.navigate('UserProfile', {
               user: messages?.receiver || route.params.receiver,
@@ -151,14 +162,14 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     messageList: {
       width: '100%',
       height: '100%',
-      paddingHorizontal: 15,
-      paddingBottom: 5,
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingBottom: ScaleVertical(5),
     },
     message: {
-      marginVertical: 5,
-      paddingHorizontal: 15,
-      paddingVertical: 10,
-      borderRadius: 15,
+      marginVertical: ScaleVertical(5),
+      paddingHorizontal: ScaleHorizontal(12),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(15),
     },
     myMessage: {
       backgroundColor: Colors.primaryColors.linearGradient2,
@@ -166,9 +177,9 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     myLastMessage: {
       borderRadius: 0,
-      borderBottomLeftRadius: 15,
-      borderTopRightRadius: 15,
-      borderTopLeftRadius: 15,
+      borderBottomLeftRadius: ScaleHorizontal(15),
+      borderTopRightRadius: ScaleHorizontal(15),
+      borderTopLeftRadius: ScaleHorizontal(15),
     },
     theirMessage: {
       backgroundColor: Colors.primaryColors.linearGradient1,
@@ -176,9 +187,9 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     },
     theirLastMessage: {
       borderRadius: 0,
-      borderBottomRightRadius: 15,
-      borderTopRightRadius: 15,
-      borderTopLeftRadius: 15,
+      borderBottomRightRadius: ScaleHorizontal(15),
+      borderTopRightRadius: ScaleHorizontal(15),
+      borderTopLeftRadius: ScaleHorizontal(15),
     },
     text: {
       fontFamily: 'Poppins-Regular',
@@ -186,7 +197,7 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       textAlign: 'left',
     },
     timestamp: {
-      fontSize: 11,
+      fontSize: ScaleFontSize(9),
       color: Colors.primaryColors.dark,
     },
     myTimestamp: {

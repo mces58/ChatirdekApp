@@ -9,6 +9,11 @@ import {
 } from 'react-native';
 
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 
 interface ButtonProps {
   title: string;
@@ -41,16 +46,16 @@ export default Button;
 const styles = StyleSheet.create({
   container: {
     width: '80%',
-    height: 50,
+    height: ScaleVertical(45),
     backgroundColor: Colors.primaryColors.primary,
-    borderRadius: 20,
+    borderRadius: ScaleHorizontal(20),
     alignItems: 'center',
     justifyContent: 'center',
     alignSelf: 'center',
   },
   text: {
     fontFamily: 'Poppins-SemiBold',
-    fontSize: 16,
+    fontSize: ScaleFontSize(14),
     color: Colors.primaryColors.beige,
   },
   shadow: {

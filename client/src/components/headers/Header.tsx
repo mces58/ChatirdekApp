@@ -2,6 +2,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface HeaderProps {
@@ -52,14 +57,14 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     container: {
       width: '100%',
-      height: 100,
+      height: ScaleVertical(80),
       backgroundColor: theme.headerBackgroundColor,
       flexDirection: 'row',
       justifyContent: 'space-between',
       alignItems: 'center',
-      paddingHorizontal: 20,
-      borderBottomRightRadius: 25,
-      borderBottomLeftRadius: 25,
+      paddingHorizontal: ScaleHorizontal(20),
+      borderBottomRightRadius: ScaleHorizontal(25),
+      borderBottomLeftRadius: ScaleHorizontal(25),
       shadowColor: theme.shadowColor,
       shadowOffset: {
         width: 0,
@@ -72,26 +77,26 @@ const createStyles = (theme: Theme) =>
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 24,
+      fontSize: ScaleFontSize(20),
     },
     icon: {
-      marginRight: 5,
-      marginTop: 5,
+      marginRight: ScaleHorizontal(5),
+      marginTop: ScaleVertical(5),
     },
     notificationBadge: {
       position: 'absolute',
-      top: -7,
-      right: -7,
+      top: -ScaleVertical(5),
+      right: -ScaleHorizontal(5),
       backgroundColor: Colors.primaryColors.danger,
-      borderRadius: 50,
-      width: 20,
-      height: 20,
+      borderRadius: ScaleHorizontal(50),
+      width: ScaleHorizontal(20),
+      height: ScaleHorizontal(20),
       justifyContent: 'center',
       alignItems: 'center',
     },
     notificationText: {
       fontFamily: 'Nunito-Bold',
       color: Colors.primaryColors.beige,
-      fontSize: 12,
+      fontSize: ScaleFontSize(10),
     },
   });

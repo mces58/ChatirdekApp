@@ -7,6 +7,11 @@ import i18next from 'i18next';
 import GalleryIcon from 'src/assets/icons/gallery';
 import NoteIcon from 'src/assets/icons/note';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { GroupLastMessages } from 'src/constants/types/group-message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { GetGradientStartEnd } from 'src/utils/rotate';
@@ -54,7 +59,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }
               {group?.lastMessage?.senderId.fullName + ': '}
             </Text>
           )}
-          <GalleryIcon width={15} height={15} />
+          <GalleryIcon width={ScaleHorizontal(13)} height={ScaleVertical(13)} />
         </View>
       );
     }
@@ -71,7 +76,7 @@ const GroupCard: React.FC<GroupCardProps> = ({ group, onPressCard, index, meId }
               {group?.lastMessage?.senderId.fullName + ': '}
             </Text>
           )}
-          <NoteIcon width={15} height={15} />
+          <NoteIcon width={ScaleHorizontal(13)} height={ScaleVertical(13)} />
         </View>
       );
     }
@@ -149,9 +154,9 @@ const createStyles = (theme: Theme) =>
       alignItems: 'center',
       justifyContent: 'space-between',
       width: '100%',
-      paddingVertical: 20,
-      paddingHorizontal: 20,
-      borderRadius: 20,
+      paddingVertical: ScaleVertical(16),
+      paddingHorizontal: ScaleHorizontal(18),
+      borderRadius: ScaleHorizontal(20),
     },
     row: {
       flexDirection: 'row',
@@ -165,18 +170,18 @@ const createStyles = (theme: Theme) =>
     },
     groupNameText: {
       fontFamily: 'Poppins-Bold',
-      fontSize: 18,
+      fontSize: ScaleFontSize(16),
       color: Colors.primaryColors.dark,
     },
     lastMessageText: {
       fontFamily: 'Nunito-Regular',
-      fontSize: 12,
+      fontSize: ScaleFontSize(12),
       color: Colors.primaryColors.dark,
       opacity: 0.8,
     },
     groupMemberText: {
       fontFamily: 'Nunito-Regular',
-      fontSize: 14,
+      fontSize: ScaleFontSize(12),
       color: Colors.primaryColors.dark,
       opacity: 0.8,
     },

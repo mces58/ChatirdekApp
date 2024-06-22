@@ -1,6 +1,11 @@
 import React, { useMemo } from 'react';
 import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import ProfileImage from './ProfileImage';
@@ -34,13 +39,13 @@ const createStyles = (theme: Theme) =>
     container: {
       alignItems: 'center',
       gap: 10,
-      borderBottomWidth: 1,
+      borderBottomWidth: ScaleHorizontal(1),
       borderBottomColor: theme.borderColor,
-      paddingBottom: 15,
+      paddingBottom: ScaleVertical(12),
     },
     text: {
       fontFamily: 'Poppins-SemiBold',
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
     },
   });

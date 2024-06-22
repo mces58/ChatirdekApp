@@ -3,6 +3,7 @@ import { StyleProp, StyleSheet, TouchableOpacity, View, ViewStyle } from 'react-
 
 import CameraIcon from 'src/assets/icons/camera';
 import { Colors } from 'src/constants/color/colors';
+import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import ProfileImage from './ProfileImage';
@@ -32,8 +33,8 @@ const ChangeProfileImage: React.FC<ChangeProfileImageProps> = ({
       />
       <TouchableOpacity style={styles.icon} onPress={onPressIcon}>
         <CameraIcon
-          width={30}
-          height={30}
+          width={ScaleHorizontal(25)}
+          height={ScaleVertical(25)}
           customColor={Colors.primaryColors.dark}
           strokeWidth={2.5}
         />
@@ -58,14 +59,15 @@ const createStyles = (theme: Theme) =>
     },
     profilePictureContainer: {
       alignSelf: 'center',
-      borderRadius: 100,
+      borderRadius: ScaleHorizontal(100),
     },
     icon: {
       position: 'absolute',
       bottom: 0,
       right: 0,
-      padding: 10,
-      borderRadius: 50,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
+      borderRadius: ScaleHorizontal(100),
       backgroundColor: Colors.primaryColors.headerColor,
     },
   });

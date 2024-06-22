@@ -148,6 +148,7 @@
   "settings.list.privacy": "Gizlilik",
   "settings.list.help": "Yardım",
   "settings.list.aboutus": "Hakkımızda",
+  "settings.aboutus.version": "Versiyon 1.0.0",
   "settings.list.logout": "Çıkış Yap",
   "settings.profilePhotoBottomSheet.header": "Profil Fotoğrafı",
   "settings.languageBottomSheet.header": "Dil Seçimi",

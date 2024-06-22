@@ -3,6 +3,7 @@ import * as Yup from 'yup';
 
 export const forgotPasswordValidation = Yup.object().shape({
   email: Yup.string()
+    .trim()
     .email(i18next.t('alert.invalidEmail'))
     .required(i18next.t('alert.fillAllFields'))
     .label('Email'),

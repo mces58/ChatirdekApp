@@ -10,6 +10,11 @@ import {
 import i18next from 'i18next';
 
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import chatSettingModals, { ChatSettingModals } from '../../constants/chat-setting-modal';
@@ -97,34 +102,34 @@ export default ChatsBottomSheet;
 const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
   StyleSheet.create({
     bottomSheet: {
-      height: SCREEN_HEIGHT * 0.3,
+      height: SCREEN_HEIGHT * ScaleVertical(0.25),
       backgroundColor: theme.bottomSheetBackgroundColor,
-      borderTopLeftRadius: 20,
-      borderTopRightRadius: 20,
+      borderTopLeftRadius: ScaleHorizontal(20),
+      borderTopRightRadius: ScaleHorizontal(20),
       position: 'absolute',
       bottom: 0,
       left: 0,
       right: 0,
-      paddingHorizontal: 20,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(18),
+      paddingVertical: ScaleVertical(8),
     },
     container: {
       flex: 1,
-      marginTop: 10,
+      marginTop: ScaleVertical(10),
       alignItems: 'center',
-      paddingHorizontal: 10,
-      paddingVertical: 10,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(8),
     },
     headerText: {
-      fontSize: 20,
+      fontSize: ScaleFontSize(18),
       color: theme.textColor,
       fontFamily: 'Poppins-Bold',
     },
     buttonContainer: {
       width: '100%',
-      paddingHorizontal: 10,
-      paddingVertical: 20,
-      borderBottomWidth: 1,
+      paddingHorizontal: ScaleHorizontal(8),
+      paddingVertical: ScaleVertical(18),
+      borderBottomWidth: ScaleVertical(1),
       borderBottomColor: theme.borderColor,
     },
     button: {
@@ -136,6 +141,6 @@ const createStyles = (theme: Theme, SCREEN_HEIGHT: number) =>
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 15,
+      fontSize: ScaleFontSize(12),
     },
   });

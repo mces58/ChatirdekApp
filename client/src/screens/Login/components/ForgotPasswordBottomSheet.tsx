@@ -12,6 +12,11 @@ import i18next from 'i18next';
 import BaseBottomSheet from 'src/components/bottomSheet/BaseBottomSheet';
 import Button from 'src/components/button/Button';
 import { Colors } from 'src/constants/color/colors';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import ForgotPasswordForm from 'src/forms/ForgotPasswordForm';
 import ResetPasswordForm from 'src/forms/ResetPasswordForm';
 
@@ -145,10 +150,10 @@ const ForgotPasswordBottomSheet: React.FC<ForgotPasswordBottomSheetProps> = ({
         styles.bottomSheet,
         {
           height: validationBoxVisible
-            ? SCREEN_HEIGHT * 0.4
+            ? SCREEN_HEIGHT * ScaleVertical(0.35)
             : resetPasswordBoxVisible
-              ? SCREEN_HEIGHT * 0.65
-              : SCREEN_HEIGHT * 0.45,
+              ? SCREEN_HEIGHT * ScaleVertical(0.55)
+              : SCREEN_HEIGHT * ScaleVertical(0.4),
         },
       ]}
       content={
@@ -167,39 +172,39 @@ export default ForgotPasswordBottomSheet;
 const styles = StyleSheet.create({
   bottomSheet: {
     backgroundColor: Colors.primaryColors.beige,
-    borderTopLeftRadius: 25,
-    borderTopRightRadius: 25,
+    borderTopLeftRadius: ScaleHorizontal(25),
+    borderTopRightRadius: ScaleHorizontal(25),
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 20,
+    paddingHorizontal: ScaleHorizontal(10),
+    paddingVertical: ScaleVertical(20),
   },
   headerText: {
     fontFamily: 'Poppins-Bold',
-    fontSize: 20,
+    fontSize: ScaleFontSize(20),
     textAlign: 'center',
     color: Colors.primaryColors.dark,
   },
   root: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 20,
+    paddingHorizontal: ScaleHorizontal(20),
+    paddingVertical: ScaleVertical(20),
     gap: 20,
   },
   codeFieldRoot: {
-    marginVertical: 5,
+    marginVertical: ScaleVertical(5),
   },
   cell: {
-    width: 40,
-    height: 40,
-    lineHeight: 35,
-    fontSize: 24,
-    borderWidth: 2,
+    width: ScaleHorizontal(40),
+    height: ScaleVertical(40),
+    lineHeight: ScaleVertical(35),
+    fontSize: ScaleFontSize(24),
+    borderWidth: ScaleHorizontal(2),
     borderColor: Colors.primaryColors.textMuted,
     textAlign: 'center',
-    borderRadius: 10,
+    borderRadius: ScaleHorizontal(10),
   },
   focusCell: {
     borderColor: Colors.primaryColors.dark,
@@ -207,7 +212,7 @@ const styles = StyleSheet.create({
   time: {
     fontFamily: 'Poppins-SemiBold',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: ScaleFontSize(14),
   },
   shadow: {
     shadowColor: Colors.primaryColors.dark,

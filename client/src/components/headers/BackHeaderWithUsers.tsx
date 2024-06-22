@@ -10,6 +10,11 @@ import {
 
 import i18next from 'i18next';
 
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Group } from 'src/constants/types/group';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
@@ -28,7 +33,7 @@ const BackHeaderWithUsers: React.FC<BackHeaderWithUsersProps> = ({
   meId,
   onPressIcon,
   onPressHeader,
-  componentSize = { height: 100 },
+  componentSize = { height: ScaleVertical(85) },
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
@@ -64,7 +69,7 @@ const createStyles = (theme: Theme) =>
       backgroundColor: theme.headerBackgroundColor,
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 15,
+      paddingHorizontal: ScaleHorizontal(12),
       shadowColor: theme.shadowColor,
       shadowOffset: {
         width: 0,
@@ -81,19 +86,19 @@ const createStyles = (theme: Theme) =>
     },
     title: {
       fontFamily: 'Poppins-SemiBold',
-      fontSize: 24,
+      fontSize: ScaleFontSize(20),
       color: theme.textColor,
-      marginTop: 3,
+      marginTop: ScaleVertical(3),
     },
     membersContainer: {
       flexDirection: 'row',
       alignItems: 'center',
       gap: 8,
-      paddingLeft: 30,
+      paddingLeft: ScaleHorizontal(25),
     },
     membersText: {
       fontFamily: 'Nunito-Regular',
-      fontSize: 16,
+      fontSize: ScaleFontSize(12),
       color: theme.textColor,
     },
   });

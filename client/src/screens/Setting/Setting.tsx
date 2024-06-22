@@ -16,6 +16,11 @@ import ArrowIcon from 'src/assets/icons/arrow';
 import { SettingLeafIcon } from 'src/assets/icons/headers';
 import Header from 'src/components/headers/Header';
 import ProfileContainer from 'src/components/profileContainer/ProfileContainer';
+import {
+  ScaleFontSize,
+  ScaleHorizontal,
+  ScaleVertical,
+} from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -98,15 +103,21 @@ const Setting: React.FC<SettingProps> = ({ navigation }) => {
     <View style={styles.screenContainer}>
       <Header
         title={i18next.t('settings.settings.header')}
-        icon={<SettingLeafIcon width={30} height={30} />}
+        icon={<SettingLeafIcon width={ScaleHorizontal(25)} height={ScaleVertical(25)} />}
         disableIcon
       />
 
       <ProfileContainer
         user={user!}
         onPress={() => navigation.navigate('Profile', { user })}
-        icon={<ArrowIcon width={20} height={20} direction="right" />}
-        textStyles={{ fontSize: 16, color: theme.textColor }}
+        icon={
+          <ArrowIcon
+            width={ScaleHorizontal(25)}
+            height={ScaleVertical(25)}
+            direction="right"
+          />
+        }
+        textStyles={{ fontSize: ScaleFontSize(14), color: theme.textColor }}
       />
 
       <View style={styles.container}>
@@ -159,12 +170,12 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
       gap: 5,
     },
     container: {
-      paddingHorizontal: 20,
+      paddingHorizontal: ScaleHorizontal(20),
     },
     listItemContainer: {
-      borderBottomWidth: 1,
+      borderBottomWidth: ScaleHorizontal(1),
       borderBottomColor: theme.borderColor,
-      paddingVertical: 22,
+      paddingVertical: ScaleVertical(20),
     },
     listItem: {
       flexDirection: 'row',
@@ -174,6 +185,6 @@ const createStyles = (theme: Theme, STATUSBAR_HEIGHT: number) =>
     text: {
       fontFamily: 'Nunito-Bold',
       color: theme.textColor,
-      fontSize: 16,
+      fontSize: ScaleFontSize(13),
     },
   });

@@ -1,6 +1,7 @@
 import React, { useCallback, useMemo } from 'react';
 import { Alert, Linking, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
+import { ScaleFontSize } from 'src/constants/screen/screenSize';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 type OpenLinkButtonProps = {
@@ -34,7 +35,7 @@ const createStyles = (theme: Theme) =>
   StyleSheet.create({
     text: {
       fontFamily: 'Poppins-Medium',
-      fontSize: 16,
+      fontSize: ScaleFontSize(14),
       color: theme.textColor,
     },
   });
