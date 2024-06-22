@@ -61,10 +61,7 @@ export const getIncomingFriendRequests = async (req, res) => {
   try {
     const { id } = req.user;
 
-    const user = await User.findById(id).populate(
-      'incomingFriendRequests',
-      'userName avatar fullName'
-    );
+    const user = await User.findById(id).populate('incomingFriendRequests');
 
     const { incomingFriendRequests } = user;
 
@@ -81,10 +78,7 @@ export const getOutgoingFriendRequests = async (req, res) => {
   try {
     const { id } = req.user;
 
-    const user = await User.findById(id).populate(
-      'outgoingFriendRequests',
-      'userName avatar fullName'
-    );
+    const user = await User.findById(id).populate('outgoingFriendRequests');
 
     const { outgoingFriendRequests } = user;
 

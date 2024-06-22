@@ -3,7 +3,6 @@ import * as Yup from 'yup';
 
 export const loginValidation = Yup.object().shape({
   userName: Yup.string()
-    .trim()
     .matches(/^[a-zA-Z0-9]+$/)
     .max(15, i18next.t('alert.maxCharacter', { length: 15 }))
     .min(2, i18next.t('alert.minCharacter', { length: 2 }))

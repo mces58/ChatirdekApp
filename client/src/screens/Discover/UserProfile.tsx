@@ -85,7 +85,7 @@ const UserProfile: React.FC<UserProfileProps> = ({ navigation, route }) => {
               <GhostIcon
                 width={ScaleHorizontal(22)}
                 height={ScaleVertical(22)}
-                strokeWidth={1.5}
+                strokeWidth={2.2}
               />
             }
           />
