@@ -53,7 +53,6 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
   const [friends, setFriends] = useState<User[]>([]);
   const [meId, setMeId] = useState<string>('');
   const { onlineUsers } = useSocket();
-  const [isOnline, setIsOnline] = useState<boolean>(false);
 
   const getUsers = async () => {
     try {
@@ -103,11 +102,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
     getFriends();
   }, [authUser, friends, setFriends]);
 
-  useEffect(() => {
-    users.every((user) => onlineUsers.includes(user.receiver.id))
-      ? setIsOnline(true)
-      : setIsOnline(false);
-  }, [onlineUsers, users]);
+  useEffect(() => {}, [onlineUsers, users]);
 
   useFocusEffect(
     useCallback(() => {
@@ -120,7 +115,7 @@ const Home: React.FC<HomeProps> = ({ navigation }) => {
       <MessageContainer
         key={index}
         user={item}
-        isOnline={isOnline}
+        onlineUsers={onlineUsers}
         gotoChatRoom={() =>
           navigation.navigate('Chat', {
             senderId: item.lastMessage.senderId,

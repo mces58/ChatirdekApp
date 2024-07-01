@@ -71,7 +71,13 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
         resizeMode="cover"
       />
       <ChangeProfileImage
-        imageUri={image ? image : route?.params?.user?.avatar}
+        imageUri={
+          image
+            ? image
+            : route?.params?.user?.hideAvatar
+              ? `https://robohash.org/${route?.params?.user?.id}`
+              : route?.params?.user?.avatar
+        }
         componentSize={{ width: ScaleHorizontal(160), height: ScaleVertical(160) }}
         onPressImage={() => setModalVisible(true)}
         onPressIcon={() => setProfilePhotoBoxVisible(true)}
@@ -112,7 +118,13 @@ const Profile: React.FC<ProfileProps> = ({ navigation, route }) => {
       />
 
       <ProfileModal
-        imageUri={image ? image : route?.params?.user?.avatar}
+        imageUri={
+          image
+            ? image
+            : route?.params?.user?.hideAvatar
+              ? `https://robohash.org/${route?.params?.user?.id}`
+              : route?.params?.user?.avatar
+        }
         isVisible={isModalVisible}
         onClose={() => setModalVisible(false)}
       />

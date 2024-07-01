@@ -1,5 +1,12 @@
-import React, { useMemo } from 'react';
-import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import React, { useMemo, useState } from 'react';
+import {
+  StyleProp,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ViewStyle,
+} from 'react-native';
 
 import {
   ScaleFontSize,
@@ -9,6 +16,7 @@ import {
 import { Theme, useTheme } from 'src/context/ThemeContext';
 
 import ProfileImage from './ProfileImage';
+import ProfileModal from './ProfileModal';
 
 interface ProfileWithTextProps {
   text: string;
@@ -23,11 +31,20 @@ const ProfileWithText: React.FC<ProfileWithTextProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const [isModalVisible, setIsModalVisible] = useState<boolean>(false);
 
   return (
     <View style={styles.container}>
-      <ProfileImage imageUri={imageUri} componentSize={componentSize} />
+      <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+        <ProfileImage imageUri={imageUri} componentSize={componentSize} disabled />
+      </TouchableOpacity>
       <Text style={styles.text}>{text}</Text>
+
+      <ProfileModal
+        imageUri={imageUri}
+        isVisible={isModalVisible}
+        onClose={() => setIsModalVisible(false)}
+      />
     </View>
   );
 };

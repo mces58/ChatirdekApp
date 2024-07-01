@@ -17,13 +17,13 @@ import { Theme, useTheme } from 'src/context/ThemeContext';
 
 interface MessageContainerProps {
   user: LastMessages;
-  isOnline: boolean;
+  onlineUsers: string[];
   gotoChatRoom: () => void;
 }
 
 const MessageContainer: React.FC<MessageContainerProps> = ({
   user,
-  isOnline,
+  onlineUsers,
   gotoChatRoom,
 }) => {
   const { theme } = useTheme();
@@ -77,7 +77,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
         {user.lastMessage && (
           <>
             <View>
-              {isOnline && !user.receiver.hideOnlineStatus && <NotificationBubble />}
+              {onlineUsers.includes(user.receiver.id) && <NotificationBubble />}
               <ProfileImage
                 imageUri={
                   user.receiver.hideAvatar

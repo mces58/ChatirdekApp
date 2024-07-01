@@ -46,7 +46,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
 
   useEffect(() => {
     getMessages(meId, route.params.receiverId);
-  }, [meId, route.params.receiverId]);
+  }, [meId, route.params.receiverId, messages.messages]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {

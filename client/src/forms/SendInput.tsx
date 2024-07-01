@@ -175,7 +175,7 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
   const fetchMessagesWithDelay = async () => {
     setTimeout(() => {
       getMessages(meId, receiverId);
-    }, 500);
+    }, 300);
   };
 
   return (
