@@ -1,12 +1,10 @@
-import path from 'path';
-
 import Conversation from 'src/models/conversation.model';
 import Message from 'src/models/message.model';
 import User from 'src/models/user.model';
 import { base64ToImage, base64ToSound } from 'src/utils/base64ToImage.util';
 import { uploadImage, uploadSound } from 'src/utils/cloudinary.util';
-import { decrypt, encrypt } from 'src/utils/crypto.util';
 import handleErrors from 'src/utils/error.util';
+import prepareFilePath from 'src/utils/preparePath.util';
 import removeLocalImage from 'src/utils/removeLocalImage.util';
 
 export const getLastMessages = async (req, res) => {
@@ -54,11 +52,6 @@ export const getLastMessages = async (req, res) => {
     const lastMessages = conversations.map((conversation) => {
       const { messages, participants } = conversation;
       const lastMessage = messages[messages.length - 1];
-      const decryptedMessages = {
-        message: lastMessage.message ? decrypt(lastMessage.message) : null,
-        image: lastMessage.image ? decrypt(lastMessage.image) : null,
-        audio: lastMessage.audio ? decrypt(lastMessage.audio) : null,
-      };
       const receiver = participants.find(
         (participant) => participant._id.toString() !== currentUserId
       );
@@ -67,7 +60,7 @@ export const getLastMessages = async (req, res) => {
         lastMessage: {
           senderId: lastMessage.senderId,
           receiverId: lastMessage.receiverId,
-          message: decryptedMessages.message,
+          message: lastMessage.message,
           image: lastMessage.image,
           audio: lastMessage.audio,
           createdAt: lastMessage.createdAt,
@@ -89,10 +82,9 @@ export const sendImageMessage = async (req, res) => {
   const { selectedUserId } = req.params;
   const { uri } = req.body;
 
-  const filePath = path.join(__dirname, `../assets/${Date.now()}.png`);
+  const filePath = prepareFilePath('png');
   const convertedImagePath = base64ToImage(uri, filePath);
   const secureUri = await uploadImage(convertedImagePath);
-  const encryptedUri = encrypt(secureUri);
   try {
     if (currentUserId === selectedUserId) {
       return res.status(400).json({
@@ -128,7 +120,7 @@ export const sendImageMessage = async (req, res) => {
     const newMessage = new Message({
       senderId: currentUserId,
       receiverId: selectedUserId,
-      image: encryptedUri,
+      image: secureUri,
     });
     if (newMessage) {
       conversation.messages.push(newMessage._id);
@@ -150,10 +142,9 @@ export const sendAudioMessage = async (req, res) => {
   const { selectedUserId } = req.params;
   const { uri } = req.body;
 
-  const filePath = path.join(__dirname, `../assets/${Date.now()}.mp4`);
+  const filePath = prepareFilePath('mp4');
   const convertedAudioPath = base64ToSound(uri, filePath);
   const secureUri = await uploadSound(convertedAudioPath);
-  const encryptedUri = encrypt(secureUri);
   try {
     if (currentUserId === selectedUserId) {
       return res.status(400).json({
@@ -189,7 +180,7 @@ export const sendAudioMessage = async (req, res) => {
     const newMessage = new Message({
       senderId: currentUserId,
       receiverId: selectedUserId,
-      audio: encryptedUri,
+      audio: secureUri,
     });
     if (newMessage) {
       conversation.messages.push(newMessage._id);
