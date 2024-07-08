@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import i18next from 'i18next';
@@ -14,6 +14,8 @@ import {
 } from 'src/constants/screen/screenSize';
 import { LastMessages } from 'src/constants/types/message';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { decryptMessage, decryptSessionKey } from 'src/e2e/encryption';
+import { getPrivateKey } from 'src/e2e/savePrivateKey';
 
 interface MessageContainerProps {
   user: LastMessages;
@@ -28,9 +30,35 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = useMemo(() => createStyles(theme), [theme]);
+  const [messagePreview, setMessagePreview] = useState<string | null>(null);
 
-  const getMessagePreview = (message: string, isSender: boolean) => {
-    const previewMessage = message?.length > 30 ? message.slice(0, 30) + '...' : message;
+  useEffect(() => {
+    const loadMessagePreview = async () => {
+      if (user.lastMessage && !user.lastMessage.image && !user.lastMessage.audio) {
+        const preview = await getMessagePreview(
+          user.lastMessage.message,
+          user.receiver.id !== user.lastMessage.senderId
+        );
+        setMessagePreview(preview);
+      }
+    };
+    loadMessagePreview();
+  }, [user]);
+
+  const getMessagePreview = async (message: string, isSender: boolean) => {
+    const privateKey = await getPrivateKey();
+    if (!privateKey) return null;
+    const splitMessage = message?.split(':');
+    const [encryptedMessage, encryptSessionKey] = splitMessage;
+    const decryptedSessionKey = decryptSessionKey(encryptSessionKey, privateKey);
+
+    const decryptedMessage = decryptMessage(
+      encryptedMessage.toString(),
+      decryptedSessionKey || encryptSessionKey
+    );
+
+    const previewMessage =
+      decryptedMessage?.length > 30 ? message.slice(0, 30) + '...' : decryptedMessage;
     return isSender ? i18next.t('global.you') + ': ' + previewMessage : previewMessage;
   };
 
@@ -68,7 +96,7 @@ const MessageContainer: React.FC<MessageContainerProps> = ({
       );
     }
 
-    return getMessagePreview(lastMessage.message, !isReceiver);
+    return messagePreview;
   };
 
   return (

@@ -69,6 +69,10 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    publicKey: {
+      type: String,
+      required: [true, 'Public key is required'],
+    },
   },
   {
     timestamps: true,

@@ -12,6 +12,7 @@ const register = {
       .required()
       .label('Confirm Password'),
     gender: Joi.string().valid('male', 'female').required().label('Gender'),
+    publicKey: Joi.string().required().label('Public Key'),
   }),
 };
 

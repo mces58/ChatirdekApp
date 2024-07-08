@@ -14,6 +14,8 @@ import {
 } from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
 import { RegisterData } from 'src/constants/types/user';
+import createPairKey from 'src/e2e/createKey';
+import { savePrivateKey } from 'src/e2e/savePrivateKey';
 import RegisterModal from 'src/screens/Login/components/RegisterModal';
 import authService from 'src/services/auth-service';
 import { registerValidation } from 'src/validations/register';
@@ -32,6 +34,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
     password: '',
     confirmPassword: '',
     gender: '',
+    publicKey: '',
   };
 
   const submitRegister = async (
@@ -39,9 +42,16 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ gotoLogin }) => {
     resetForm: () => void
   ): Promise<void> => {
     try {
+      const keyPair = await createPairKey();
+      if (keyPair) {
+        values.publicKey = keyPair.publicKey;
+        await savePrivateKey(keyPair.privateKey);
+      }
       const response: Response = await authService.register(values);
       if (response.success) {
         setRegisterModalVisible(true);
+      } else {
+        Alert.alert('Error', response.message, [{ text: i18next.t('global.ok') }]);
         resetForm();
       }
     } catch (error) {

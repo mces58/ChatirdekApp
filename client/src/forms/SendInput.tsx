@@ -14,11 +14,14 @@ import Recording from 'src/components/recoring/Recording';
 import { Colors } from 'src/constants/color/colors';
 import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
 import { Response } from 'src/constants/types/response';
+import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
 import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
+import { createSessionKey, encryptMessage, encryptSessionKey } from 'src/e2e/encryption';
 import chatService from 'src/services/chat-service';
 import groupMessageService from 'src/services/group-message-service';
+import userService from 'src/services/user-service';
 import openCamera from 'src/utils/open-camera';
 import openGallery from 'src/utils/open-galllery';
 import { sendMessageValidation } from 'src/validations/sendMessage';
@@ -47,6 +50,7 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const [recordingUri, setRecordingUri] = useState<string | null>(null);
   const [base64DataUri, setBase64DataUri] = useState<string | null>(null);
+  const [receiver, setReceiver] = useState<User>({} as User);
 
   useEffect(() => {
     if (authUser) {
@@ -54,6 +58,21 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
       setMeId(decode._id);
     }
   }, [authUser]);
+
+  useEffect(() => {
+    const fetchReceiver = async () => {
+      if (authUser) {
+        const response: Response = await userService.getUser(
+          authUser.toString(),
+          receiverId
+        );
+        if (response.success) {
+          setReceiver(response.data);
+        }
+      }
+    };
+    fetchReceiver();
+  }, [receiverId, authUser]);
 
   useEffect(() => {
     return () => {
@@ -178,6 +197,14 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
     }, 300);
   };
 
+  const encryption = (text: string) => {
+    const sessionKey = createSessionKey();
+    if (!sessionKey) return '';
+    const encryptedSessionKey = encryptSessionKey(sessionKey, receiver.publicKey);
+    const encryptedMessage = encryptMessage(text, encryptedSessionKey);
+    return encryptedMessage + ':' + encryptedSessionKey;
+  };
+
   return (
     <Formik
       initialValues={initialValue}
@@ -186,6 +213,7 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
         if (isGroup) {
           sendGroupMessage(meId, receiverId, values.message);
         } else {
+          values.message = encryption(values.message);
           sendMessage(meId, receiverId, values.message);
         }
         stopTyping(meId, receiverId);

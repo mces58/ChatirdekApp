@@ -5,6 +5,7 @@ export interface RegisterData {
   password: string;
   confirmPassword: string;
   gender: string;
+  publicKey: string;
 }
 
 export interface LoginData {
@@ -37,6 +38,7 @@ export interface User {
   hideAvatar: boolean;
   hideAbout: boolean;
   createdAt: string;
+  publicKey: string;
 }
 
 export interface AuthUser {

@@ -28,6 +28,8 @@ import { useFontSize } from 'src/context/FontSizeContext';
 import { useSocket } from 'src/context/SocketContext';
 import { Theme, useTheme } from 'src/context/ThemeContext';
 import { useWallpaper } from 'src/context/WallpaperContext';
+import { decryptMessage, decryptSessionKey } from 'src/e2e/encryption';
+import { getPrivateKey } from 'src/e2e/savePrivateKey';
 import SendInput from 'src/forms/SendInput';
 import { ChatProps } from 'src/navigations/RootStackParamList';
 
@@ -43,10 +45,36 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const { wallpaper } = useWallpaper();
   const { authUser } = useAuthContext();
   const [meId, setMeId] = useState<string>('');
+  const [decryptedMessages, setDecryptedMessages] = useState<string[]>([]);
 
   useEffect(() => {
     getMessages(meId, route.params.receiverId);
   }, [meId, route.params.receiverId, messages.messages]);
+
+  useEffect(() => {
+    const getPrivateKeyAndDecrypt = async () => {
+      const privateKey = await getPrivateKey();
+      if (!privateKey) return;
+      setDecryptedMessages(
+        messages?.messages?.map((message) => {
+          if (message.audio || message.image) return '';
+
+          const splitMessage = message?.message?.split(':');
+          const [encryptedMessage, encryptSessionKey] = splitMessage;
+          const decryptedSessionKey = decryptSessionKey(encryptSessionKey, privateKey);
+
+          const decryptedMessage = decryptMessage(
+            encryptedMessage.toString(),
+            decryptedSessionKey || encryptSessionKey
+          );
+
+          return decryptedMessage;
+        }) || []
+      );
+    };
+
+    getPrivateKeyAndDecrypt();
+  }, [messages.receiver, messages.messages]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -88,7 +116,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           <AudioPlayer audioUrl={message.audio} />
         ) : (
           <Text style={[styles.text, { fontSize: fontSizeValue }]}>
-            {message.message}
+            {decryptedMessages[index]}
           </Text>
         )}
         <Text

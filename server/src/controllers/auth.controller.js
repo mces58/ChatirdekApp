@@ -10,7 +10,7 @@ import removeLocalImage from 'src/utils/removeLocalImage.util';
 import sendMail from 'src/utils/sendMail.util';
 
 export const register = async (req, res) => {
-  const { fullName, userName, email, password, gender } = req.body;
+  const { fullName, userName, email, password, gender, publicKey } = req.body;
 
   try {
     let user = await User.findOne({ email });
@@ -37,6 +37,7 @@ export const register = async (req, res) => {
       password: hashedPassword,
       avatar,
       gender,
+      publicKey,
     });
 
     if (user) {
