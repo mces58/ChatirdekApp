@@ -32,6 +32,10 @@ import { decryptMessage, decryptSessionKey } from 'src/e2e/encryption';
 import { getPrivateKey } from 'src/e2e/savePrivateKey';
 import SendInput from 'src/forms/SendInput';
 import { ChatProps } from 'src/navigations/RootStackParamList';
+import {
+  getMessagesWithUser,
+  isMessagesInLocalStorage,
+} from 'src/storages/message-storage';
 
 const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const { messages, getMessages } = useSocket();
@@ -46,6 +50,7 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
   const { authUser } = useAuthContext();
   const [meId, setMeId] = useState<string>('');
   const [decryptedMessages, setDecryptedMessages] = useState<string[]>([]);
+  const [messagesFromStorage, setMessagesFromStorage] = useState<any[]>([]);
 
   useEffect(() => {
     getMessages(meId, route.params.receiverId);
@@ -75,6 +80,19 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
 
     getPrivateKeyAndDecrypt();
   }, [messages.receiver, messages.messages]);
+
+  useEffect(() => {
+    const fetchMessages = async () => {
+      const isLocal = await isMessagesInLocalStorage();
+      if (isLocal) {
+        setMessagesFromStorage(await getMessagesWithUser(route.params.receiverId, meId));
+      } else {
+        setMessagesFromStorage(decryptedMessages);
+      }
+    };
+
+    fetchMessages();
+  }, [route.params.receiverId]);
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -116,7 +134,9 @@ const Chat: React.FC<ChatProps> = ({ navigation, route }) => {
           <AudioPlayer audioUrl={message.audio} />
         ) : (
           <Text style={[styles.text, { fontSize: fontSizeValue }]}>
-            {decryptedMessages[index]}
+            {messagesFromStorage.length > 0
+              ? messagesFromStorage[index].message
+              : decryptedMessages[index]}
           </Text>
         )}
         <Text

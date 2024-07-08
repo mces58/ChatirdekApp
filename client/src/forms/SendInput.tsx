@@ -13,6 +13,7 @@ import Button from 'src/components/button/Button';
 import Recording from 'src/components/recoring/Recording';
 import { Colors } from 'src/constants/color/colors';
 import { ScaleHorizontal, ScaleVertical } from 'src/constants/screen/screenSize';
+import { Message } from 'src/constants/types/message';
 import { Response } from 'src/constants/types/response';
 import { User } from 'src/constants/types/user';
 import { useAuthContext } from 'src/context/AuthContext';
@@ -22,6 +23,7 @@ import { createSessionKey, encryptMessage, encryptSessionKey } from 'src/e2e/enc
 import chatService from 'src/services/chat-service';
 import groupMessageService from 'src/services/group-message-service';
 import userService from 'src/services/user-service';
+import { generateUniqueId, saveMessageLocal } from 'src/storages/message-storage';
 import openCamera from 'src/utils/open-camera';
 import openGallery from 'src/utils/open-galllery';
 import { sendMessageValidation } from 'src/validations/sendMessage';
@@ -83,14 +85,16 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
   const camera = async () => {
     const uri = await openCamera();
     if (uri) {
-      await sendToServer(uri);
+      handleLocalMessage(uri.uri, false, true);
+      await sendToServer(uri.base64);
     }
   };
 
   const gallery = async () => {
     const uri = await openGallery();
     if (uri) {
-      await sendToServer(uri);
+      handleLocalMessage(uri.uri, false, true);
+      await sendToServer(uri.base64);
     }
   };
 
@@ -138,6 +142,7 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
 
   const handleRecordingFinish = (uri: string | null) => {
     setRecordingUri(uri);
+    handleLocalMessage(uri || '', true, false);
   };
 
   const sendRecordingToServer = async () => {
@@ -205,6 +210,47 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
     return encryptedMessage + ':' + encryptedSessionKey;
   };
 
+  const handleLocalMessage = async (
+    message: string,
+    isAudio: boolean,
+    isImage: boolean
+  ) => {
+    if (isAudio) {
+      const newMessage: Message = {
+        id: generateUniqueId(),
+        message: '',
+        image: '',
+        audio: message,
+        createdAt: new Date().toISOString(),
+        senderId: meId,
+        receiverId: receiverId,
+      };
+      await saveMessageLocal(newMessage);
+    } else if (isImage) {
+      const newMessage: Message = {
+        id: generateUniqueId(),
+        message: '',
+        image: message,
+        audio: '',
+        createdAt: new Date().toISOString(),
+        senderId: meId,
+        receiverId: receiverId,
+      };
+      await saveMessageLocal(newMessage);
+    } else {
+      const newMessage: Message = {
+        id: generateUniqueId(),
+        message: message,
+        image: '',
+        audio: '',
+        createdAt: new Date().toISOString(),
+        senderId: meId,
+        receiverId: receiverId,
+      };
+      await saveMessageLocal(newMessage);
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValue}
@@ -213,6 +259,7 @@ const SendInput: React.FC<SendInputProps> = ({ receiverId, isGroup = false }) =>
         if (isGroup) {
           sendGroupMessage(meId, receiverId, values.message);
         } else {
+          handleLocalMessage(values.message, false, false);
           values.message = encryption(values.message);
           sendMessage(meId, receiverId, values.message);
         }
